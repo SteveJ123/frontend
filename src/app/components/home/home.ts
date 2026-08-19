@@ -351,7 +351,8 @@ export class Home {
     // Convert Windows \ to /
     const normalizedPath = path.replace(/\\/g, '/');
 
-    return `http://localhost:5000/${normalizedPath}`;
+    // return `http://localhost:5000/${normalizedPath}`;
+    return `https://backend-2rgv.onrender.com/${normalizedPath}`;
   }
 
   getPostAge(createdAt: string): string {
