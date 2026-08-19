@@ -320,7 +320,7 @@ export class Home {
     }
 
     // Send payload to backend API endpoint
-    this.http.post('http://localhost:5000/api/posts', formData).subscribe({
+    this.service.posts(formData).subscribe({
       next: (response: any) => {
         console.log('Published successfully:', response);
         this.isUploading = false;

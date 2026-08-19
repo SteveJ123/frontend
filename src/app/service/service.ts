@@ -29,11 +29,16 @@ export interface PostsResponse {
   providedIn: 'root',
 })
 export class Service {
-  private apiUrl = 'http://localhost:5000/api/posts';
+  // private apiUrl = 'http://localhost:5000/api/';
+  private apiUrl = 'https://backend-2rgv.onrender.com/api/';
 
   constructor(private http: HttpClient) {}
 
   getPosts(): Observable<PostsResponse> {
-    return this.http.get<PostsResponse>(this.apiUrl);
+    return this.http.get<PostsResponse>(this.apiUrl + 'posts');
+  }
+
+  posts(formData: any) {
+    return this.http.post(this.apiUrl + 'posts', formData);
   }
 }
