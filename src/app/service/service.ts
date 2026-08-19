@@ -1,0 +1,39 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface MediaFile {
+  filename: string;
+  path: string;
+  mimetype: string;
+  mediaType: string;
+}
+
+export interface Post {
+  _id: string;
+  content: string;
+  tagIds: string[];
+  membershipIds: string[];
+  mediaFiles: MediaFile[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PostsResponse {
+  success: boolean;
+  message: string;
+  data: Post[];
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class Service {
+  private apiUrl = 'http://localhost:5000/api/posts';
+
+  constructor(private http: HttpClient) {}
+
+  getPosts(): Observable<PostsResponse> {
+    return this.http.get<PostsResponse>(this.apiUrl);
+  }
+}
