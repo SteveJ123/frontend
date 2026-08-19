@@ -327,6 +327,7 @@ export class Home {
         this.selectedFiles = []; // Clear attachments after success
         this.resetForm();
         this.getPostsObservable();
+        this.closeModal();
       },
       error: (error: any) => {
         console.error('Upload failed:', error);
