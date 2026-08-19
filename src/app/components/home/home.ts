@@ -326,6 +326,7 @@ export class Home {
         this.isUploading = false;
         this.selectedFiles = []; // Clear attachments after success
         this.resetForm();
+        this.getPostsObservable();
       },
       error: (error: any) => {
         console.error('Upload failed:', error);
