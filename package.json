@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "frontend",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -11,7 +11,6 @@
   "private": true,
   "packageManager": "npm@11.11.0",
   "dependencies": {
-    "@angular/animations": "^21.2.0",
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
