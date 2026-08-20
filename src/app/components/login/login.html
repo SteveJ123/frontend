@@ -1,4 +1,4 @@
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-gray-900 min-h-screen">
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-[#FF80C7] min-h-screen">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
     <img
       src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
@@ -21,7 +21,7 @@
     <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm" class="space-y-6" novalidate>
       <!-- Mobile Field -->
       <div>
-        <label for="mobile" class="block text-sm font-medium text-gray-200">Mobile Number</label>
+        <label for="mobile" class="block text-sm font-medium text-[#960000]">Mobile Number</label>
         <div class="mt-2">
           <input
             id="mobile"
@@ -32,15 +32,17 @@
             #mobileInput="ngModel"
             [(ngModel)]="loginData.mobile"
             placeholder="Enter 10-digit mobile number"
-            class="block w-full rounded-md px-3 py-2 text-base text-white bg-gray-800 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+            class="block w-full rounded-md px-3 py-2 text-base text-white bg-[#FF80C7] border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <!-- Mobile Validation Messages -->
         @if (mobileInput.invalid && (mobileInput.touched || loginForm.submitted)) {
           @if (mobileInput.errors?.['required']) {
-            <p class="mt-1.5 text-xs text-red-400">Mobile number is required.</p>
+            <p class="mt-1.5 text-xs text-[#960000 ]">Mobile number is required.</p>
           } @else if (mobileInput.errors?.['pattern']) {
-            <p class="mt-1.5 text-xs text-red-400">Please enter a valid 10-digit mobile number.</p>
+            <p class="mt-1.5 text-xs text-[#960000 ]">
+              Please enter a valid 10-digit mobile number.
+            </p>
           }
         }
       </div>
@@ -48,9 +50,9 @@
       <!-- Password Field -->
       <div>
         <div class="flex items-center justify-between">
-          <label for="password" class="block text-sm font-medium text-gray-200">Password</label>
+          <label for="password" class="block text-sm font-medium text-[#960000]">Password</label>
           <div class="text-sm">
-            <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300"
+            <a href="#" class="font-semibold text-[#960000] hover:text-indigo-300"
               >Forgot password?</a
             >
           </div>
@@ -64,7 +66,7 @@
             #passwordInput="ngModel"
             [(ngModel)]="loginData.password"
             placeholder="••••••••"
-            class="block w-full rounded-md px-3 py-2 text-base text-white bg-gray-800 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+            class="block w-full rounded-md px-3 py-2 text-base text-white bg-#FF80C7 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <!-- Password Validation Message -->
@@ -77,16 +79,16 @@
       <div>
         <button
           type="submit"
-          class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition cursor-pointer"
+          class="flex w-full justify-center rounded-md bg-[#960000] px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition cursor-pointer"
         >
           Sign in
         </button>
       </div>
     </form>
 
-    <p class="mt-10 text-center text-sm text-gray-400">
+    <p class="mt-10 text-center text-sm text-[#960000]">
       Not a member?
-      <a routerLink="/register" class="font-semibold text-indigo-400 hover:text-indigo-300"
+      <a routerLink="/register" class="font-semibold text-[#960000] hover:text-indigo-300"
         >Register here</a
       >
     </p>
