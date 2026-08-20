@@ -40,12 +40,12 @@ interface SelectedMedia {
 }
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-progress',
   imports: [CommonModule, FormsModule],
-  templateUrl: './home.html',
-  styleUrl: './home.css',
+  templateUrl: './progress.html',
+  styleUrl: './progress.css',
 })
-export class Home {
+export class Progress {
   // isSidebarOpen = signal(false);
 
   upcomingSessions: Session[] = [
