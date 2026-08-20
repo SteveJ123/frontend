@@ -354,7 +354,7 @@ export class Home {
     // Convert Windows \ to /
     const normalizedPath = path.replace(/\\/g, '/');
 
-    return `${environment}${normalizedPath}`;
+    return `${environment.apiUrl}${normalizedPath}`;
     // return `https://backend-2rgv.onrender.com/${normalizedPath}`;
   }
 
