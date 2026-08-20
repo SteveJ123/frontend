@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { apiUrl } from '../core/constants/api';
 
 export interface MediaFile {
   filename: string;
@@ -30,7 +30,7 @@ export interface PostsResponse {
   providedIn: 'root',
 })
 export class Service {
-  private apiUrl = `${environment.apiUrl}api/`;
+  private apiUrl = `${apiUrl}api/`;
   // private apiUrl = 'http://localhost:5000/api/';
   // private apiUrl = 'https://backend-2rgv.onrender.com/api/';
 

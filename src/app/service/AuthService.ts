@@ -2,14 +2,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { apiUrl } from '../core/constants/api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}api/`;
+  private apiUrl = `${apiUrl}api/`;
 
   // 1. Initialize signal by checking if token exists in localStorage
   isLoggedIn = signal<boolean>(this.hasToken());

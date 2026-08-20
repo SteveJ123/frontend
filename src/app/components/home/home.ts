@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Service } from '../../service/service';
 import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { apiUrl } from '../../core/constants/api';
 
 interface LeaderboardUser {
   rank: number;
@@ -354,7 +354,7 @@ export class Home {
     // Convert Windows \ to /
     const normalizedPath = path.replace(/\\/g, '/');
 
-    return `${environment.apiUrl}${normalizedPath}`;
+    return `${apiUrl}${normalizedPath}`;
     // return `https://backend-2rgv.onrender.com/${normalizedPath}`;
   }
 
