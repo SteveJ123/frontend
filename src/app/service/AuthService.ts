@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/`;
+  private apiUrl = `${environment.apiUrl}api/`;
 
   // 1. Initialize signal by checking if token exists in localStorage
   isLoggedIn = signal<boolean>(this.hasToken());
