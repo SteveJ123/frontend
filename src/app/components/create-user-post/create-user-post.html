@@ -18,21 +18,21 @@
       <div
         class="bg-white p-3.5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between space-x-3"
       >
-        <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 overflow-hidden">
-          <img
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-            alt="User Avatar"
-            class="w-full h-full object-cover"
+        <div class="w-full flex" (click)="openModal()">
+          <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+            <img
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+              alt="User Avatar"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <input
+            type="text"
+            placeholder="Share what's on your mind..."
+            class="w-full bg-transparent text-sm focus:outline-none text-gray-700 px-2"
           />
+          <button class="text-gray-400 hover:text-gray-600 text-xl font-light">+</button>
         </div>
-        <input
-          type="text"
-          placeholder="Share what's on your mind..."
-          class="w-full bg-transparent text-sm focus:outline-none text-gray-700"
-        />
-        <button class="text-gray-400 hover:text-gray-600 text-xl font-light" (click)="openModal()">
-          +
-        </button>
         <!-- MODAL OVERLAY BACKDROP -->
         <div
           *ngIf="isOpen()"
@@ -122,16 +122,17 @@
                       class="w-full h-full object-cover"
                     />
                   </div>
+                  <span>{{ username }}</span>
 
                   <!-- Title Input -->
-                  <div class="flex-1 min-w-0">
+                  <!-- <div class="flex-1 min-w-0">
                     <input
                       type="text"
                       [(ngModel)]="title"
                       placeholder="Add a title..."
                       class="w-full bg-transparent text-gray-900 placeholder-gray-400 text-base sm:text-lg font-semibold focus:outline-none"
                     />
-                  </div>
+                  </div> -->
                 </div>
 
                 <!-- Divider Line -->
@@ -402,22 +403,22 @@
             </div>
 
             <!-- ================= TAGS ================= -->
-            <div class="flex flex-wrap gap-2 px-3 pt-3">
+            <!-- <div class="flex flex-wrap gap-2 px-3 pt-3">
               <span
                 *ngFor="let tag of post.tagIds"
                 class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
               >
                 {{ getTagName(tag) }}
-              </span>
+              </span> -->
 
-              <!-- fallback -->
-              <span
+            <!-- fallback -->
+            <!-- <span
                 *ngIf="!post.tagIds?.length"
                 class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
               >
                 Announcements
               </span>
-            </div>
+            </div> -->
 
             <!-- ================= USER ================= -->
             <div class="flex items-center gap-3 px-3 pt-4">
@@ -430,15 +431,15 @@
 
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
-                  <h3 class="truncate text-sm font-semibold text-gray-900">Pooja Aggarwal</h3>
+                  <h3 class="truncate text-sm font-semibold text-gray-900">{{ username }}</h3>
                 </div>
 
                 <div class="flex min-w-0 items-center gap-1 text-xs text-gray-500">
-                  <span> {{ getPostAge(post.createdAt) }}--- </span>
+                  <span> {{ getPostAge(post.createdAt) }} </span>
 
-                  <span>•</span>
+                  <!-- <span>•</span> -->
 
-                  <span class="truncate">
+                  <!-- <span class="truncate">
                     Discover How Your ALH Journey Can Create Income From...
                   </span>
 
@@ -446,7 +447,7 @@
                     class="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-600"
                   >
                     +58
-                  </span>
+                  </span> -->
                 </div>
               </div>
             </div>

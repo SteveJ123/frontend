@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Service } from '../../service/service';
 import { map, Observable } from 'rxjs';
 import { apiUrl } from '../../core/constants/api';
+import { AuthService } from '../../service/AuthService';
 
 interface LeaderboardUser {
   rank: number;
@@ -128,6 +129,8 @@ export class CreateUserPost {
     private service: Service,
   ) {}
 
+  private authService = inject(AuthService);
+  username = this.authService.getUserName();
   ngOnInit(): void {
     // this.getPosts();
     this.getPostsObservable();
