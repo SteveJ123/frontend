@@ -1,20 +1,39 @@
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-gray-900 min-h-screen">
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-[#f3fab5] min-h-screen">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
     <img
       src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
       alt="Your Company"
       class="mx-auto h-10 w-auto"
     />
-    <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-white capitalize">
+    <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-[#960000] capitalize">
       Create your account
     </h2>
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm" class="space-y-6" novalidate>
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-[#960000]">Username</label>
+        <div class="mt-2">
+          <input
+            id="username"
+            type="text"
+            name="username"
+            required
+            #usernameInput="ngModel"
+            [(ngModel)]="formData.username"
+            placeholder="Enter your full name or username"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        @if (usernameInput.invalid && (usernameInput.touched || registerForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-500">Username is required.</p>
+        }
+      </div>
       <!-- Mobile Field -->
       <div>
-        <label for="mobile" class="block text-sm font-medium text-gray-200">Mobile Number</label>
+        <label for="mobile" class="block text-sm font-medium text-[#960000]">Mobile Number</label>
         <div class="mt-2">
           <input
             id="mobile"
@@ -25,7 +44,7 @@
             #mobileInput="ngModel"
             [(ngModel)]="formData.mobile"
             placeholder="Enter 10-digit mobile number"
-            class="block w-full rounded-md px-3 py-2 text-base text-white bg-gray-800 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <!-- Mobile Validation Errors -->
@@ -40,7 +59,7 @@
 
       <!-- Password Field -->
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-200">Password</label>
+        <label for="password" class="block text-sm font-medium text-[#960000]">Password</label>
         <div class="mt-2">
           <input
             id="password"
@@ -50,7 +69,7 @@
             #passwordInput="ngModel"
             [(ngModel)]="formData.password"
             placeholder="••••••••"
-            class="block w-full rounded-md px-3 py-2 text-base text-white bg-gray-800 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <!-- Password Required Validation -->
@@ -61,7 +80,7 @@
 
       <!-- Retype Password Field -->
       <div>
-        <label for="repassword" class="block text-sm font-medium text-gray-200"
+        <label for="repassword" class="block text-sm font-medium text-[#960000]"
           >Retype Password</label
         >
         <div class="mt-2">
@@ -73,7 +92,7 @@
             #repasswordInput="ngModel"
             [(ngModel)]="formData.repassword"
             placeholder="••••••••"
-            class="block w-full rounded-md px-3 py-2 text-base text-white bg-gray-800 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <!-- Retype Password & Mismatch Errors -->
@@ -91,16 +110,16 @@
       <div>
         <button
           type="submit"
-          class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition cursor-pointer"
+          class="flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#960000] hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition cursor-pointer"
         >
           Register
         </button>
       </div>
     </form>
 
-    <p class="mt-10 text-center text-sm text-gray-400">
+    <p class="mt-10 text-center text-sm text-[#960000]">
       Already a member?
-      <a routerLink="/login" class="font-semibold text-indigo-400 hover:text-indigo-300"
+      <a routerLink="/login" class="font-semibold text-[#960000 +6] hover:text-indigo-300"
         >Login here</a
       >
     </p>

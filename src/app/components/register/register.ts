@@ -12,9 +12,11 @@ import { AuthService } from '../../service/AuthService';
 })
 export class Register {
   formData = {
+    username: '',
     mobile: '',
     password: '',
     repassword: '',
+    role: 'user', // Set default user type on the frontend
   };
 
   constructor(

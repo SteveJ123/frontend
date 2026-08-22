@@ -29,6 +29,7 @@ export class Login {
 
     this.authService.login(this.loginData).subscribe({
       next: (res: any) => {
+        console.log('res login', res);
         // Save JWT token locally if needed
         if (res.token) {
           localStorage.setItem('token', res.token);
