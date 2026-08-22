@@ -9,6 +9,7 @@ export interface LoginResponse {
   message: string;
   token: string;
   role: 'user' | 'admin';
+  username: string;
 }
 
 @Injectable({
@@ -56,6 +57,7 @@ export class AuthService {
         if (response.token && response.role) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('role', response.role);
+          localStorage.setItem('username', response.username);
           this.isLoggedIn.set(true);
         }
       }),
@@ -65,6 +67,10 @@ export class AuthService {
   // 2. Retrieve saved user role from localStorage
   getUserRole(): 'admin' | 'user' {
     return (localStorage.getItem('role') as 'admin' | 'user') || 'user';
+  }
+
+  getUserName(): string | null {
+    return localStorage.getItem('username');
   }
 
   // 3. Clear storage on logout

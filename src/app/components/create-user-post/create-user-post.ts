@@ -86,6 +86,8 @@ export class CreateUserPost {
   posts: any = [];
   errorMessage!: string;
 
+  title: string = '';
+
   openModal() {
     this.isOpen.set(true);
     document.body.style.overflow = 'hidden'; // Prevents background body scrolling
