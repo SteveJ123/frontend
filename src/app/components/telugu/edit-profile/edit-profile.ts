@@ -79,22 +79,22 @@ export class EditProfile {
       //   icon: 'key',
       //   route: `${this.currentRoute}/update-contact`,
       // },
-      {
-        id: 'Create Course',
-        title: 'Create Course',
-        description: 'Create Your Courses',
-        icon: 'credit-card',
-        route: `${this.currentRoute}/create-course`,
-        role: ['admin'],
-      },
-      {
-        id: 'Course List',
-        title: 'Course List',
-        description: 'Course List',
-        icon: 'credit-card',
-        route: `${this.currentRoute}/courses-list`,
-        role: ['admin'],
-      },
+      // {
+      //   id: 'Create Course',
+      //   title: 'Create Course',
+      //   description: 'Create Your Courses',
+      //   icon: 'credit-card',
+      //   route: `${this.currentRoute}/create-course`,
+      //   role: ['admin'],
+      // },
+      // {
+      //   id: 'Course List',
+      //   title: 'Course List',
+      //   description: 'Course List',
+      //   icon: 'credit-card',
+      //   route: `${this.currentRoute}/courses-list`,
+      //   role: ['admin'],
+      // },
     ];
     this.userName = localStorage.getItem('username') || '';
     this.userId = localStorage.getItem('userId') || '';

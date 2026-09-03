@@ -4,6 +4,7 @@ import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
+import { AuthService } from '../../../service/AuthService';
 
 export interface PersonalDetails {
   _id?: string;
@@ -40,8 +41,13 @@ export class PersonalInfo {
   isLoading: boolean = false;
   isSaving: boolean = false;
   isEditing = false;
+  currentLanguage: any = '';
+  currentRoute: any = '';
+  private authService = inject(AuthService);
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId') || '';
+    this.currentLanguage = this.authService.getUserLanguage();
+    this.currentRoute = this.currentLanguage === 'English' ? 'en' : 'te';
     this.details.userId = localStorage.getItem('userId') || '';
     this.fetchDetails();
   }
@@ -111,6 +117,6 @@ export class PersonalInfo {
   }
 
   navigateToMyAccount() {
-    this.router.navigate(['edit-profile']);
+    this.router.navigate(['/', this.currentRoute, 'edit-profile']);
   }
 }
