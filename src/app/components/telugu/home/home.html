@@ -1,0 +1,1025 @@
+<div class="min-h-screen bg-[#F4F5F7] font-sans text-gray-800 flex flex-col">
+  <!-- TOP NAVIGATION BAR -->
+
+  <!-- MAIN CONTAINER LAYOUT -->
+  <div class="flex flex-1 relative max-w-[1600px] w-full mx-auto">
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <!-- <div
+      *ngIf="isSidebarOpen()"
+      (click)="toggleSidebar()"
+      class="fixed inset-0 bg-black/40 z-40 lg:hidden"
+    ></div> -->
+
+    <!-- LEFT SIDEBAR -->
+
+    <!-- CENTER CONTENT AREA -->
+    <main class="flex-1 p-4 lg:p-6 space-y-6 overflow-y-auto">
+      <!-- Share Status Card -->
+      <div
+        class="bg-white p-3.5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between space-x-3"
+      >
+        <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+          <img
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+            alt="User Avatar"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <input
+          type="text"
+          placeholder="Share what's on your mind..."
+          class="w-full bg-transparent text-sm focus:outline-none text-gray-700"
+        />
+        <button class="text-gray-400 hover:text-gray-600 text-xl font-light" (click)="openModal()">
+          +
+        </button>
+        <!-- MODAL OVERLAY BACKDROP -->
+        <div
+          *ngIf="isOpen()"
+          (click)="closeModal()"
+          class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 md:p-6 transition-opacity animate-fadeIn"
+        >
+          <!-- MODAL CARD CONTAINER -->
+          <div
+            (click)="$event.stopPropagation()"
+            class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-gray-100 transform transition-all animate-scaleUp"
+          >
+            <!-- MODAL HEADER -->
+            <div
+              class="relative px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100 flex items-center justify-center"
+            >
+              <h2 class="text-lg sm:text-xl font-bold text-gray-900 text-center">
+                Create new post
+              </h2>
+              <button
+                (click)="closeModal()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full flex items-center justify-center transition"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <!-- MODAL BODY (SCROLLABLE ON MOBILE) -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+              <!-- Tags Input Box -->
+              <div
+                class="border border-gray-200 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-1.5 w-full text-xs sm:text-sm max-h-48 overflow-y-auto pr-1"
+              >
+                <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                  <svg
+                    class="w-4 h-4 text-gray-400 shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A1.75 1.75 0 012 9.586V4.75C2 3.784 2.784 3 3.75 3h4.836c.464 0 .91.184 1.237.513l7.884 7.88zm-11.207-3.793a1 1 0 100 2 1 1 0 000-2z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <!-- Default placeholder when no tags are selected -->
+                  <ng-container *ngIf="savedTags().length === 0">
+                    <span class="text-sm text-gray-400">Selected tags will show up here.</span>
+                  </ng-container>
+
+                  <div
+                    *ngFor="let tag of savedTags()"
+                    class="bg-pink-50 border border-pink-200 text-[#88304E] text-xs font-semibold px-2.5 py-1 rounded-lg flex flex-wrap items-center space-x-1.5 animate-fadeIn max-w-[150px]"
+                  >
+                    <div>
+                      <span class="truncate">{{ tag.name }} </span>
+                      <button (click)="removeTag(tag)" class="hover:text-red-600 font-bold ml-1">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="w-6 h-6 rounded-full border border-gray-300 hover:border-gray-500 text-gray-500 flex items-center justify-center font-semibold text-sm transition shrink-0"
+                  (click)="openTagModal()"
+                >
+                  +
+                </button>
+                <div
+                  *ngIf="isTagModalOpen()"
+                  (click)="closeTagModal()"
+                  class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+                >
+                  <!-- Modal Card Container -->
+                  <div
+                    (click)="$event.stopPropagation()"
+                    class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] border border-gray-100"
+                  >
+                    <!-- Modal Header -->
+                    <div
+                      class="px-5 py-4 border-b border-gray-100 flex items-center justify-between"
+                    >
+                      <button
+                        (click)="closeTagModal()"
+                        class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition"
+                      >
+                        ←
+                      </button>
+                      <h2 class="text-lg font-bold text-gray-900">Add Tags</h2>
+                      <button
+                        (click)="closeTagModal()"
+                        class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <!-- Select All Controls -->
+                    <div class="px-5 pt-4 pb-2 flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="selectAll"
+                        [checked]="isAllSelected()"
+                        (change)="toggleSelectAll($event)"
+                        class="w-4 h-4 text-[#88304E] rounded border-gray-300 focus:ring-[#88304E] cursor-pointer"
+                      />
+                      <label
+                        for="selectAll"
+                        class="text-sm font-semibold text-gray-700 cursor-pointer select-none"
+                      >
+                        Select All
+                      </label>
+                    </div>
+
+                    <!-- Scrollable Tags List -->
+                    <div class="p-5 overflow-y-auto space-y-3 flex-1 max-h-[400px] scrollbar-thin">
+                      <div
+                        *ngFor="let tag of tempTags"
+                        (click)="toggleTag(tag)"
+                        class="border border-gray-200 hover:border-gray-300 rounded-xl p-3.5 flex items-center justify-between cursor-pointer transition bg-white select-none"
+                      >
+                        <div class="flex items-center space-x-3 text-gray-700 font-medium text-sm">
+                          <svg
+                            class="w-4 h-4 text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A1.75 1.75 0 012 9.586V4.75C2 3.784 2.784 3 3.75 3h4.836c.464 0 .91.184 1.237.513l7.884 7.88zm-11.207-3.793a1 1 0 100 2 1 1 0 000-2z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                          <span>{{ tag.name }}</span>
+                        </div>
+
+                        <input
+                          type="checkbox"
+                          [checked]="tag.selected"
+                          (click)="$event.stopPropagation()"
+                          (change)="toggleTag(tag)"
+                          class="w-4 h-4 text-[#88304E] rounded border-gray-300 focus:ring-[#88304E] cursor-pointer"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="p-4 border-t border-gray-100 flex justify-end bg-white">
+                      <button
+                        (click)="saveChanges()"
+                        class="bg-[#88304E] hover:bg-[#6e253e] text-white font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-md"
+                      >
+                        Save changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- User Profile & Dropdown Pill -->
+              <div class="flex items-center space-x-3 pt-1">
+                <div
+                  class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-300 overflow-hidden shrink-0 border border-gray-200"
+                >
+                  <img
+                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=Legala"
+                    alt="User Avatar"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-bold text-gray-900 text-sm sm:text-base leading-tight">
+                    Legala Manjula
+                  </h3>
+                  <div
+                    class="inline-flex items-center space-x-1.5 bg-gray-200 hover:bg-gray-300 px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-700 cursor-pointer transition"
+                    (click)="openMembershipModal()"
+                  >
+                    <span *ngIf="savedMemberships().length === 0">+ membership</span>
+                    <ng-container *ngIf="savedMemberships().length > 0">
+                      <span class="truncate max-w-[110px]">
+                        {{ savedMemberships()[0].name }}
+                      </span>
+
+                      <!-- Badge for Extra Selected Items -->
+                      <span
+                        *ngIf="savedMemberships().length > 1"
+                        class="font-semibold text-gray-800 ml-0.5"
+                      >
+                        +{{ savedMemberships().length - 1 }}
+                      </span>
+                    </ng-container>
+                    <svg
+                      class="w-3.5 h-3.5 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                    <!-- Membership Modal Backdrop -->
+                    <div
+                      *ngIf="isMembershipModalOpen()"
+                      (click)="closeMembershipModal()"
+                      class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+                    >
+                      <!-- Modal Dialog Window -->
+                      <div
+                        (click)="$event.stopPropagation()"
+                        class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] border border-gray-100"
+                      >
+                        <!-- Header -->
+                        <div
+                          class="px-5 py-4 border-b border-gray-100 flex items-center justify-between"
+                        >
+                          <button
+                            (click)="closeMembershipModal()"
+                            class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition"
+                          >
+                            ←
+                          </button>
+                          <h2 class="text-base font-bold text-gray-900">Select membership</h2>
+                          <button
+                            (click)="closeMembershipModal()"
+                            class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition"
+                          >
+                            ✕
+                          </button>
+                        </div>
+
+                        <!-- Subheader Text & Search Bar -->
+                        <div class="px-5 pt-4 pb-2 space-y-3">
+                          <div>
+                            <h3 class="text-sm font-semibold text-gray-800">
+                              Who can see your post?
+                            </h3>
+                            <p class="text-xs text-gray-400">
+                              Your post will appear in community feed.
+                            </p>
+                          </div>
+
+                          <!-- Search Input -->
+                          <div class="relative">
+                            <svg
+                              class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                              />
+                            </svg>
+                            <input
+                              type="text"
+                              [(ngModel)]="searchQuery"
+                              placeholder="Search membership by name"
+                              class="w-full pl-9 pr-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 text-gray-700 placeholder-gray-400"
+                            />
+                          </div>
+
+                          <!-- Select All -->
+                          <div class="flex items-center space-x-2 pt-1">
+                            <input
+                              type="checkbox"
+                              id="selectAllMemberships"
+                              [checked]="isAllMembershipsSelected()"
+                              (change)="toggleSelectAllMemberships($event)"
+                              class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer"
+                            />
+                            <label
+                              for="selectAllMemberships"
+                              class="text-xs font-medium text-gray-600 cursor-pointer select-none"
+                            >
+                              Select All
+                            </label>
+                          </div>
+                        </div>
+
+                        <!-- Scrollable Membership List -->
+                        <div class="p-5 overflow-y-auto space-y-3 flex-1 max-h-[350px]">
+                          <div
+                            *ngFor="let item of filteredMemberships()"
+                            (click)="toggleMembership(item)"
+                            class="border border-gray-200 hover:border-gray-300 rounded-xl p-3 flex items-center justify-between cursor-pointer transition bg-white select-none"
+                          >
+                            <div class="space-y-1.5">
+                              <p class="text-xs font-semibold text-gray-800">{{ item.name }}</p>
+                              <div class="flex items-center space-x-1.5">
+                                <span
+                                  class="bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-wider uppercase"
+                                  >ACTIVE</span
+                                >
+                                <span
+                                  class="bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-wider uppercase"
+                                  >ONETIME</span
+                                >
+                              </div>
+                            </div>
+
+                            <input
+                              type="checkbox"
+                              [checked]="item.selected"
+                              (click)="$event.stopPropagation()"
+                              (change)="toggleMembership(item)"
+                              class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer"
+                            />
+                          </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="p-4 border-t border-gray-100 flex justify-end bg-white">
+                          <button
+                            (click)="saveMembershipChanges()"
+                            class="bg-gray-400 hover:bg-gray-500 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow-sm"
+                          >
+                            Save changes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post Content Textarea -->
+              <div class="pt-2">
+                <textarea
+                  rows="5"
+                  [(ngModel)]="postContent"
+                  placeholder="What do you want to share about?"
+                  class="w-full bg-transparent text-gray-800 placeholder-gray-400 text-sm sm:text-base focus:outline-none resize-none"
+                >
+                </textarea>
+              </div>
+            </div>
+
+            <!-- MODAL FOOTER -->
+            <div
+              class="px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-100 flex items-center justify-between bg-white shrink-0"
+            >
+              <!-- Media Attachment Quick Tools -->
+              <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <!-- Hidden File Inputs -->
+                <input
+                  #cameraInput
+                  type="file"
+                  accept="image/*"
+                  (change)="onFileSelected($event, 'image')"
+                  class="hidden"
+                />
+                <input
+                  #videoInput
+                  type="file"
+                  accept="video/*"
+                  (change)="onFileSelected($event, 'video')"
+                  class="hidden"
+                />
+                <input
+                  #audioInput
+                  type="file"
+                  accept="audio/*"
+                  (change)="onFileSelected($event, 'audio')"
+                  class="hidden"
+                />
+                <!-- Camera -->
+                <button
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition"
+                  (click)="cameraInput.click()"
+                >
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </button>
+                <!-- Video -->
+                <button
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition"
+                  (click)="videoInput.click()"
+                >
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </button>
+                <!-- Audio -->
+                <button
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition"
+                  (click)="audioInput.click()"
+                >
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                    />
+                  </svg>
+                </button>
+                <!-- Poll -->
+                <button
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition"
+                  (click)="togglePoll()"
+                >
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                </button>
+                <!-- Selected Media Previews -->
+                <div *ngIf="selectedFiles.length > 0" class="flex flex-wrap gap-2 pt-2">
+                  <div
+                    *ngFor="let item of selectedFiles; let i = index"
+                    class="relative group rounded-xl overflow-hidden border border-gray-200 bg-gray-50 p-2 flex items-center max-w-xs"
+                  >
+                    <!-- Image Preview -->
+                    <img
+                      *ngIf="item.type === 'image'"
+                      [src]="item.previewUrl"
+                      class="w-16 h-16 object-cover rounded-lg"
+                    />
+
+                    <!-- Video Preview -->
+                    <video
+                      *ngIf="item.type === 'video'"
+                      [src]="item.previewUrl"
+                      class="w-16 h-16 object-cover rounded-lg"
+                      controls
+                    ></video>
+
+                    <!-- Audio Preview -->
+                    <div
+                      *ngIf="item.type === 'audio'"
+                      class="flex items-center space-x-2 px-2 py-1"
+                    >
+                      <span class="text-xs font-semibold text-gray-700 truncate max-w-[120px]">{{
+                        item.file.name
+                      }}</span>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button
+                      (click)="removeFile(i)"
+                      class="ml-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-600 transition"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                class="bg-[#9CA3AF] hover:bg-gray-500 text-white font-bold text-sm sm:text-base px-6 sm:px-7 py-2.5 rounded-xl transition cursor-pointer"
+                (click)="publishPost()"
+                [disabled]="isUploading"
+              >
+                <span *ngIf="!isUploading">Publish</span>
+                <span *ngIf="isUploading">Publishing...</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Hero Banner -->
+
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div
+          class="relative w-full h-56 sm:h-72 md:h-80 bg-gradient-to-r from-purple-900 via-pink-900 to-amber-900 flex items-center justify-between p-6 sm:p-10 text-white"
+        >
+          <div class="z-10 max-w-sm space-y-2">
+            <div
+              class="text-xs uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded inline-block font-bold"
+            >
+              AGELESS LIFESTYLE HUB
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-purple-200">
+              THE GLOW-UP HOUR
+            </h1>
+            <p class="text-sm text-gray-200">Join me live</p>
+          </div>
+
+          <div class="relative z-10 shrink-0 hidden sm:block">
+            <div
+              class="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 border-purple-500 overflow-hidden shadow-2xl"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400"
+                alt="Speaker"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Live Sessions Horizontal Carousel -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+        <div *ngIf="posts$ | async as posts">
+          <div *ngIf="posts.length === 0">No data</div>
+        </div>
+        <div class="w-full max-w-2xl mx-auto space-y-4" *ngIf="posts$ | async as posts">
+          <!-- POST -->
+          <article
+            *ngFor="let post of posts"
+            class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+          >
+            <!-- ================= PINNED HEADER ================= -->
+            <div class="flex items-center justify-between px-4 pt-3">
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <!-- Pin icon -->
+                <!-- <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 4l5 5-4 4v5l-2 2-2-2v-5l-4-4 5-5z"
+                  />
+                </svg> -->
+
+                <!-- <span>Pinned</span> -->
+              </div>
+
+              <!-- More -->
+              <!-- <button type="button" class="rounded-full p-1.5 text-gray-500 hover:bg-gray-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="5" cy="12" r="1.5"></circle>
+                  <circle cx="12" cy="12" r="1.5"></circle>
+                  <circle cx="19" cy="12" r="1.5"></circle>
+                </svg>
+              </button> -->
+            </div>
+
+            <!-- ================= TAGS ================= -->
+            <div class="flex flex-wrap gap-2 px-3 pt-3">
+              <span
+                *ngFor="let tag of post.tagIds"
+                class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+              >
+                {{ getTagName(tag) }}
+              </span>
+
+              <!-- fallback -->
+              <span
+                *ngIf="!post.tagIds?.length"
+                class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+              >
+                Announcements
+              </span>
+            </div>
+
+            <!-- ================= USER ================= -->
+            <div class="flex items-center gap-3 px-3 pt-4">
+              <!-- Avatar -->
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200"
+              >
+                <img src="assets/avatar.jpg" alt="User" class="h-full w-full object-cover" />
+              </div>
+
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h3 class="truncate text-sm font-semibold text-gray-900">Pooja Aggarwal</h3>
+                </div>
+
+                <div class="flex min-w-0 items-center gap-1 text-xs text-gray-500">
+                  <span> {{ getPostAge(post.createdAt) }}--- </span>
+
+                  <span>•</span>
+
+                  <span class="truncate">
+                    Discover How Your ALH Journey Can Create Income From...
+                  </span>
+
+                  <span
+                    class="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-600"
+                  >
+                    +58
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= POST CONTENT ================= -->
+            <div class="px-3 pt-3">
+              <div class="whitespace-pre-line break-words text-sm leading-7 text-gray-700">
+                {{ post.content }}
+              </div>
+
+              <!-- See more -->
+              <button
+                *ngIf="post.content?.length > 250"
+                type="button"
+                class="mt-1 text-sm font-semibold text-blue-600 hover:underline"
+              >
+                See more
+              </button>
+            </div>
+
+            <!-- ================= MEDIA ================= -->
+            <div *ngIf="post.mediaFiles?.length" class="mt-3 w-full bg-gray-100">
+              <ng-container *ngFor="let media of post.mediaFiles">
+                <!-- IMAGE -->
+                <img
+                  *ngIf="media.mediaType === 'image'"
+                  [src]="getMediaUrl(media.path)"
+                  [alt]="media.filename"
+                  class="block h-auto max-h-[650px] w-full object-cover"
+                />
+
+                <!-- VIDEO -->
+                <video
+                  *ngIf="media.mediaType === 'video'"
+                  controls
+                  class="block max-h-[650px] w-full"
+                >
+                  <source [src]="getMediaUrl(media.path)" [type]="media.mimetype" />
+                </video>
+
+                <!-- OTHER FILE -->
+                <div
+                  *ngIf="media.mediaType !== 'image' && media.mediaType !== 'video'"
+                  class="flex items-center gap-3 p-4"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M7 3h8l4 4v14H7V3z"
+                    />
+                  </svg>
+
+                  <a
+                    [href]="getMediaUrl(media.path)"
+                    target="_blank"
+                    class="break-all text-sm font-medium text-blue-600 hover:underline"
+                  >
+                    {{ media.filename }}
+                  </a>
+                </div>
+              </ng-container>
+            </div>
+
+            <!-- ================= ACTION BAR ================= -->
+            <div class="flex items-center justify-between border-t border-gray-100 px-3 py-3">
+              <!-- Left actions -->
+              <div class="flex items-center gap-5">
+                <!-- Like -->
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-red-500"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"
+                    />
+                  </svg>
+
+                  <span>4</span>
+                </button>
+
+                <!-- Comment -->
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-500"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+                    />
+                  </svg>
+                </button>
+
+                <!-- Views -->
+                <div class="flex items-center gap-1.5 text-sm text-gray-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"
+                    />
+
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+
+                  <span>130</span>
+                </div>
+              </div>
+
+              <!-- Right actions -->
+              <div class="flex items-center gap-4">
+                <!-- Share -->
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 16V3m0 0L7 8m5-5l5 5M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                    />
+                  </svg>
+
+                  <span class="hidden sm:inline"> Share </span>
+                </button>
+
+                <!-- Repost -->
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 1l4 4-4 4" />
+
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 11V9a4 4 0 014-4h14"
+                    />
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 23l-4-4 4-4" />
+
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M21 13v2a4 4 0 01-4 4H3"
+                    />
+                  </svg>
+
+                  <span class="hidden sm:inline"> Repost </span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+        <!-- <div class="flex items-center justify-between">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base">Upcoming live sessions</h3>
+          <a href="#" class="text-xs text-blue-600 font-semibold hover:underline">See all</a>
+        </div> -->
+
+        <!-- Scrollable Cards -->
+        <!-- <div class="flex space-x-4 overflow-x-auto pb-2 scrollbar-thin">
+          <div
+            *for="let session of upcomingSessions"
+            class="min-w-[280px] sm:min-w-[320px] bg-gray-50 border border-gray-200 rounded-xl p-3 flex space-x-3 items-center shrink-0"
+          >
+            <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-gray-200">
+              <img [src]="session.image" [alt]="session.title" class="w-full h-full object-cover" />
+            </div>
+            <div class="space-y-1 text-xs">
+              <div class="flex items-center space-x-1.5 text-blue-600 font-semibold text-[11px]">
+                <span>📅 {{ session.date }}</span>
+                <span>🕒 {{ session.time }}</span>
+              </div>
+              <h4 class="font-bold text-gray-900 leading-tight text-sm line-clamp-1">
+                {{ session.title }}
+              </h4>
+              <p class="text-gray-500 text-[11px]">By {{ session.instructor }}</p>
+            </div>
+          </div>
+        </div> -->
+      </div>
+
+      <!-- Feed Filter / Header -->
+      <!-- <div class="flex items-center justify-between pt-2">
+        <h2 class="text-lg font-bold text-gray-900">Feed</h2>
+        <button
+          class="p-2 text-gray-500 hover:bg-white rounded-lg transition shadow-sm border border-gray-200"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+            />
+          </svg>
+        </button>
+      </div> -->
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="hidden xl:block w-80 p-6 space-y-6 shrink-0">
+      <!-- Continue Learning Card -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-gray-800 text-sm">Continue learning</h3>
+          <a href="#" class="text-xs text-blue-600 font-semibold hover:underline">See all</a>
+        </div>
+
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-2">
+          <div class="flex items-start justify-between space-x-2">
+            <div class="space-y-1">
+              <span class="text-[10px] text-amber-600 font-bold tracking-wide uppercase"
+                >✨ Discover How Your ALH Journey C...</span
+              >
+              <h4 class="text-xs font-bold text-gray-900 leading-snug">
+                03. Discover How Your ALH Jou...
+              </h4>
+            </div>
+            <!-- Video Thumbnail -->
+            <div
+              class="w-10 h-10 bg-black rounded-lg shrink-0 flex items-center justify-center text-white text-xs"
+            >
+              ▶
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="space-y-1">
+            <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-green-500 h-full w-[96%] rounded-full"></div>
+            </div>
+            <span class="text-[10px] font-bold text-gray-500 text-right block">96%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Card -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-gray-800 text-sm">Leaderboard</h3>
+          <button class="text-gray-400 hover:text-gray-600 text-xs font-bold">ⓘ</button>
+        </div>
+
+        <!-- Time Filter Pills -->
+        <div class="bg-gray-100 p-1 rounded-xl flex text-xs font-semibold text-gray-600">
+          <button class="flex-1 py-1 bg-[#4A4E69] text-white rounded-lg text-center shadow-sm">
+            All Time
+          </button>
+          <button class="flex-1 py-1 hover:text-gray-900 text-center">Month</button>
+          <button class="flex-1 py-1 hover:text-gray-900 text-center">Week</button>
+        </div>
+
+        <!-- Users List -->
+        <div class="space-y-3">
+          <div *ngFor="let user of leaderboard" class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <!-- Rank Ribbon/Badge -->
+              <span
+                [ngClass]="{
+                  'text-amber-500 font-extrabold': user.rank === 1,
+                  'text-gray-400 font-bold': user.rank === 2,
+                  'text-amber-700 font-bold': user.rank === 3,
+                  'text-gray-600 font-semibold text-xs pl-1': user.rank > 3,
+                }"
+              >
+                {{ user.rank <= 3 ? '🏅' : user.rank }}
+              </span>
+
+              <span class="text-xs font-semibold text-gray-800">{{ user.name }}</span>
+            </div>
+
+            <div
+              class="bg-pink-50 text-[#88304E] text-[10px] font-bold px-2 py-0.5 rounded-full border border-pink-100 flex items-center space-x-1"
+            >
+              <span>📍</span>
+              <span>{{ user.points }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Help Floating Button -->
+  <button
+    class="fixed bottom-4 right-4 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-2.5 px-4 rounded-full shadow-lg flex items-center space-x-2 z-50 transition"
+  >
+    <span>✉️</span>
+    <span>Help</span>
+  </button>
+</div>

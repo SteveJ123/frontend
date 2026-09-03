@@ -1,0 +1,170 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-[#f3fab5] min-h-screen">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <img
+      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+      alt="Your Company"
+      class="mx-auto h-10 w-auto"
+    />
+    <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-[#960000] capitalize">
+      Create your account
+    </h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm" class="space-y-6" novalidate>
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-[#960000]">User Name</label>
+        <div class="mt-2">
+          <input
+            id="username"
+            type="text"
+            name="username"
+            required
+            #usernameInput="ngModel"
+            [(ngModel)]="formData.username"
+            placeholder="Enter your full name"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        @if (usernameInput.invalid && (usernameInput.touched || registerForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-500">Username is required.</p>
+        }
+      </div>
+      <!-- Mobile Field -->
+      <div>
+        <label for="mobile" class="block text-sm font-medium text-[#960000]">Mobile Number</label>
+        <div class="mt-2">
+          <input
+            id="mobile"
+            type="text"
+            name="mobile"
+            required
+            pattern="^[0-9]{10}$"
+            #mobileInput="ngModel"
+            [(ngModel)]="formData.mobile"
+            placeholder="Enter 10-digit mobile number"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        <!-- Mobile Validation Errors -->
+        @if (mobileInput.invalid && (mobileInput.touched || registerForm.submitted)) {
+          @if (mobileInput.errors?.['required']) {
+            <p class="mt-1.5 text-xs text-red-400">Mobile number is required.</p>
+          } @else if (mobileInput.errors?.['pattern']) {
+            <p class="mt-1.5 text-xs text-red-400">Please enter a valid 10-digit mobile number.</p>
+          }
+        }
+      </div>
+
+      <!-- Yoga Type Dropdown Field -->
+      <div>
+        <label for="courseType" class="block text-sm font-medium text-[#960000]"
+          >Select Yoga Course</label
+        >
+        <div class="mt-2">
+          <select
+            id="courseType"
+            name="courseType"
+            required
+            #courseTypeInput="ngModel"
+            [(ngModel)]="formData.courseType"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm cursor-pointer"
+          >
+            <option [ngValue]="'Face Yoga'" class="bg-[#f3fab5]">Face Yoga</option>
+            <option [ngValue]="'Face Yoga + Raj Yoga'" class="bg-[#f3fab5]">
+              Face Yoga + Raj Yoga
+            </option>
+          </select>
+        </div>
+        @if (courseTypeInput.invalid && (courseTypeInput.touched || registerForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-500">Please select a yoga option.</p>
+        }
+      </div>
+      <div>
+        <div class="mt-2">
+          <select
+            id="languageType"
+            name="languageType"
+            required
+            #languageTypeInput="ngModel"
+            [(ngModel)]="formData.language"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm cursor-pointer"
+          >
+            <option [ngValue]="'English'" class="bg-[#f3fab5]">English</option>
+            <option [ngValue]="'Telugu'" class="bg-[#f3fab5]">Telugu</option>
+          </select>
+        </div>
+        @if (languageTypeInput.invalid && (languageTypeInput.touched || registerForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-500">Please select a language option.</p>
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-[#960000]">Password</label>
+        <div class="mt-2">
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+            #passwordInput="ngModel"
+            [(ngModel)]="formData.password"
+            placeholder="••••••••"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        <!-- Password Required Validation -->
+        @if (passwordInput.invalid && (passwordInput.touched || registerForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-400">Password is required.</p>
+        }
+      </div>
+
+      <!-- Retype Password Field -->
+      <div>
+        <label for="repassword" class="block text-sm font-medium text-[#960000]"
+          >Retype Password</label
+        >
+        <div class="mt-2">
+          <input
+            id="repassword"
+            type="password"
+            name="repassword"
+            required
+            #repasswordInput="ngModel"
+            [(ngModel)]="formData.repassword"
+            placeholder="••••••••"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        <!-- Retype Password & Mismatch Errors -->
+        @if (repasswordInput.invalid && (repasswordInput.touched || registerForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-400">Please retype your password.</p>
+        } @else if (
+          formData.password !== formData.repassword &&
+          (repasswordInput.touched || registerForm.submitted)
+        ) {
+          <p class="mt-1.5 text-xs text-red-400">Passwords do not match.</p>
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          class="flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#960000] hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition cursor-pointer"
+        >
+          Register
+        </button>
+      </div>
+    </form>
+
+    <p class="mt-10 text-center text-sm text-[#960000]">
+      Already a member?
+      <a routerLink="/login" class="font-semibold text-[#960000 +6] hover:text-indigo-300"
+        >Login here</a
+      >
+    </p>
+  </div>
+</div>

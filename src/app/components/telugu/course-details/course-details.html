@@ -1,0 +1,175 @@
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+  <!-- Container renders when course data is loaded -->
+  <div class="max-w-5xl mx-auto space-y-6" *ngIf="course">
+    <!-- Top Action Bar for Admin (Disabled if course is missing) -->
+    <div *ngIf="userRole === 'admin'" class="flex justify-end">
+      <button
+        (click)="openModal()"
+        [disabled]="!course?._id"
+        class="w-full sm:w-auto px-5 py-2.5 bg-rose-600 hover:bg-rose-700 disabled:bg-gray-300 text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 cursor-pointer active:scale-98"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        <span>Add New Lecture</span>
+      </button>
+    </div>
+
+    <!-- Course Banner Header -->
+    <div
+      class="bg-white rounded-2xl border border-gray-100 p-6 shadow-xs flex flex-col md:flex-row gap-6 items-center"
+    >
+      <img
+        [src]="course.thumbnail"
+        [alt]="course.title"
+        class="w-full md:w-72 aspect-video object-cover rounded-xl shadow-xs"
+      />
+      <div class="space-y-2 flex-1 text-center md:text-left">
+        <span class="bg-rose-50 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-md">
+          {{ course.membershipType || 'General' }}
+        </span>
+        <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900">{{ course.title }}</h1>
+        <p class="text-xs text-gray-500 font-medium">Instructor: {{ course.instructor }}</p>
+        <p class="text-xs text-gray-600 leading-relaxed">{{ course.description }}</p>
+      </div>
+    </div>
+
+    <!-- Course Lectures List -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-xs space-y-4">
+      <h2 class="text-base font-bold text-gray-900">
+        Course Lectures ({{ course?.lectures?.length || 0 }})
+      </h2>
+
+      <!-- Available Lectures -->
+      <div class="space-y-3" *ngIf="course?.lectures && course.lectures.length > 0">
+        <div
+          *ngFor="let lecture of course.lectures; let i = index"
+          class="p-4 border border-gray-100 rounded-xl flex flex-col items-center justify-between gap-4 bg-gray-50/50 hover:bg-gray-100/50 transition-all"
+        >
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold text-gray-400">LECTURE 0{{ i + 1 }}</span>
+            <h3 class="text-xs sm:text-sm font-bold text-gray-800">{{ lecture.title }}</h3>
+          </div>
+          <div>
+            <!-- <span class="text-xs font-medium text-gray-500 shrink-0">
+              {{ lecture.duration || 'N/A' }}
+            </span> -->
+          </div>
+
+          <!-- Video Player -->
+          <div class="w-full overflow-hidden rounded-lg bg-black/5" *ngIf="lecture.videoUrl">
+            <video
+              controls
+              preload="metadata"
+              class="w-full max-h-[300px] rounded-lg object-contain"
+            >
+              <source [src]="'http://localhost:5000' + lecture.videoUrl" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="!course?.lectures || course.lectures.length === 0"
+        class="text-center py-12 border-2 border-dashed border-gray-100 rounded-xl bg-gray-50/30 space-y-3"
+      >
+        <p class="text-xs text-gray-400">No video lectures uploaded for this course yet.</p>
+        <button
+          *ngIf="userRole === 'admin'"
+          (click)="openModal()"
+          class="inline-flex items-center space-x-1 text-xs font-bold text-rose-600 hover:text-rose-700 cursor-pointer"
+        >
+          <span>+ Add the first lecture now</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-20 text-xs text-gray-400">
+    Loading course details...
+  </div>
+
+  <!-- Add Lecture Modal Popup (Only opens if course exists) -->
+  <div
+    *ngIf="isModalOpen && course"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md overflow-hidden"
+    >
+      <!-- Modal Header -->
+      <div
+        class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50"
+      >
+        <h3 class="text-sm font-bold text-gray-900">Add New Video Lecture</h3>
+        <button
+          (click)="closeModal()"
+          class="text-gray-400 hover:text-gray-600 text-lg font-bold leading-none cursor-pointer"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Lecture Title</label>
+          <input
+            type="text"
+            [(ngModel)]="videoForm.title"
+            placeholder="e.g. Introduction to Movements"
+            class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Video File</label>
+          <input
+            type="file"
+            accept="video/*"
+            (change)="onFileSelected($event)"
+            class="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-xl bg-white text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer outline-none"
+          />
+          <p *ngIf="selectedVideoFile" class="text-[10px] text-gray-500 mt-1">
+            Selected: {{ selectedVideoFile.name }}
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Duration</label>
+          <input
+            type="text"
+            [(ngModel)]="videoForm.duration"
+            placeholder="e.g. 12:45"
+            class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-gray-100 bg-gray-50/50 flex justify-end space-x-2">
+        <button
+          (click)="closeModal()"
+          class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition-all cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="addVideoLecture()"
+          [disabled]="isSubmitting || !selectedVideoFile || !videoForm.title"
+          class="px-4 py-2 bg-black hover:bg-gray-800 disabled:bg-gray-300 text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
+        >
+          {{ isSubmitting ? 'Uploading...' : 'Post Lecture' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

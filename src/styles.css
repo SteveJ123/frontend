@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+/* body {
+  font-family: 'Times New Roman', Times, serif;
+} */
+
+/* src/styles.css or src/styles.scss */
+
+/* Apply to root HTML and body */
+html,
+body {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  height: 100%;
+  margin: 0;
+}
+
+/* Ensure form controls inherit the parent font */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}

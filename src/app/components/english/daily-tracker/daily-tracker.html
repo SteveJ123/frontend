@@ -1,0 +1,148 @@
+<div class="p-4 md:p-8 max-w-7xl mx-auto font-sans">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Habits</h1>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left side: Calendar Section -->
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+      <!-- Navigation Controls -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h2 class="text-xl font-semibold text-gray-700">
+          {{ viewDate | date: 'MMMM yyyy' }}
+        </h2>
+
+        <!-- Custom Month Cell Template -->
+        <ng-template #customCellTemplate let-day="day" let-locale="locale">
+          <div class="cal-cell-top relative min-h-[100px] p-1">
+            <!-- Day Number in top-right corner -->
+            <span class="cal-day-number font-normal text-xs text-gray-400 absolute top-0.5 right-1">
+              {{ day.date | date: 'd' }}
+            </span>
+
+            <!-- Events Container -->
+            <div class="mt-12 space-y-1">
+              <div
+                *ngFor="let event of day.events"
+                class="flex items-center gap-1.5 p-1.5 rounded-r border-l-4 bg-gray-600 text-white shadow-2xs hover:bg-gray-200/60 transition cursor-pointer"
+                [style.border-left-color]="event.color?.primary || '#7e22ce'"
+              >
+                <!-- Checkmark Icon -->
+                <div
+                  class="flex-shrink-0 w-3.5 h-3.5 rounded-full bg-stone-700 text-white flex items-center justify-center text-[8px] font-bold"
+                >
+                  ✓
+                </div>
+
+                <!-- Event Title -->
+                <span class="text-[11px] leading-tight font-semibold text-white break-words">
+                  {{ event.title }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <div class="flex items-center space-x-2">
+          <button
+            mwlCalendarToday
+            [(viewDate)]="viewDate"
+            class="px-4 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition"
+          >
+            Today
+          </button>
+
+          <button
+            mwlCalendarPreviousView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            class="p-2 border rounded-md hover:bg-gray-50 text-gray-600"
+          >
+            &lt;
+          </button>
+
+          <button
+            mwlCalendarNextView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            class="p-2 border rounded-md hover:bg-gray-50 text-gray-600"
+          >
+            &gt;
+          </button>
+        </div>
+      </div>
+
+      <!-- Calendar Body View -->
+      <div [ngSwitch]="view" class="overflow-x-auto">
+        <mwl-calendar-month-view
+          *ngSwitchCase="CalendarView.Month"
+          [viewDate]="viewDate"
+          [events]="events"
+          [cellTemplate]="customCellTemplate"
+        >
+        </mwl-calendar-month-view>
+      </div>
+    </div>
+
+    <!-- Right side: Habits Action Widget -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <h3 class="text-base font-semibold text-gray-800 mb-4">Complete today's Habits (1)</h3>
+        <!-- Spinner Container -->
+        <div
+          *ngIf="isLoadingTracker"
+          class="flex flex-col items-center justify-center py-6 space-y-2"
+        >
+          <svg
+            class="animate-spin h-7 w-7 text-emerald-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span class="text-xs text-gray-400">Loading habit status...</span>
+        </div>
+
+        <!-- Today's Habit Item -->
+        <div
+          *ngIf="!isLoadingTracker"
+          class="flex items-center justify-between p-3.5 border rounded-lg bg-gray-50 border-gray-200"
+        >
+          <div class="flex items-center space-x-3">
+            <!-- Clickable Only if Today is NOT completed -->
+            <input
+              type="checkbox"
+              [checked]="isTodayCompleted"
+              [disabled]="isTodayCompleted"
+              (change)="completeTodayHabit()"
+              class="w-5 h-5 accent-emerald-600 rounded cursor-pointer disabled:cursor-not-allowed"
+            />
+
+            <div>
+              <p [class.line-through]="isTodayCompleted" class="text-sm font-medium text-gray-700">
+                Daily Practice Tracker
+              </p>
+              <span class="text-xs text-gray-400">07:00 AM</span>
+            </div>
+          </div>
+
+          <!-- Points Badge -->
+          <span class="px-2.5 py-1 text-xs font-bold text-white bg-emerald-500 rounded-full">
+            10 ALHP
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,476 @@
+<div class="pt-4">
+  <button
+    type="submit"
+    class="w-full py-3 px-6 bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
+    (click)="toggleCreateCourse()"
+  >
+    Create Course
+  </button>
+</div>
+<div *ngIf="showCreateCourse" class="min-h-screen bg-gray-50/50 p-4 sm:p-6 lg:p-8 w-full">
+  <div class="w-full mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+          Create New Course
+        </h1>
+        <p class="text-xs sm:text-sm text-gray-500">
+          Add a new course document to your MongoDB database.
+        </p>
+      </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div
+      *ngIf="successMessage"
+      class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium"
+    >
+      {{ successMessage }}
+    </div>
+    <div
+      *ngIf="errorMessage"
+      class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <!-- Responsive Grid: Form on the left, Real-time Preview on the right -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Course Form -->
+      <form
+        (ngSubmit)="onSubmit()"
+        class="lg:col-span-7 bg-white p-5 sm:p-8 rounded-2xl border border-gray-100 shadow-sm space-y-5"
+      >
+        <!-- Course Title -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+            Course Title <span class="text-rose-500">*</span>
+          </label>
+          <!-- <input
+            type="text"
+            [(ngModel)]="course.title"
+            name="title"
+            required
+            placeholder="e.g. Master Angular & Express Integration"
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all"
+          /> -->
+          <select
+            [(ngModel)]="course.title"
+            name="title"
+            required
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all cursor-pointer"
+          >
+            <option value="" disabled selected>Select Course Title</option>
+            <option value="Face Yoga">Face Yoga</option>
+            <option value="Face Yoga + Raj Yoga">Face Yoga + Raj Yoga</option>
+          </select>
+        </div>
+
+        <!-- Instructor Name -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5"
+            >Instructor Name</label
+          >
+          <input
+            type="text"
+            [(ngModel)]="course.instructor"
+            name="instructor"
+            placeholder="e.g. Pooja Agarwala"
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all"
+          />
+        </div>
+
+        <!-- Thumbnail Upload Input -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+            Thumbnail Image <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            required
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer"
+          />
+        </div>
+
+        <!-- Course Description -->
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-700 mb-1.5">
+            Description <span class="text-rose-500">*</span>
+          </label>
+          <textarea
+            [(ngModel)]="course.description"
+            name="description"
+            rows="3"
+            required
+            placeholder="Brief overview of what students will learn..."
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Section, Lecture, and Membership Row -->
+        <!-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5"
+              >Sections</label
+            >
+            <input
+              type="number"
+              min="1"
+              [(ngModel)]="course.sectionsCount"
+              name="sectionsCount"
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5"
+              >Lectures</label
+            >
+            <input
+              type="number"
+              min="1"
+              [(ngModel)]="course.lecturesCount"
+              name="lecturesCount"
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5"
+              >Membership</label
+            >
+            <select
+              [(ngModel)]="course.membershipType"
+              name="membershipType"
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            >
+              <option value="Standard">Standard</option>
+              <option value="Premium">Premium</option>
+              <option value="VIP">VIP</option>
+            </select>
+          </div>
+        </div> -->
+
+        <!-- Toggles / Checkboxes -->
+        <!-- <div class="flex flex-wrap items-center gap-6 pt-2">
+          <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              [(ngModel)]="course.isPaid"
+              name="isPaid"
+              class="w-4 h-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+            />
+            <span class="text-xs sm:text-sm font-semibold text-gray-700">Paid Course</span>
+          </label>
+
+          <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              [(ngModel)]="course.isNewCourse"
+              name="isNewCourse"
+              class="w-4 h-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+            />
+            <span class="text-xs sm:text-sm font-semibold text-gray-700">Show "NEW" Badge</span>
+          </label>
+        </div> -->
+
+        <!-- Submit Button -->
+        <div class="pt-4">
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="w-full py-3 px-6 bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
+          >
+            {{ isSubmitting ? 'Publishing Course...' : 'Publish Course' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Live Preview Section -->
+      <div class="lg:col-span-5 space-y-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Card Preview</h3>
+
+        <div
+          class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between relative"
+        >
+          <div>
+            <!-- Image Preview -->
+            <div
+              class="relative aspect-video w-full bg-gray-100 overflow-hidden flex items-center justify-center"
+            >
+              <img
+                *ngIf="imagePreview"
+                [src]="imagePreview"
+                alt="Course Preview"
+                class="w-full h-full object-cover"
+              />
+              <div *ngIf="!imagePreview" class="text-xs text-gray-400 font-medium">
+                No Thumbnail Selected
+              </div>
+
+              <span
+                *ngIf="course.isNewCourse"
+                class="absolute bottom-3 right-3 bg-rose-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+              >
+                NEW
+              </span>
+
+              <span
+                *ngIf="course.membershipType"
+                class="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-0.5 rounded-md"
+              >
+                {{ course.membershipType }}
+              </span>
+            </div>
+
+            <!-- Text Content -->
+            <div class="p-5 space-y-2">
+              <h2 class="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+                {{ course.title || 'Course Title Preview' }}
+              </h2>
+
+              <p class="text-xs font-semibold text-gray-500">
+                {{ course.instructor || 'Instructor Name' }}
+              </p>
+
+              <p class="text-xs text-gray-400">
+                {{ course.sectionsCount || 1 }} sections • {{ course.lecturesCount || 1 }} lectures
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Button -->
+          <div class="p-5 pt-0">
+            <button
+              class="w-full py-2.5 bg-black text-white text-xs font-bold rounded-xl pointer-events-none"
+            >
+              Start learning
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="min-h-screen bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Courses</h1>
+    </div>
+
+    <!-- Skeleton Loading State -->
+    <div
+      *ngIf="isLoading"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse"
+    >
+      <div
+        *ngFor="let i of [1, 2, 3]"
+        class="bg-white rounded-2xl p-4 border border-gray-100 space-y-4"
+      >
+        <div class="aspect-video bg-gray-200 rounded-xl w-full"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-10 bg-gray-200 rounded-xl w-full"></div>
+      </div>
+    </div>
+
+    <!-- Course Cards Grid -->
+    <div
+      *ngIf="!isLoading && courses.length > 0"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      <div
+        *ngFor="let course of courses"
+        class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow relative"
+      >
+        <!-- DISPLAY MODE -->
+        <div
+          *ngIf="editingCourseId !== course._id"
+          (click)="viewCourseDetails(course._id)"
+          class="cursor-pointer"
+        >
+          <div class="relative aspect-video w-full bg-gray-100 overflow-hidden">
+            <img [src]="course.thumbnail" [alt]="course.title" class="w-full h-full object-cover" />
+            <span
+              *ngIf="course.isNewCourse"
+              class="absolute bottom-3 right-3 bg-rose-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+              >NEW</span
+            >
+            <span
+              *ngIf="course.membershipType"
+              class="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-0.5 rounded-md"
+              >{{ course.membershipType }}</span
+            >
+
+            <!-- Admin Buttons -->
+            <div
+              *ngIf="userRole === 'admin'"
+              class="absolute top-3 right-3 flex items-center gap-1.5 z-10"
+            >
+              <button
+                (click)="startEditing($event, course)"
+                class="p-1.5 bg-white/90 hover:bg-white text-gray-700 hover:text-blue-600 rounded-lg shadow-sm backdrop-blur-md transition-all"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </button>
+              <button
+                (click)="openDeleteModal(course._id!)"
+                class="p-1.5 bg-white/90 hover:bg-white text-gray-700 hover:text-red-600 rounded-lg shadow-sm backdrop-blur-md transition-all"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-5 space-y-2">
+            <h2 class="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+              {{ course.title }}
+            </h2>
+            <p class="text-xs font-semibold text-gray-500">{{ course.instructor }}</p>
+            <p class="text-xs text-gray-400">
+              {{ course.sectionsCount || 1 }} sections • {{ course.lecturesCount || 1 }} lectures
+            </p>
+          </div>
+
+          <div class="p-5 pt-0">
+            <button
+              class="w-full py-2.5 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors"
+            >
+              Start learning
+            </button>
+          </div>
+        </div>
+
+        <!-- INLINE EDIT MODE -->
+        <div *ngIf="editingCourseId === course._id" class="p-5 space-y-4 bg-gray-50/50">
+          <h3 class="text-xs font-bold uppercase text-gray-700">Edit Course Details</h3>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-gray-500 mb-1">Title</label>
+            <input
+              type="text"
+              [(ngModel)]="editData.title"
+              class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-gray-500 mb-1"
+              >Instructor</label
+            >
+            <input
+              type="text"
+              [(ngModel)]="editData.instructor"
+              class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-gray-500 mb-1"
+              >Thumbnail Image</label
+            >
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onEditFileSelected($event)"
+              class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-rose-50 file:text-rose-700"
+            />
+          </div>
+
+          <!-- <label class="inline-flex items-center gap-2 cursor-pointer pt-1">
+            <input
+              type="checkbox"
+              [(ngModel)]="editData.isNewCourse"
+              class="w-3.5 h-3.5 text-rose-600 rounded border-gray-300"
+            />
+            <span class="text-xs font-semibold text-gray-700">Show "NEW" Badge</span>
+          </label> -->
+
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button
+              (click)="cancelEditing()"
+              class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              (click)="saveEdit(course)"
+              class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-all"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- TAILWIND POPUP CONFIRMATION MODAL -->
+  <div
+    *ngIf="showDeleteModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
+    >
+      <!-- Modal Header & Icon -->
+      <div class="flex items-center justify-center gap-3">
+        <div>
+          <div
+            class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </div>
+          <h3 class="text-center text-base font-bold text-gray-900">Delete</h3>
+          <!-- <p class="text-center text-xs text-gray-500 mt-0.5">This action cannot be undone.</p> -->
+        </div>
+      </div>
+
+      <!-- Modal Message -->
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Are you sure you want to permanently delete this product listing from the database?
+      </p>
+
+      <!-- Modal Actions (Cancel & OK) -->
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button
+          type="button"
+          (click)="cancelDelete()"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

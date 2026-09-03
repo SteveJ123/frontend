@@ -1,0 +1,280 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans text-gray-800">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- HEADER -->
+    <div
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5"
+    >
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+          సిఫార్సు చేయబడిన ప్రొడక్ట్
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+          అమెజాన్ మరియు భాగస్వామ్య దుకాణాల నుండి ఎంపిక చేసిన అఫిలియేట్ ఉత్పత్తులు మరియు డీల్స్‌ను
+          బ్రౌజ్ చేయండి.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span
+          class="text-xs font-semibold px-3 py-1 bg-gray-200 text-gray-700 rounded-full capitalize"
+        >
+          <!-- Role: {{ userRole }} -->
+        </span>
+      </div>
+    </div>
+
+    <!-- ADMIN CREATE / EDIT FORM -->
+    <div
+      *ngIf="userRole === 'admin'"
+      class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-gray-900">
+          {{ isEditing ? 'Edit Product Link' : 'Add New Product Link' }}
+        </h2>
+        <button
+          *ngIf="isEditing"
+          (click)="resetForm()"
+          class="text-xs font-semibold text-rose-600 hover:underline"
+        >
+          Cancel Edit
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveProduct()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Title -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Product Title</label>
+          <input
+            type="text"
+            [(ngModel)]="productForm.title"
+            name="title"
+            placeholder="e.g. Ergonomic Wireless Mouse"
+            required
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        <!-- Product URL -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1"
+            >Product Destination URL</label
+          >
+          <input
+            type="url"
+            [(ngModel)]="productForm.productUrl"
+            name="productUrl"
+            placeholder="https://amazon.com/dp/..."
+            required
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        <!-- Image URL -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Image URL</label>
+          <input
+            type="url"
+            [(ngModel)]="productForm.imageUrl"
+            name="imageUrl"
+            placeholder="https://m.media-amazon.com/images/..."
+            required
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        <!-- Price -->
+        <!-- <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Price</label>
+          <input
+            type="text"
+            [(ngModel)]="productForm.price"
+            name="price"
+            placeholder="e.g. $29.99"
+            required
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div> -->
+
+        <!-- Store Name -->
+        <!-- <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Store / Source</label>
+          <select
+            [(ngModel)]="productForm.storeName"
+            name="storeName"
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black cursor-pointer"
+          >
+            <option value="Amazon">Amazon</option>
+            <option value="Walmart">Walmart</option>
+            <option value="Best Buy">Best Buy</option>
+            <option value="Other">Other</option>
+          </select>
+        </div> -->
+
+        <!-- Form Buttons -->
+        <div class="">
+          <button
+            *ngIf="isEditing"
+            type="button"
+            (click)="resetForm()"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-xl transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="w-full sm:w-auto px-6 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl transition-all shadow-sm"
+          >
+            {{ isEditing ? 'Update Listing' : 'Publish Product' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- RESPONSIVE PRODUCT GRID -->
+    <div
+      *ngIf="products.length > 0; else emptyState"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    >
+      <div
+        *ngFor="let product of products"
+        class="bg-white rounded-2xl border border-gray-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden group"
+      >
+        <!-- Product Image Banner -->
+        <div
+          class="relative w-full h-48 sm:h-52 bg-gray-100 flex items-center justify-center overflow-hidden p-4"
+        >
+          <img
+            [src]="product.imageUrl"
+            [alt]="product.title"
+            class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+          />
+          <span
+            class="absolute top-3 left-3 bg-black/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm"
+          >
+            {{ product.storeName }}
+          </span>
+        </div>
+
+        <!-- Product Content -->
+        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+          <div>
+            <h3
+              class="text-sm font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors"
+            >
+              {{ product.title }}
+            </h3>
+            <!-- <p class="text-lg font-extrabold text-gray-900 mt-2">
+              {{ product.price }}
+            </p> -->
+          </div>
+
+          <!-- Actions -->
+          <div class="space-y-2 pt-2 border-t border-gray-100">
+            <button
+              (click)="openProduct(product.productUrl)"
+              class="w-full py-2.5 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"
+            >
+              <span>ప్రొడక్ట్ చూడండి </span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </button>
+
+            <!-- Admin Edit/Delete Controls -->
+            <div *ngIf="userRole === 'admin'" class="flex items-center gap-2 pt-1">
+              <button
+                (click)="startEditing(product)"
+                class="w-1/2 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+              >
+                మార్చు
+              </button>
+              <button
+                (click)="openDeleteModal(product._id!)"
+                class="w-1/2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+              >
+                తొలగించు
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- EMPTY STATE -->
+    <ng-template #emptyState>
+      <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+        <svg
+          class="mx-auto h-12 w-12 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+          />
+        </svg>
+        <h3 class="mt-2 text-sm font-semibold text-gray-900">No products available</h3>
+        <p class="mt-1 text-xs text-gray-500">Check back later for new updates.</p>
+      </div>
+    </ng-template>
+  </div>
+  <!-- TAILWIND POPUP CONFIRMATION MODAL -->
+  <div
+    *ngIf="showDeleteModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
+    >
+      <!-- Modal Header & Icon -->
+      <div class="flex items-center justify-center gap-3">
+        <div>
+          <div
+            class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </div>
+          <h3 class="text-center text-base font-bold text-gray-900">Delete</h3>
+          <!-- <p class="text-center text-xs text-gray-500 mt-0.5">This action cannot be undone.</p> -->
+        </div>
+      </div>
+
+      <!-- Modal Message -->
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Are you sure you want to permanently delete this product listing from the database?
+      </p>
+
+      <!-- Modal Actions (Cancel & OK) -->
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button
+          type="button"
+          (click)="cancelDelete()"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

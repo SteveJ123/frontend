@@ -1,0 +1,285 @@
+<div
+  class="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 w-full font-sans text-gray-800"
+  (click)="activeDropdownId = null"
+>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- ADMIN SCHEDULING & EDIT FORM -->
+    <div
+      *ngIf="userRole === 'admin'"
+      class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-gray-900">
+          {{ isEditing ? 'Edit Live Session' : 'Schedule New Live Session' }}
+        </h2>
+        <button
+          *ngIf="isEditing"
+          (click)="resetForm()"
+          class="text-xs font-semibold text-rose-600 hover:underline"
+        >
+          Cancel Editing
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveSession()" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Course Type Dropdown (Title) -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1"
+            >Session Title / Course Type</label
+          >
+          <select
+            [ngModel]="sessionForm.courseType"
+            (ngModelChange)="onCourseTypeChange($event)"
+            name="courseType"
+            required
+            class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer"
+          >
+            <option *ngFor="let type of courseTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Zoom / Meeting Link</label>
+          <input
+            type="url"
+            [(ngModel)]="sessionForm.meetingUrl"
+            name="meetingUrl"
+            placeholder="https://zoom.us/j/123456789"
+            required
+            class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+
+        <!-- Date Input Field -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Date</label>
+          <input
+            type="date"
+            [(ngModel)]="sessionForm.rawDate"
+            name="rawDate"
+            required
+            class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer"
+          />
+        </div>
+
+        <div class="flex gap-2">
+          <div class="w-1/2">
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Start Time</label>
+            <input
+              type="text"
+              [(ngModel)]="sessionForm.startTime"
+              name="startTime"
+              placeholder="7:00 AM"
+              required
+              class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            />
+          </div>
+          <div class="w-1/2">
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Finish Time</label>
+            <input
+              type="text"
+              [(ngModel)]="sessionForm.endTime"
+              name="endTime"
+              placeholder="8:20 AM"
+              required
+              class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            />
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 flex justify-end gap-2">
+          <button
+            *ngIf="isEditing"
+            type="button"
+            (click)="resetForm()"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-lg transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-lg transition-all"
+          >
+            {{ isEditing ? 'Update Session' : 'Add Session' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- SCHEDULE LIST -->
+    <div class="space-y-6">
+      <div *ngIf="groupedSessions.length === 0" class="space-y-3 w-full">No Session</div>
+      <div *ngFor="let group of groupedSessions" class="space-y-3">
+        <!-- Date Header Banner -->
+        <div class="bg-[#EAECEF] px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-700">
+          {{ group.date }}
+        </div>
+
+        <!-- Session Items -->
+        <div
+          *ngFor="let session of group.items"
+          class="bg-white p-4 sm:p-5 rounded-xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        >
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+            <div class="flex items-center gap-1">
+              <div>
+                <p class="text-sm sm:text-base font-extrabold text-gray-900 tracking-tight">
+                  {{ session.startTime }} – {{ session.endTime }}
+                </p>
+                <p
+                  *ngIf="session.occurrence"
+                  class="text-xs text-gray-400 flex items-center gap-1.5 mt-0.5"
+                >
+                  {{ session.occurrence.split(' ')[0] }} {{ session.occurrence.split(' ')[1] }}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h1 class="font-extrabold text-gray-900 tracking-tight">
+                {{ session.title }}
+              </h1>
+              <p class="text-xs text-gray-400 flex items-center gap-1.5 mt-0.5">
+                <!-- <span *ngIf="session.occurrence">{{ session.occurrence }}</span> -->
+                <span *ngIf="session.linkTypeNote">{{ session.linkTypeNote }}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Controls Section -->
+          <div class="flex items-center gap-2 self-end sm:self-center relative">
+            <button
+              (click)="joinSession(session.meetingUrl)"
+              class="px-5 py-2 bg-[#9B9B9B] hover:bg-gray-600 text-white font-bold text-xs rounded-lg transition-colors shadow-sm"
+            >
+              Join
+            </button>
+
+            <!-- 3 Dots Options Button -->
+            <button
+              (click)="toggleDropdown(session._id!, $event)"
+              class="p-2 bg-[#EAECEF] hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M6 12a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </button>
+
+            <!-- Dropdown Options Menu -->
+            <div
+              *ngIf="activeDropdownId === session._id"
+              class="absolute right-0 top-11 bg-white border border-gray-100 shadow-xl rounded-xl py-1 w-44 z-20"
+            >
+              <!-- Copy Link -->
+              <button
+                *ngIf="userRole === 'admin'"
+                (click)="copyLink(session.meetingUrl, session._id!, $event)"
+                class="w-full text-left px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                <span>{{ copiedSessionId === session._id ? 'Copied!' : 'Copy Link' }}</span>
+              </button>
+
+              <!-- Edit Option (Admin only) -->
+              <button
+                *ngIf="userRole === 'admin'"
+                (click)="startEditing(session, $event)"
+                class="w-full text-left px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 flex items-center gap-2 border-t border-gray-100"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+                <span>Edit Session</span>
+              </button>
+
+              <!-- Delete Option (Admin only) -->
+              <button
+                *ngIf="userRole === 'admin'"
+                (click)="openDeleteModal(session._id!)"
+                class="w-full text-left px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-gray-100"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+                <span>Delete Session</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- TAILWIND POPUP CONFIRMATION MODAL -->
+  <div
+    *ngIf="showDeleteModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
+    >
+      <!-- Modal Header & Icon -->
+      <div class="flex items-center justify-center gap-3">
+        <div>
+          <div
+            class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </div>
+          <h3 class="text-center text-base font-bold text-gray-900">Delete</h3>
+          <!-- <p class="text-center text-xs text-gray-500 mt-0.5">This action cannot be undone.</p> -->
+        </div>
+      </div>
+
+      <!-- Modal Message -->
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Are you sure you want to permanently delete this product listing from the database?
+      </p>
+
+      <!-- Modal Actions (Cancel & OK) -->
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button
+          type="button"
+          (click)="cancelDelete()"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

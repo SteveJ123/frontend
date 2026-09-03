@@ -1,0 +1,1129 @@
+<div class="min-h-screen bg-[#F4F5F7] font-sans text-gray-800 flex flex-col">
+  <!-- TOP NAVIGATION BAR -->
+
+  <!-- MAIN CONTAINER LAYOUT -->
+  <div class="flex flex-1 relative max-w-[1600px] w-full mx-auto">
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <!-- <div
+      *ngIf="isSidebarOpen()"
+      (click)="toggleSidebar()"
+      class="fixed inset-0 bg-black/40 z-40 lg:hidden"
+    ></div> -->
+
+    <!-- LEFT SIDEBAR -->
+
+    <!-- CENTER CONTENT AREA -->
+    <main class="flex-1 p-4 lg:p-6 space-y-6 overflow-y-auto">
+      <!-- Share Status Card -->
+      <div
+        class="bg-white p-3.5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between space-x-3"
+        (click)="userType !== 'user' && openModal()"
+      >
+        <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+          <img
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+            alt="User Avatar"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <input
+          type="text"
+          placeholder="Express your thoughts and feelings"
+          class="w-full bg-transparent text-sm focus:outline-none text-gray-700"
+          [disabled]="userType == 'user'"
+        />
+        <button class="text-gray-400 hover:text-gray-600 text-xl font-light">+</button>
+        <!-- MODAL OVERLAY BACKDROP -->
+        <div
+          *ngIf="isOpen()"
+          (click)="closeModal()"
+          class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 md:p-6 transition-opacity animate-fadeIn"
+        >
+          <!-- MODAL CARD CONTAINER -->
+          <div
+            (click)="$event.stopPropagation()"
+            class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-gray-100 transform transition-all animate-scaleUp"
+          >
+            <!-- MODAL HEADER -->
+            <div
+              class="relative px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100 flex items-center justify-center"
+            >
+              <h2 class="text-lg sm:text-xl font-bold text-gray-900 text-center">
+                Create new post
+              </h2>
+              <button
+                (click)="closeModal()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full flex items-center justify-center transition"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <!-- MODAL BODY (SCROLLABLE ON MOBILE) -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+              <div
+                class="bg-white rounded-xl border border-gray-200 shadow-sm transition-all focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100/60 p-4 sm:p-5 space-y-3"
+              >
+                <!-- Top Row: Avatar & Title Input -->
+                <div class="flex items-center gap-3">
+                  <!-- User Avatar -->
+                  <div
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200 shadow-xs"
+                  >
+                    <img
+                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Legala"
+                      alt="User Avatar"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span>{{ username }}</span>
+                </div>
+
+                <!-- Divider Line -->
+                <hr class="border-gray-100" />
+
+                <!-- Post Content Textarea -->
+                <div>
+                  <textarea
+                    rows="4"
+                    #postContentInput
+                    [(ngModel)]="postContent"
+                    placeholder="Express your thoughts and feelings"
+                    class="w-full bg-transparent text-gray-700 placeholder-gray-400 text-sm sm:text-base leading-relaxed focus:outline-none resize-none scrollbar-thin"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODAL FOOTER -->
+            <div
+              class="px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-100 flex items-center justify-between bg-white shrink-0"
+            >
+              <!-- Media Attachment Quick Tools -->
+              <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <div class="flex items-center space-x-1.5 sm:space-x-2">
+                  <!-- Hidden File Inputs -->
+                  <input
+                    #cameraInput
+                    type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event, 'image')"
+                    class="hidden"
+                  />
+                  <input
+                    #videoInput
+                    type="file"
+                    accept="video/*"
+                    (change)="onFileSelected($event, 'video')"
+                    class="hidden"
+                  />
+                  <input
+                    #audioInput
+                    type="file"
+                    accept="audio/*"
+                    (change)="onFileSelected($event, 'audio')"
+                    class="hidden"
+                  />
+
+                  <!-- Camera Button -->
+                  <button
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition cursor-pointer"
+                    (click)="cameraInput.click()"
+                  >
+                    <svg
+                      class="w-4 h-4 sm:w-5 sm:h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Video Button -->
+                  <button
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition cursor-pointer"
+                    (click)="videoInput.click()"
+                  >
+                    <svg
+                      class="w-4 h-4 sm:w-5 sm:h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Audio Button -->
+                  <button
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition cursor-pointer"
+                    (click)="audioInput.click()"
+                  >
+                    <svg
+                      class="w-4 h-4 sm:w-5 sm:h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Emoji Trigger & Popup Container -->
+                  <div class="relative">
+                    <button
+                      type="button"
+                      class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition cursor-pointer"
+                      (click)="toggleEmojiPicker()"
+                    >
+                      <svg
+                        class="w-4 h-4 sm:w-5 sm:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </button>
+
+                    <!-- Emoji Picker Popover -->
+                    <div
+                      *ngIf="showEmojiPicker"
+                      class="absolute bottom-12 left-0 z-50 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-gray-200 p-3 animate-fadeIn"
+                    >
+                      <!-- Popup Header -->
+                      <div
+                        class="flex items-center justify-between pb-2 mb-2 border-b border-gray-100"
+                      >
+                        <span class="text-xs font-bold text-gray-700">Select Emoji</span>
+                        <button
+                          (click)="toggleEmojiPicker()"
+                          class="text-gray-400 hover:text-gray-600 text-xs font-bold w-5 h-5 rounded-full hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          ✕
+                        </button>
+                      </div>
+
+                      <!-- Emoji Grid Collection -->
+                      <div
+                        class="grid grid-cols-6 gap-1 max-h-48 overflow-y-auto scrollbar-thin p-1"
+                      >
+                        <button
+                          *ngFor="let emoji of emojiList"
+                          (click)="selectEmoji(emoji)"
+                          class="w-8 h-8 text-lg flex items-center justify-center rounded-lg hover:bg-gray-100 transition cursor-pointer"
+                        >
+                          {{ emoji }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="selectedFiles.length > 0" class="flex flex-wrap gap-2 pt-2">
+                  <div
+                    *ngFor="let item of selectedFiles; let i = index"
+                    class="relative group rounded-xl overflow-hidden border border-gray-200 bg-gray-50 p-2 flex items-center max-w-xs"
+                  >
+                    <!-- Image Preview -->
+                    <img
+                      *ngIf="item.type === 'image'"
+                      [src]="item.previewUrl"
+                      class="w-16 h-16 object-cover rounded-lg"
+                    />
+
+                    <!-- Video Preview -->
+                    <video
+                      *ngIf="item.type === 'video'"
+                      [src]="item.previewUrl"
+                      class="w-16 h-16 object-cover rounded-lg"
+                      controls
+                    ></video>
+
+                    <!-- Audio Preview -->
+                    <div
+                      *ngIf="item.type === 'audio'"
+                      class="flex items-center space-x-2 px-2 py-1"
+                    >
+                      <span class="text-xs font-semibold text-gray-700 truncate max-w-[120px]">{{
+                        item.file.name
+                      }}</span>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button
+                      (click)="removeFile(i)"
+                      class="ml-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-600 transition"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                class="text-white font-bold text-sm sm:text-base px-6 sm:px-7 py-2.5 rounded-xl transition"
+                [ngClass]="{
+                  'bg-[#9CA3AF] cursor-not-allowed opacity-70': !postContent || isUploading,
+                  'bg-blue-600 hover:bg-blue-700 cursor-pointer': postContent && !isUploading,
+                }"
+                (click)="publishPost()"
+                [disabled]="!postContent"
+              >
+                <span *ngIf="!isUploading">Publish</span>
+                <span *ngIf="isUploading">Publishing...</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Hero Banner -->
+
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div
+          class="relative w-full h-56 sm:h-72 md:h-80 bg-gradient-to-r from-purple-900 via-pink-900 to-amber-900 flex items-center justify-between p-6 sm:p-10 text-white"
+        >
+          <div class="z-10 max-w-sm space-y-2">
+            <div
+              class="text-xs uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded inline-block font-bold"
+            >
+              AGELESS LIFESTYLE HUB
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-purple-200">
+              THE GLOW-UP HOUR
+            </h1>
+            <p class="text-sm text-gray-200">Join me live</p>
+          </div>
+
+          <div class="relative z-10 shrink-0 hidden sm:block">
+            <div
+              class="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 border-purple-500 overflow-hidden shadow-2xl"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400"
+                alt="Speaker"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Live Sessions Horizontal Carousel -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+        <div *ngIf="posts$ | async as posts">
+          <div *ngIf="posts.length === 0">No data</div>
+        </div>
+        <div class="w-full max-w-2xl mx-auto space-y-4" *ngIf="posts.length > 0">
+          <!-- POST -->
+          <article
+            *ngFor="let post of posts"
+            [id]="'post-' + post._id"
+            class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+          >
+            <!-- ================= PINNED HEADER ================= -->
+            <div class="flex items-center justify-between px-4 pt-3">
+              <div class="flex items-center gap-2 text-sm text-gray-600"></div>
+            </div>
+
+            <!-- ================= USER & ACTIONS HEADER ================= -->
+            <div class="flex items-center justify-between px-3 pt-4">
+              <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div
+                  class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200"
+                >
+                  <img src="assets/avatar.jpg" alt="User" class="h-full w-full object-cover" />
+                </div>
+
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <h3 class="truncate text-sm font-semibold text-gray-900">
+                      {{ post.userId.username }}
+                    </h3>
+                  </div>
+
+                  <div class="flex min-w-0 items-center gap-1 text-xs text-gray-500">
+                    <span> {{ getPostAge(post.createdAt) }} </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- EDIT/DELETE DROPDOWN (ONLY FOR POST OWNER) -->
+              <div *ngIf="post.userId === userId" class="relative group">
+                <button
+                  (click)="toggleMenu(post._id, $event)"
+                  class="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                  aria-haspopup="true"
+                  [aria-expanded]="activeMenuPostId === post._id"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                    />
+                  </svg>
+                </button>
+                <div
+                  *ngIf="activeMenuPostId === post._id"
+                  class="absolute right-0 w-28 bg-white border border-gray-100 rounded-xl shadow-lg z-10 py-1"
+                >
+                  <button
+                    (click)="startEditing(post)"
+                    class="w-full text-left px-4 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    (click)="openDeleteModal(post._id)"
+                    class="w-full text-left px-4 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= POST CONTENT & EDIT MODE ================= -->
+            <div class="px-3 pt-3">
+              <!-- Standard View -->
+              <div
+                *ngIf="editingPostId !== post._id"
+                class="whitespace-pre-line break-words text-sm leading-7 text-gray-700"
+              >
+                {{ post.content }}
+              </div>
+
+              <!-- See more button -->
+              <button
+                *ngIf="editingPostId !== post._id && post.content?.length > 250"
+                type="button"
+                class="mt-1 text-sm font-semibold text-blue-600 hover:underline"
+              >
+                See more
+              </button>
+
+              <!-- Edit Text Area Input (ONLY FOR POST OWNER IN EDIT MODE) -->
+              <div *ngIf="post.userId === userId && editingPostId === post._id" class="space-y-3">
+                <textarea
+                  rows="3"
+                  [(ngModel)]="editContent"
+                  class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- EDIT MODE MEDIA MANAGEMENT (ONLY FOR POST OWNER IN EDIT MODE) -->
+            <div
+              *ngIf="post.userId === userId && editingPostId === post._id"
+              class="p-3 bg-gray-50 border-t border-gray-200 space-y-3 mt-3"
+            >
+              <span class="text-xs font-bold text-gray-600">Manage Media Files</span>
+
+              <!-- 1. Existing Saved Media Attachments -->
+              <div class="flex flex-wrap gap-3">
+                <ng-container *ngFor="let media of post.mediaFiles">
+                  <div
+                    *ngIf="!isMediaRemoved(media._id)"
+                    class="relative group rounded-xl overflow-hidden border border-gray-300 w-24 h-24 bg-black/5"
+                  >
+                    <img
+                      *ngIf="media.mediaType === 'image'"
+                      [src]="getMediaUrl(media.path)"
+                      class="w-full h-full object-cover"
+                    />
+                    <video
+                      *ngIf="media.mediaType === 'video'"
+                      [src]="getMediaUrl(media.path)"
+                      class="w-full h-full object-cover"
+                    ></video>
+                    <div
+                      *ngIf="media.mediaType === 'audio'"
+                      class="w-full h-full flex items-center justify-center text-xs text-gray-600 font-bold p-1 text-center"
+                    >
+                      Audio
+                    </div>
+
+                    <button
+                      (click)="markMediaForRemoval(media._id)"
+                      class="absolute top-1 right-1 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow hover:bg-red-700 transition"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </ng-container>
+              </div>
+
+              <!-- 2. Newly Added Pending Files -->
+              <div *ngIf="newEditFiles.length > 0" class="flex flex-wrap gap-2 pt-1">
+                <div
+                  *ngFor="let item of newEditFiles; let i = index"
+                  class="relative rounded-xl overflow-hidden border border-blue-300 w-20 h-20 bg-blue-50"
+                >
+                  <img
+                    *ngIf="item.type === 'image'"
+                    [src]="item.previewUrl"
+                    class="w-full h-full object-cover"
+                  />
+                  <video
+                    *ngIf="item.type === 'video'"
+                    [src]="item.previewUrl"
+                    class="w-full h-full object-cover"
+                  ></video>
+                  <div
+                    *ngIf="item.type === 'audio'"
+                    class="w-full h-full flex items-center justify-center text-xs text-blue-800 font-bold p-1"
+                  >
+                    Audio
+                  </div>
+
+                  <button
+                    (click)="removeNewEditFile(i)"
+                    class="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3. Actions & File Pickers -->
+              <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                <div class="flex gap-2">
+                  <input
+                    #editImgInput
+                    type="file"
+                    accept="image/*"
+                    (change)="onEditFileSelected($event, 'image')"
+                    class="hidden"
+                  />
+                  <input
+                    #editVidInput
+                    type="file"
+                    accept="video/*"
+                    (change)="onEditFileSelected($event, 'video')"
+                    class="hidden"
+                  />
+                  <input
+                    #editAudInput
+                    type="file"
+                    accept="audio/*"
+                    (change)="onEditFileSelected($event, 'audio')"
+                    class="hidden"
+                  />
+
+                  <button
+                    (click)="editImgInput.click()"
+                    class="text-xs bg-gray-200 hover:bg-gray-300 px-2.5 py-1.5 rounded-lg font-medium"
+                  >
+                    📷 +Image
+                  </button>
+                  <button
+                    (click)="editVidInput.click()"
+                    class="text-xs bg-gray-200 hover:bg-gray-300 px-2.5 py-1.5 rounded-lg font-medium"
+                  >
+                    🎥 +Video
+                  </button>
+                  <button
+                    (click)="editAudInput.click()"
+                    class="text-xs bg-gray-200 hover:bg-gray-300 px-2.5 py-1.5 rounded-lg font-medium"
+                  >
+                    🎙️ +Audio
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="cancelEditing()"
+                    class="text-xs px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    (click)="saveEdit(post)"
+                    class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= READ ONLY MEDIA ================= -->
+            <div
+              *ngIf="editingPostId !== post._id && post.mediaFiles?.length"
+              class="mt-3 w-full bg-gray-100"
+            >
+              <ng-container *ngFor="let media of post.mediaFiles">
+                <!-- IMAGE -->
+                <img
+                  *ngIf="media.mediaType === 'image'"
+                  [src]="getMediaUrl(media.path)"
+                  [alt]="media.filename"
+                  class="block h-auto max-h-[650px] w-full object-cover"
+                />
+
+                <!-- VIDEO -->
+                <video
+                  *ngIf="media.mediaType === 'video'"
+                  controls
+                  class="block max-h-[650px] w-full"
+                >
+                  <source [src]="getMediaUrl(media.path)" [type]="media.mimetype" />
+                </video>
+
+                <!-- AUDIO -->
+                <audio *ngIf="media.mediaType === 'audio'" controls class="w-full p-2">
+                  <source [src]="getMediaUrl(media.path)" [type]="media.mimetype" />
+                </audio>
+
+                <!-- OTHER FILE -->
+                <div
+                  *ngIf="
+                    media.mediaType !== 'image' &&
+                    media.mediaType !== 'video' &&
+                    media.mediaType !== 'audio'
+                  "
+                  class="flex items-center gap-3 p-4"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M7 3h8l4 4v14H7V3z"
+                    />
+                  </svg>
+
+                  <a
+                    [href]="getMediaUrl(media.path)"
+                    target="_blank"
+                    class="break-all text-sm font-medium text-blue-600 hover:underline"
+                  >
+                    {{ media.filename }}
+                  </a>
+                </div>
+              </ng-container>
+            </div>
+
+            <!-- ================= ACTION BAR ================= -->
+            <div class="flex items-center justify-between border-t border-gray-100 px-3 py-3">
+              <!-- Left actions -->
+              <div class="flex items-center gap-5">
+                <!-- Like -->
+                <button
+                  type="button"
+                  (click)="toggleLike(post)"
+                  [ngClass]="{
+                    'text-red-500 font-semibold': isPostLikedByCurrentUser(post),
+                    'text-gray-600 hover:text-red-500': !isPostLikedByCurrentUser(post),
+                  }"
+                  class="flex items-center gap-1.5 text-sm transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"
+                    />
+                  </svg>
+                  <span>{{ post.likeCount || post.likes?.length || 0 }}</span>
+                </button>
+
+                <!-- Comment -->
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-500"
+                  (click)="toggleComments(post)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+                    />
+                  </svg>
+                  <span>{{ post.commentCount || 0 }}</span>
+                </button>
+
+                <!-- Views -->
+                <div class="flex items-center gap-1.5 text-sm text-gray-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"
+                    />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                  <span>{{ post.views || 0 }}</span>
+                </div>
+              </div>
+
+              <!-- Right actions -->
+              <div class="flex items-center gap-4">
+                <!-- Share -->
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 16V3m0 0L7 8m5-5l5 5M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                    />
+                  </svg>
+
+                  <span class="hidden sm:inline"> Share </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- ================= COMMENTS SECTION ================= -->
+            <div *ngIf="post.showComments" class="border-t border-gray-100 bg-white p-4 space-y-4">
+              <!-- Loading Spinner -->
+              <div
+                *ngIf="post.loadingComments; else commentsList"
+                class="flex justify-center items-center py-6"
+              >
+                <svg
+                  class="animate-spin h-4 w-4 text-[#88304E]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </div>
+
+              <!-- List of Comments -->
+              <ng-template #commentsList>
+                <div *ngFor="let comment of post.comments" class="space-y-3">
+                  <!-- Main/Parent Comment -->
+                  <div class="flex items-start gap-3">
+                    <img
+                      [src]="
+                        comment.avatar ||
+                        'https://api.dicebear.com/7.x/avataaars/svg?seed=' + comment.username
+                      "
+                      class="w-9 h-9 rounded-full object-cover shrink-0"
+                      alt="Avatar"
+                    />
+                    <div class="flex-1 text-xs space-y-1">
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-gray-900">{{
+                          comment.userId.username ? comment.userId.username : username
+                        }}</span>
+                        <span
+                          *ngIf="comment.isCreator"
+                          class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-amber-200"
+                        >
+                          CREATOR
+                        </span>
+                        <span class="text-gray-400 text-[11px]">{{
+                          comment.createdAt | date: 'short'
+                        }}</span>
+                      </div>
+                      <p class="text-gray-700 text-sm leading-relaxed">{{ comment.content }}</p>
+
+                      <button
+                        class="text-gray-500 hover:text-blue-600 font-semibold text-[11px]"
+                        (click)="setReplyTo(post, comment._id)"
+                      >
+                        Reply
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Inline Reply Input Box -->
+                  <div *ngIf="post.replyingToId === comment._id" class="ml-10 space-y-2 pt-1">
+                    <div
+                      class="flex items-center justify-between text-xs text-[#88304E] bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100"
+                    >
+                      <span
+                        >Replying to <strong>{{ comment.username }}</strong></span
+                      >
+                      <button
+                        (click)="post.replyingToId = null"
+                        class="text-[#88304E] hover:underline font-semibold"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+
+                    <div class="flex items-start gap-2.5">
+                      <div class="w-7 h-7 rounded-full bg-gray-300 shrink-0 overflow-hidden">
+                        <img
+                          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                          alt="User"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      <div
+                        class="flex-1 bg-white rounded-xl p-2.5 border border-gray-200 focus-within:border-gray-300 transition space-y-2 shadow-xs"
+                      >
+                        <textarea
+                          rows="2"
+                          [(ngModel)]="post.newCommentText"
+                          [placeholder]="'Reply to ' + comment.username + '...'"
+                          class="w-full bg-transparent text-xs text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
+                        ></textarea>
+
+                        <div class="flex items-center justify-end border-t border-gray-100 pt-1.5">
+                          <button
+                            type="button"
+                            (click)="submitComment(post)"
+                            [disabled]="!post.newCommentText?.trim()"
+                            class="text-xs font-semibold px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 transition"
+                          >
+                            Post Reply
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Nested Child Replies (Indented) -->
+                  <div
+                    *ngIf="comment.replies?.length"
+                    class="ml-10 pl-3 border-l-2 border-gray-200 space-y-3"
+                  >
+                    <div *ngFor="let reply of comment.replies" class="flex items-start gap-2.5">
+                      <img
+                        [src]="
+                          reply.avatar ||
+                          'https://api.dicebear.com/7.x/avataaars/svg?seed=' + reply.username
+                        "
+                        class="w-7 h-7 rounded-full object-cover shrink-0"
+                        alt="Avatar"
+                      />
+                      <div class="flex-1 text-xs space-y-0.5">
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold text-gray-900">{{ reply.username }}</span>
+                          <span class="text-gray-400 text-[10px]">{{
+                            reply.createdAt | date: 'short'
+                          }}</span>
+                        </div>
+                        <p class="text-gray-700 text-xs leading-relaxed">{{ reply.content }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+
+              <!-- Input Container -->
+              <div class="space-y-2 pt-2">
+                <!-- Replying Banner -->
+                <div
+                  *ngIf="post.replyingToId"
+                  class="text-xs text-blue-600 font-medium flex justify-between items-center bg-blue-50 p-2 rounded-lg border border-blue-100"
+                >
+                  <span>Replying to a comment...</span>
+                  <button
+                    (click)="post.replyingToId = null"
+                    class="text-red-500 hover:underline font-semibold"
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+                <!-- Input Box -->
+                <div class="flex items-start gap-3">
+                  <div class="w-9 h-9 rounded-full bg-gray-300 shrink-0 overflow-hidden">
+                    <img
+                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                      alt="User"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div
+                    class="flex-1 bg-gray-100 rounded-2xl p-3 border border-gray-200 focus-within:border-gray-300 focus-within:bg-white transition space-y-2"
+                  >
+                    <textarea
+                      rows="2"
+                      [(ngModel)]="post.newCommentText"
+                      placeholder="Add a comment..."
+                      class="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
+                    ></textarea>
+
+                    <div class="flex items-center justify-between pt-1 border-t border-gray-200/60">
+                      <div class="flex items-center space-x-2 text-gray-500">
+                        <button type="button" class="hover:text-gray-700 text-base">😊</button>
+                        <button type="button" class="hover:text-gray-700 text-base">📷</button>
+                      </div>
+
+                      <button
+                        type="button"
+                        (click)="submitComment(post)"
+                        [disabled]="!post.newCommentText?.trim()"
+                        class="text-gray-400 hover:text-blue-600 disabled:opacity-40 disabled:hover:text-gray-400 cursor-pointer p-1 transition"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Feed Filter / Header -->
+      <!-- <div class="flex items-center justify-between pt-2">
+        <h2 class="text-lg font-bold text-gray-900">Feed</h2>
+        <button
+          class="p-2 text-gray-500 hover:bg-white rounded-lg transition shadow-sm border border-gray-200"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+            />
+          </svg>
+        </button>
+      </div> -->
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="hidden xl:block w-80 p-6 space-y-6 shrink-0">
+      <!-- Continue Learning Card -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-gray-800 text-sm">Continue learning</h3>
+          <a href="#" class="text-xs text-blue-600 font-semibold hover:underline">See all</a>
+        </div>
+
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-2">
+          <div class="flex items-start justify-between space-x-2">
+            <div class="space-y-1">
+              <span class="text-[10px] text-amber-600 font-bold tracking-wide uppercase"
+                >✨ Discover How Your ALH Journey C...</span
+              >
+              <h4 class="text-xs font-bold text-gray-900 leading-snug">
+                03. Discover How Your ALH Jou...
+              </h4>
+            </div>
+            <!-- Video Thumbnail -->
+            <div
+              class="w-10 h-10 bg-black rounded-lg shrink-0 flex items-center justify-center text-white text-xs"
+            >
+              ▶
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="space-y-1">
+            <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-green-500 h-full w-[96%] rounded-full"></div>
+            </div>
+            <span class="text-[10px] font-bold text-gray-500 text-right block">96%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Card -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-gray-800 text-sm">Leaderboard</h3>
+          <button class="text-gray-400 hover:text-gray-600 text-xs font-bold">ⓘ</button>
+        </div>
+
+        <!-- Time Filter Pills -->
+        <div class="bg-gray-100 p-1 rounded-xl flex text-xs font-semibold text-gray-600">
+          <button class="flex-1 py-1 bg-[#4A4E69] text-white rounded-lg text-center shadow-sm">
+            All Time
+          </button>
+          <button class="flex-1 py-1 hover:text-gray-900 text-center">Month</button>
+          <button class="flex-1 py-1 hover:text-gray-900 text-center">Week</button>
+        </div>
+
+        <!-- Users List -->
+        <div class="space-y-3">
+          <div *ngFor="let user of leaderboard" class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <!-- Rank Ribbon/Badge -->
+              <span
+                [ngClass]="{
+                  'text-amber-500 font-extrabold': user.rank === 1,
+                  'text-gray-400 font-bold': user.rank === 2,
+                  'text-amber-700 font-bold': user.rank === 3,
+                  'text-gray-600 font-semibold text-xs pl-1': user.rank > 3,
+                }"
+              >
+                {{ user.rank <= 3 ? '🏅' : user.rank }}
+              </span>
+
+              <span class="text-xs font-semibold text-gray-800">{{ user.name }}</span>
+            </div>
+
+            <div
+              class="bg-pink-50 text-[#88304E] text-[10px] font-bold px-2 py-0.5 rounded-full border border-pink-100 flex items-center space-x-1"
+            >
+              <span>📍</span>
+              <span>{{ user.points }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Help Floating Button -->
+  <!-- <button
+    class="fixed bottom-4 right-4 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-2.5 px-4 rounded-full shadow-lg flex items-center space-x-2 z-50 transition"
+  >
+    <span>✉️</span>
+    <span>Help</span>
+  </button> -->
+
+  <!-- TAILWIND POPUP CONFIRMATION MODAL -->
+  <div
+    *ngIf="showDeleteModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
+    >
+      <!-- Modal Header & Icon -->
+      <div class="flex items-center justify-center gap-3">
+        <div>
+          <div
+            class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </div>
+          <h3 class="text-center text-base font-bold text-gray-900">Delete</h3>
+          <!-- <p class="text-center text-xs text-gray-500 mt-0.5">This action cannot be undone.</p> -->
+        </div>
+      </div>
+
+      <!-- Modal Message -->
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Are you sure you want to permanently delete this product listing from the database?
+      </p>
+
+      <!-- Modal Actions (Cancel & OK) -->
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button
+          type="button"
+          (click)="cancelDelete()"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

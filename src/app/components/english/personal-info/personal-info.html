@@ -1,0 +1,193 @@
+<div class="min-h-screen bg-white p-4 sm:p-8 md:p-12 font-sans">
+  <div class="max-w-6xl mx-auto space-y-8">
+    <!-- Breadcrumbs & Heading -->
+    <div class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs sm:text-sm text-gray-500 font-medium">
+        <span (click)="navigateToMyAccount()">Account</span>
+        <span>&gt;</span>
+        <span class="text-gray-900 font-semibold">Personal details</span>
+      </nav>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        Personal details
+      </h1>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start pt-4">
+      <!-- Left Side: Editable List Form -->
+      <div class="lg:col-span-7 divide-y divide-gray-100">
+        <!-- Name Row -->
+        <div class="py-5 first:pt-0">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs sm:text-sm font-semibold text-gray-500">Name</span>
+            <button
+              type="button"
+              (click)="toggleEdit('name')"
+              class="text-xs sm:text-sm font-semibold text-rose-800 hover:text-rose-900 hover:underline transition-all"
+            >
+              {{ editingField === 'name' ? 'Cancel' : 'Edit' }}
+            </button>
+          </div>
+
+          <!-- Display Mode -->
+          <div *ngIf="editingField !== 'name'" class="text-base sm:text-lg font-bold text-gray-900">
+            {{ details.name || 'Not provided' }}
+          </div>
+
+          <!-- Edit Mode -->
+          <div *ngIf="editingField === 'name'" class="mt-2 flex gap-2">
+            <input
+              type="text"
+              [(ngModel)]="details.name"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+            <button
+              (click)="saveDetails()"
+              [disabled]="isSaving"
+              class="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-all"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+
+        <!-- About You Row -->
+        <div class="py-5">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs sm:text-sm font-semibold text-gray-500">About you</span>
+            <button
+              type="button"
+              (click)="toggleEdit('aboutYou')"
+              class="text-xs sm:text-sm font-semibold text-rose-800 hover:text-rose-900 hover:underline transition-all"
+            >
+              {{ editingField === 'aboutYou' ? 'Cancel' : 'Edit' }}
+            </button>
+          </div>
+
+          <!-- Display Mode -->
+          <div
+            *ngIf="editingField !== 'aboutYou'"
+            class="text-base sm:text-lg font-bold text-gray-900"
+          >
+            {{ details.aboutYou || '' }}
+          </div>
+
+          <!-- Edit Mode -->
+          <div *ngIf="editingField === 'aboutYou'" class="mt-2 flex gap-2">
+            <textarea
+              [(ngModel)]="details.aboutYou"
+              rows="3"
+              placeholder="Tell us a little bit about yourself..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            ></textarea>
+            <button
+              (click)="saveDetails()"
+              [disabled]="isSaving"
+              class="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-all self-end"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+
+        <!-- Gender Row -->
+        <div class="py-5">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs sm:text-sm font-semibold text-gray-500">Gender</span>
+            <button
+              type="button"
+              (click)="toggleEdit('gender')"
+              class="text-xs sm:text-sm font-semibold text-rose-800 hover:text-rose-900 hover:underline transition-all"
+            >
+              {{ editingField === 'gender' ? 'Cancel' : 'Edit' }}
+            </button>
+          </div>
+
+          <!-- Display Mode -->
+          <div
+            *ngIf="editingField !== 'gender'"
+            class="text-base sm:text-lg font-bold text-gray-900"
+          >
+            {{ details.gender || 'Not specified' }}
+          </div>
+
+          <!-- Edit Mode -->
+          <div *ngIf="editingField === 'gender'" class="mt-2 flex gap-2">
+            <select
+              [(ngModel)]="details.gender"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            >
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+            <button
+              (click)="saveDetails()"
+              [disabled]="isSaving"
+              class="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-all"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+
+        <!-- Birthday Row -->
+        <div class="py-5">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs sm:text-sm font-semibold text-gray-500">Birthday</span>
+            <button
+              type="button"
+              (click)="toggleEdit('birthday')"
+              class="text-xs sm:text-sm font-semibold text-rose-800 hover:text-rose-900 hover:underline transition-all"
+            >
+              {{ editingField === 'birthday' ? 'Cancel' : 'Edit' }}
+            </button>
+          </div>
+
+          <!-- Display Mode -->
+          <div
+            *ngIf="editingField !== 'birthday'"
+            class="text-base sm:text-lg font-bold text-gray-900"
+          >
+            {{ details.birthday || '' }}
+          </div>
+
+          <!-- Edit Mode -->
+          <div *ngIf="editingField === 'birthday'" class="mt-2 flex gap-2">
+            <input
+              type="date"
+              [(ngModel)]="details.birthday"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+            <button
+              (click)="saveDetails()"
+              [disabled]="isSaving"
+              class="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-all"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Info Card -->
+      <div
+        class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-xs space-y-4"
+      >
+        <!-- Question Icon Circle -->
+        <div
+          class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-xs"
+        >
+          ?
+        </div>
+
+        <h3 class="text-lg sm:text-xl font-bold text-gray-900">Personal details</h3>
+
+        <p class="text-xs sm:text-sm text-gray-500 leading-relaxed">
+          You can add your personal information here so that we can get to know you better. Only
+          your name, picture and the 'about you' section will be visible to your audience!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

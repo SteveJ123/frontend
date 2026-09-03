@@ -1,0 +1,94 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-[#f3fab5] min-h-screen">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <img
+      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+      alt="Your Company"
+      class="mx-auto h-10 w-auto"
+    />
+    <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-[#960000] capitalize">
+      Sign in
+    </h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <!-- Server Error Alert -->
+    @if (errorMessage) {
+      <div class="mb-4 rounded-md bg-red-900/50 p-3 text-sm text-red-300 border border-red-700">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm" class="space-y-6" novalidate>
+      <!-- Mobile Field -->
+      <div>
+        <label for="mobile" class="block text-sm font-medium text-[#960000]">Mobile Number</label>
+        <div class="mt-2">
+          <input
+            id="mobile"
+            type="text"
+            name="mobile"
+            required
+            pattern="^[0-9]{10}$"
+            #mobileInput="ngModel"
+            [(ngModel)]="loginData.mobile"
+            placeholder="Enter 10-digit mobile number"
+            class="block w-full rounded-md px-3 py-2 text-base text-black border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        <!-- Mobile Validation Messages -->
+        @if (mobileInput.invalid && (mobileInput.touched || loginForm.submitted)) {
+          @if (mobileInput.errors?.['required']) {
+            <p class="mt-1.5 text-xs text-red-500">Mobile number is required.</p>
+          } @else if (mobileInput.errors?.['pattern']) {
+            <p class="mt-1.5 text-xs text-red-500">Please enter a valid 10-digit mobile number.</p>
+          }
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <div class="flex items-center justify-between">
+          <label for="password" class="block text-sm font-medium text-[#960000]">Password</label>
+          <div class="text-sm">
+            <a href="#" class="font-semibold text-[#960000] hover:text-indigo-300"
+              >Forgot password?</a
+            >
+          </div>
+        </div>
+        <div class="mt-2">
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+            #passwordInput="ngModel"
+            [(ngModel)]="loginData.password"
+            placeholder="••••••••"
+            class="block w-full rounded-md px-3 py-2 text-base text-black bg-#FF80C7 border border-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        <!-- Password Validation Message -->
+        @if (passwordInput.invalid && (passwordInput.touched || loginForm.submitted)) {
+          <p class="mt-1.5 text-xs text-red-500">Password is required.</p>
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          class="flex w-full justify-center rounded-md bg-[#960000] px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition cursor-pointer"
+        >
+          Sign in
+        </button>
+      </div>
+    </form>
+
+    <p class="mt-10 text-center text-sm text-[#960000]">
+      Not a member?
+      <a routerLink="/register" class="font-semibold text-[#960000] hover:text-indigo-300"
+        >Register here</a
+      >
+    </p>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.mat-mdc-table,
+table.mat-table {
+  width: 100% !important;
+  table-layout: auto;
+}
+
+.mat-mdc-paginator {
+  width: 100% !important;
+}
