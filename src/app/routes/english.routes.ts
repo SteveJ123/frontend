@@ -17,6 +17,7 @@ import { CourseDetails } from '.././components/english/course-details/course-det
 import { Session } from '.././components/english/session/session';
 import { Shop } from '.././components/english/shop/shop';
 import { DailyTracker } from '.././components/english/daily-tracker/daily-tracker';
+import { AdminTrackerList } from '../components/english/admin-tracker-list/admin-tracker-list';
 
 export const ENGLISH_ROUTES: Routes = [
   { path: '', redirectTo: 'community-post', pathMatch: 'full' },
@@ -94,10 +95,22 @@ export const ENGLISH_ROUTES: Routes = [
     data: { roles: ['admin', 'user'] },
   },
   {
+    path: 'daily-tracker/:id',
+    component: DailyTracker,
+    canMatch: [roleGuard],
+    data: { roles: ['admin', 'user'] },
+  },
+  {
     path: 'personal-info',
     component: PersonalInfo,
     canMatch: [roleGuard],
     data: { roles: ['admin', 'user'] },
+  },
+  {
+    path: 'admin-user-tracker',
+    component: AdminTrackerList,
+    canMatch: [roleGuard],
+    data: { roles: ['admin'] },
   },
   // { path: 'progress', component: Progress },
   { path: '**', component: Notfound },

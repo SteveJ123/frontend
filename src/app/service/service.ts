@@ -426,4 +426,12 @@ export class Service {
   deleteMember(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}support-team/${id}`);
   }
+
+  getUsersTrackerSummary(language?: string): Observable<any> {
+    let params = new HttpParams();
+    if (language) {
+      params = params.set('language', language);
+    }
+    return this.http.get<any>(`${this.apiUrl}admin-users-tracker`, { params });
+  }
 }

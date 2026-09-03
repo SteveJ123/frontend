@@ -85,7 +85,9 @@
     <!-- Right side: Habits Action Widget -->
     <div class="lg:col-span-1">
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 class="text-base font-semibold text-gray-800 mb-4">Complete today's Habits (1)</h3>
+        <h3 class="text-base font-semibold text-gray-800 mb-4" *ngIf="!id">
+          Complete today's Habits (1)
+        </h3>
         <!-- Spinner Container -->
         <div
           *ngIf="isLoadingTracker"
@@ -124,7 +126,7 @@
             <input
               type="checkbox"
               [checked]="isTodayCompleted"
-              [disabled]="isTodayCompleted"
+              [disabled]="id ? true : isTodayCompleted"
               (change)="completeTodayHabit()"
               class="w-5 h-5 accent-emerald-600 rounded cursor-pointer disabled:cursor-not-allowed"
             />

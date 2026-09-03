@@ -16,6 +16,7 @@ import {
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CustomDateFormatter } from './customDateFormatter';
 import { Service } from '../../../service/service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-daily-tracker',
@@ -66,15 +67,24 @@ export class DailyTracker implements OnInit {
   constructor(private http: HttpClient) {}
   private service = inject(Service);
   private cd = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
   isLoadingTracker: boolean = false;
+  id: any = '';
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId') || '';
-    this.fetchTrackerStatus();
+    // 1. Get the 'id' parameter from the URL snapshot or paramMap
+    this.id = this.route.snapshot.paramMap.get('id');
+
+    if (this.id) {
+      this.fetchTrackerStatus(this.id);
+    } else {
+      this.fetchTrackerStatus(this.userId);
+    }
   }
 
-  fetchTrackerStatus(): void {
+  fetchTrackerStatus(id: any): void {
     this.isLoadingTracker = true; // Show spinner
-    this.service.fetchTrackerUpdate(this.userId).subscribe({
+    this.service.fetchTrackerUpdate(id).subscribe({
       next: (res: any) => {
         console.log('res fetch', this.localTodayStr);
         if (res.message == 'Daily practice already completed for today.') {

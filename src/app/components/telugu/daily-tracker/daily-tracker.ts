@@ -18,6 +18,7 @@ import { CustomDateFormatter } from './customDateFormatter';
 import { Service } from '../../../service/service';
 import { registerLocaleData } from '@angular/common';
 import localeTe from '@angular/common/locales/te';
+import { ActivatedRoute } from '@angular/router';
 // Register Telugu locale data
 registerLocaleData(localeTe);
 @Component({
@@ -71,21 +72,33 @@ export class DailyTracker implements OnInit {
   private cd = inject(ChangeDetectorRef);
   // Set default locale ('te' for Telugu, 'en-US' for English)
   locale: string = 'te';
+  private route = inject(ActivatedRoute);
   isLoadingTracker: boolean = false;
+  id: any = '';
   ngOnInit(): void {
     this.locale = localStorage.getItem('language') === 'English' ? 'en-US' : 'te';
     this.userId = localStorage.getItem('userId') || '';
-    this.fetchTrackerStatus();
+    // this.fetchTrackerStatus();
+    this.id = this.route.snapshot.paramMap.get('id');
+
+    if (this.id) {
+      this.fetchTrackerStatus(this.id);
+    } else {
+      this.fetchTrackerStatus(this.userId);
+    }
   }
 
-  fetchTrackerStatus(): void {
+  fetchTrackerStatus(id: any): void {
     this.isLoadingTracker = true; // Show spinner
-    this.service.fetchTrackerUpdate(this.userId).subscribe({
+    this.service.fetchTrackerUpdate(id).subscribe({
       next: (res: any) => {
         if (res.message == 'Daily practice already completed for today.') {
           this.isTodayCompleted = true;
           this.generateEvent();
           this.isLoadingTracker = false; // Hide spinner
+          this.completedDates = res.completedPracticeDates || [];
+          console.log('this.completedDates', this.completedDates);
+          this.generateCalendarEvents();
           this.cd.detectChanges();
         } else {
           this.completedDates = res.completedPracticeDates || [];

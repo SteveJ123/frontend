@@ -17,6 +17,7 @@ import { CourseDetails } from '.././components/telugu/course-details/course-deta
 import { Session } from '.././components/telugu/session/session';
 import { Shop } from '.././components/telugu/shop/shop';
 import { DailyTracker } from '.././components/telugu/daily-tracker/daily-tracker';
+import { AdminTrackerList } from '../components/telugu/admin-tracker-list/admin-tracker-list';
 
 export const TELUGU_ROUTES: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -94,10 +95,22 @@ export const TELUGU_ROUTES: Routes = [
     data: { roles: ['admin', 'user'] },
   },
   {
+    path: 'daily-tracker/:id',
+    component: DailyTracker,
+    canMatch: [roleGuard],
+    data: { roles: ['admin', 'user'] },
+  },
+  {
     path: 'personal-info',
     component: PersonalInfo,
     canMatch: [roleGuard],
     data: { roles: ['admin', 'user'] },
+  },
+  {
+    path: 'admin-user-tracker',
+    component: AdminTrackerList,
+    canMatch: [roleGuard],
+    data: { roles: ['admin'] },
   },
   // { path: 'progress', component: Progress },
   { path: '**', component: Notfound },
