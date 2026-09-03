@@ -395,19 +395,35 @@ export class Service {
     return this.http.post(`${this.apiUrl}complete-today`, { userId });
   }
 
-  fetchEnSupportTeam() {
-    return this.http.get(`${this.apiUrl}en/support-team`);
+  /**
+   * GET: Fetch support team members (filtered by language)
+   */
+  getSupportTeam(language?: string): Observable<any> {
+    let params = new HttpParams();
+    if (language) {
+      params = params.set('language', language);
+    }
+    return this.http.get<any>(`${this.apiUrl}support-team`, { params });
   }
 
-  addEnSupportTeam(formData: any) {
-    return this.http.post(`${this.apiUrl}en/support-team`, formData);
+  /**
+   * POST: Create a new support team member
+   */
+  createMember(memberData: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}support-team`, memberData);
   }
 
-  updateEnSupportTeam(formId: any, formData: any) {
-    return this.http.put(`${this.apiUrl}en/support-team/${formId}`, formData);
+  /**
+   * PUT: Update an existing support team member by ID
+   */
+  updateMember(id: string, memberData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}support-team/${id}`, memberData);
   }
 
-  deleteEnSupportTeam(id: any) {
-    return this.http.delete(`${this.apiUrl}en/support-team/${id}`);
+  /**
+   * DELETE: Remove a support team member by ID
+   */
+  deleteMember(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}support-team/${id}`);
   }
 }

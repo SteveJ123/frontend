@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../../service/toast.service';
+import { Router } from '@angular/router';
+import { Service } from '../../../service/service';
 
 export interface SupportMember {
   _id?: string;
@@ -33,6 +35,13 @@ export class SupportTeam {
   showDeleteModal: boolean = false;
   constructor(private http: HttpClient) {}
 
+  private router = inject(Router);
+  private service = inject(Service);
+
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
   ngOnInit(): void {
     this.fetchTeam();
   }
@@ -42,7 +51,8 @@ export class SupportTeam {
   }
 
   fetchTeam(): void {
-    this.http.get<{ success: boolean; data: SupportMember[] }>(this.apiUrl).subscribe({
+    this.http.get<{ success: boolean; data: SupportMember[] }>(this.apiUrl);
+    this.service.getSupportTeam(this.currentRouteLanguage).subscribe({
       next: (res) => this.supportTeam.set(res.data),
       error: (err) => console.error(err),
     });
@@ -65,56 +75,43 @@ export class SupportTeam {
   }
 
   saveMember(): void {
+    let payload = {
+      ...this.formData,
+      language: this.currentRouteLanguage,
+    };
+
     if (this.isEditing && this.formData._id) {
-      this.http
-        .put<{ success: boolean; data: SupportMember }>(
-          `${this.apiUrl}/${this.formData._id}`,
-          this.formData,
-        )
-        .subscribe({
-          next: (res) => {
-            this.supportTeam.update((list) =>
-              list.map((item) => (item._id === res.data._id ? res.data : item)),
-            );
-            this.closeModal();
-            this.cancelDelete();
-            this.toastService.success('Support updated successfully!');
-          },
-          error: (err) => {
-            console.error(err);
-            this.cancelDelete();
-            this.toastService.error('Support not updated successfully!');
-          },
-        });
+      this.service.updateMember(this.formData._id, payload).subscribe({
+        next: (res) => {
+          this.supportTeam.update((list) =>
+            list.map((item) => (item._id === res.data._id ? res.data : item)),
+          );
+          this.closeModal();
+          this.cancelDelete();
+          this.toastService.success('Support updated successfully!');
+        },
+        error: (err) => {
+          console.error(err);
+          this.cancelDelete();
+          this.toastService.error('Support not updated successfully!');
+        },
+      });
     } else {
-      this.http
-        .post<{ success: boolean; data: SupportMember }>(this.apiUrl, this.formData)
-        .subscribe({
-          next: (res) => {
-            this.supportTeam.update((list) => [res.data, ...list]);
-            this.toastService.success('Support created successfully!');
-            this.closeModal();
-            this.cancelDelete();
-          },
-          error: (err) => {
-            console.error(err);
-            this.toastService.success('Support created successfully!');
-            this.cancelDelete();
-          },
-        });
+      this.service.createMember(payload).subscribe({
+        next: (res) => {
+          this.supportTeam.update((list) => [res.data, ...list]);
+          this.toastService.success('Support created successfully!');
+          this.closeModal();
+          this.cancelDelete();
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastService.success('Support created successfully!');
+          this.cancelDelete();
+        },
+      });
     }
   }
-
-  // deleteMember(id: string): void {
-  //   if (confirm('Are you sure you want to remove this support member?')) {
-  //     this.http.delete(`${this.apiUrl}/${id}`).subscribe({
-  //       next: () => {
-  //         this.supportTeam.update((list) => list.filter((item) => item._id !== id));
-  //       },
-  //       error: (err) => console.error(err),
-  //     });
-  //   }
-  // }
 
   // Opens the custom popup dialog
   openDeleteModal(id: string): void {
@@ -132,7 +129,7 @@ export class SupportTeam {
   confirmDelete(): void {
     if (!this.productToDeleteId) return;
 
-    this.http.delete(`${this.apiUrl}/${this.productToDeleteId}`).subscribe({
+    this.service.deleteMember(this.productToDeleteId).subscribe({
       next: () => {
         this.supportTeam.update((list) =>
           list.filter((item) => item._id !== this.productToDeleteId),
