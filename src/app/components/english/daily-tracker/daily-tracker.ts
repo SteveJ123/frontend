@@ -60,7 +60,7 @@ export class DailyTracker implements OnInit {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate());
+    const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
@@ -129,6 +129,7 @@ export class DailyTracker implements OnInit {
     });
   }
   generateCalendarEvents(): void {
+    console.log('this.completedDates', this.completedDates);
     this.events = this.completedDates.map((dateStr) => {
       const cleanDate = dateStr.split('T')[0];
       const [year, month, day] = cleanDate.split('-').map(Number);
@@ -150,6 +151,7 @@ export class DailyTracker implements OnInit {
       next: (res: any) => {
         console.log('res=====', res);
         this.completedDates = res.completedPracticeDates || [];
+        console.log('res.completedPracticeDates', res.completedPracticeDates);
 
         // Optimistic fallback if backend didn't append today immediately
         if (!this.completedDates.includes(this.localTodayStr)) {
