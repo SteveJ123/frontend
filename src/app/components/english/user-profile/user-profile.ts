@@ -27,13 +27,6 @@ export interface CommunityPost {
 })
 export class UserProfile {
   private apiUrl = `${apiUrl}`;
-  user = {
-    name: 'Username',
-    points: '40.96K ALHP',
-    joinedDate: '15 Dec 2025',
-    bio: 'Not added yet.',
-    avatarUrl: '',
-  };
 
   posts: any[] = [];
   data: any = {};

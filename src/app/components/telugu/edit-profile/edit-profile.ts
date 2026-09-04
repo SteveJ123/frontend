@@ -21,7 +21,7 @@ export interface SettingsOption {
   styleUrl: './edit-profile.css',
 })
 export class EditProfile {
-  private apiUrl = `${apiUrl}api/`;
+  private apiUrl = `${apiUrl}`;
   userName: string = '';
 
   curremtLanguage: any = '';
@@ -111,11 +111,13 @@ export class EditProfile {
 
   fetchPersonalDetails(): void {
     this.service.getPersonalDetails(this.userId, this.currentRouteLanguage).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         if (res.data) {
           this.userName = res.data.name || 'User';
           if (res.data.profileImage) {
-            this.profileImage = `${this.apiUrl}${res.data.profileImage}`;
+            const path = res.data.profileImage;
+            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            this.profileImage = `${this.apiUrl}${cleanedPath}`;
             this.cd.detectChanges();
           } else {
             this.isEditing = true;
@@ -142,7 +144,9 @@ export class EditProfile {
         next: (res) => {
           if (res.success && res.data.profileImage) {
             // Update UI preview with updated uploaded avatar path
-            this.profileImage = `${this.apiUrl}${res.data.profileImage}`;
+            const path = res.data.profileImage;
+            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            this.profileImage = `${this.apiUrl}${cleanedPath}`;
           }
           this.isUploading = false;
           this.toastService.success('Profile Image updated successfully!');
@@ -155,10 +159,13 @@ export class EditProfile {
       });
     } else {
       // Direct POST request for upload
+
       this.service.uploadProfileImage(this.userId, formData).subscribe({
         next: (res) => {
           if (res.success && res.data.profileImage) {
-            this.profileImage = `${this.apiUrl}${res.data.profileImage}`;
+            const path = res.data.profileImage;
+            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            this.profileImage = `${this.apiUrl}${cleanedPath}`;
             this.toastService.success('Profile Image Uploaded Succcessfully!');
           }
           this.isUploading = false;

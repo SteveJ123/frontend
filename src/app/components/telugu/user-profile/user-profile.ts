@@ -27,14 +27,7 @@ export interface CommunityPost {
   styleUrl: './user-profile.css',
 })
 export class UserProfile {
-  user = {
-    name: 'Username',
-    points: '40.96K ALHP',
-    joinedDate: '15 Dec 2025',
-    bio: 'Not added yet.',
-    avatarUrl: '',
-  };
-
+  private apiUrl = `${apiUrl}`;
   posts: any[] = [];
   data: any = {};
 
@@ -49,7 +42,14 @@ export class UserProfile {
   imageapiUrl: any = '';
   currentLanguage: any = '';
   currentRoute: any = '';
+
   private authService = inject(AuthService);
+
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
+
   ngOnInit() {
     this.imageapiUrl = apiUrl;
     this.imageapiUrl = apiUrl;
@@ -61,13 +61,16 @@ export class UserProfile {
   }
 
   fetchPersonalDetails(): void {
-    this.http.get<any>(`http://localhost:5000/api/personal-details/${this.userId}`).subscribe({
+    this.service.getPersonalDetails(this.userId, this.currentRouteLanguage).subscribe({
       next: (res) => {
         if (res.data) {
           console.log('res.data', res.data);
           this.data = res.data;
           if (res.data.profileImage) {
-            this.data.profileImage = `http://localhost:5000${res.data.profileImage}`;
+            const path = res.data.profileImage;
+            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+
+            this.data.profileImage = `${this.apiUrl}${cleanedPath}`;
             this.cd.detectChanges();
           }
         }

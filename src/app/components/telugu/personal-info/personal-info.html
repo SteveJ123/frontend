@@ -31,7 +31,7 @@
 
           <!-- Display Mode -->
           <div *ngIf="editingField !== 'name'" class="text-base sm:text-lg font-bold text-gray-900">
-            {{ details.name || 'Not provided' }}
+            {{ details.name || 'తెలపలేదు' }}
           </div>
 
           <!-- Edit Mode -->
@@ -110,7 +110,7 @@
             *ngIf="editingField !== 'gender'"
             class="text-base sm:text-lg font-bold text-gray-900"
           >
-            {{ details.gender || 'Not specified' }}
+            {{ details.gender || 'తెలపలేదు' }}
           </div>
 
           <!-- Edit Mode -->
@@ -119,9 +119,9 @@
               [(ngModel)]="details.gender"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
             >
-              <option value="Female">Female</option>
-              <option value="Male">Male</option>
-              <option value="Other">Other</option>
+              <option value="Female">స్త్రీ</option>
+              <option value="Male">పురుషుడు</option>
+              <option value="Other">ఇతర</option>
             </select>
             <button
               (click)="saveDetails()"
