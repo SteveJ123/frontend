@@ -110,7 +110,15 @@
             *ngIf="editingField !== 'gender'"
             class="text-base sm:text-lg font-bold text-gray-900"
           >
-            {{ details.gender || 'తెలపలేదు' }}
+            {{
+              details.gender === 'Male'
+                ? 'పురుషుడు'
+                : details.gender === 'Female'
+                  ? 'స్త్రీ'
+                  : details.gender === 'Other'
+                    ? 'ఇతర'
+                    : 'తెలపలేదు'
+            }}
           </div>
 
           <!-- Edit Mode -->
@@ -123,6 +131,7 @@
               <option value="Male">పురుషుడు</option>
               <option value="Other">ఇతర</option>
             </select>
+
             <button
               (click)="saveDetails()"
               [disabled]="isSaving"

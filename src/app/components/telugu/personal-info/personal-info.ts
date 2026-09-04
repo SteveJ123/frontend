@@ -67,13 +67,13 @@ export class PersonalInfo {
         if (res.success && res.data) {
           this.isEditing = true;
           this.details = res.data;
-          this.details.gender == 'Male'
-            ? 'పురుషుడు'
-            : this.details.gender === 'Female'
-              ? 'స్త్రీ'
-              : this.details.gender === 'Other'
-                ? 'ఇతర'
-                : '-';
+          // this.details.gender == 'Male'
+          //   ? 'పురుషుడు'
+          //   : this.details.gender === 'Female'
+          //     ? 'స్త్రీ'
+          //     : this.details.gender === 'Other'
+          //       ? 'ఇతర'
+          //       : '-';
           this.cd.detectChanges();
         }
         this.isLoading = false;
