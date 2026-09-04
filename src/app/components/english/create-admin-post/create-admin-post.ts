@@ -120,13 +120,13 @@ export class CreateAdminPost {
     },
   ];
 
-  leaderboard: LeaderboardUser[] = [
-    { rank: 1, name: 'Uma Maheswari Amarnath', points: '51.98K ALHP' },
-    { rank: 2, name: 'Sushma William', points: '48.57K ALHP' },
-    { rank: 3, name: 'malathi', points: '44.27K ALHP' },
-    { rank: 4, name: 'Legala Manjula', points: '39.79K ALHP' },
-    { rank: 5, name: 'Baljit', points: '38.10K ALHP' },
-  ];
+  // leaderboard: LeaderboardUser[] = [
+  //   { rank: 1, name: 'Uma Maheswari Amarnath', points: '51.98K ALHP' },
+  //   { rank: 2, name: 'Sushma William', points: '48.57K ALHP' },
+  //   { rank: 3, name: 'malathi', points: '44.27K ALHP' },
+  //   { rank: 4, name: 'Legala Manjula', points: '39.79K ALHP' },
+  //   { rank: 5, name: 'Baljit', points: '38.10K ALHP' },
+  // ];
 
   // toggleSidebar() {
   //   this.isSidebarOpen.update((v) => !v);
@@ -148,6 +148,7 @@ export class CreateAdminPost {
 
   // Track new media files added during edit
   newEditFiles: { file: File; previewUrl: string; type: string }[] = [];
+  filteredUsers: any[] = [];
 
   openModal() {
     this.isOpen.set(true);
@@ -207,10 +208,25 @@ export class CreateAdminPost {
 
   viewedPostIds: any = new Set<string>();
   userType: any = '';
+
+  // Extract active route language
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
+
+  allTimeTopper: any = [];
+  monthlyTopper: any = [];
+  weeklyTopper: any = [];
+
+  activeTab: any = 'allTime';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
     this.userType = localStorage.getItem('role') || '';
+
+    this.fetchLeaderBoard();
+
     this.getPostsObservable();
     this.route.queryParams.subscribe((params) => {
       this.targetPostId = params['postId'] || null;
@@ -225,11 +241,23 @@ export class CreateAdminPost {
     });
   }
 
-  // Extract active route language
-  get currentRouteLanguage(): string {
-    const urlSegments = this.router.url.split('/').filter(Boolean);
-    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  fetchLeaderBoard(): void {
+    this.service.getLeaderboard(this.currentRouteLanguage).subscribe({
+      next: (res) => {
+        console.log('res data', res);
+        if (res.success) {
+          this.allTimeTopper = res.allTime;
+          this.filteredUsers = this.allTimeTopper;
+          this.monthlyTopper = res.monthly;
+          this.weeklyTopper = res.weekly;
+          this.applyFilters();
+          this.cd.detectChanges();
+        }
+      },
+      error: (err) => console.error('Error fetching users summary:', err),
+    });
   }
+  applyFilters(): void {}
 
   getPostsObservable() {
     // // this.posts$ = this.service.getPosts().pipe(map((response) => response.data));
@@ -947,5 +975,20 @@ export class CreateAdminPost {
   toggleMenu(postId: string, event: Event): void {
     event.stopPropagation(); // Prevents HostListener from immediately closing the menu
     this.activeMenuPostId = this.activeMenuPostId === postId ? null : postId;
+  }
+
+  // Active tab setter
+  setActiveTab(tab: any): void {
+    this.activeTab = tab;
+    if (tab == 'alltime') {
+      alert('alltime');
+      this.filteredUsers = this.allTimeTopper;
+    } else if (tab == 'month') {
+      alert('Month');
+      this.filteredUsers = this.monthlyTopper;
+    } else {
+      alert('week');
+      this.filteredUsers = this.weeklyTopper;
+    }
   }
 }

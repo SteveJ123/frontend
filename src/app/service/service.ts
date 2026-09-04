@@ -255,6 +255,14 @@ export class Service {
     return this.http.post(`${this.apiUrl}complete-today`, { userId });
   }
 
+  getLeaderboard(language?: string): Observable<any> {
+    let params = new HttpParams();
+    if (language) {
+      params = params.set('lang', language);
+    }
+    return this.http.get<any>(`${this.apiUrl}leaderboard`, { params });
+  }
+
   /**
    * GET: Fetch support team members (filtered by language)
    */
