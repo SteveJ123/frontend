@@ -62,9 +62,6 @@ export class Service {
     return this.http.get<PostsResponse>(this.apiUrl + 'posts', { params });
   }
 
-  getEnPosts(): Observable<PostsResponse> {
-    return this.http.get<PostsResponse>(this.apiUrl + 'en/posts');
-  }
   getPostsByUserId(userId: string): Observable<PostsResponse> {
     return this.http.get<PostsResponse>(`${this.apiUrl}posts/user/${userId}`);
   }
@@ -176,10 +173,6 @@ export class Service {
 
   getUserProfile(userId: string, lang: string = 'te'): Observable<any> {
     return this.http.get(`${this.getApiUrl(lang)}personal-details/${userId}`);
-  }
-
-  getEnUserProfile(userId: any) {
-    return this.http.get(`${this.apiUrl}en/personal-details/${userId}`);
   }
 
   private getApiUrl(lang: string = 'te'): string {

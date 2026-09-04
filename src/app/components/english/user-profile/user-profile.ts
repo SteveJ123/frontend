@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Service } from '../../../service/service';
 import { apiUrl } from '../../../core/constants/api';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../service/AuthService';
 
 export interface CommunityPost {
@@ -27,6 +26,7 @@ export interface CommunityPost {
   styleUrl: './user-profile.css',
 })
 export class UserProfile {
+  private apiUrl = `${apiUrl}`;
   user = {
     name: 'Username',
     points: '40.96K ALHP',
@@ -37,35 +37,10 @@ export class UserProfile {
 
   posts: any[] = [];
   data: any = {};
-  // posts: any[] = [
-  //   {
-  //     id: '1',
-  //     author: 'Legala Manjula',
-  //     timeAgo: '13h',
-  //     category: 'Final Reflection',
-  //     weekTag: 'WEEK 8',
-  //     content: 'I noticed fewer forehead wrinkles and reduced nasolabial folds....',
-  //     likes: 4,
-  //     comments: 0,
-  //     views: 5,
-  //   },
-  //   {
-  //     id: '2',
-  //     author: 'Legala Manjula',
-  //     timeAgo: '15h',
-  //     category: 'Progress Ritual',
-  //     weekTag: 'WEEK 8',
-  //     content: '',
-  //     imageUrl: 'https://via.placeholder.com/600x400',
-  //     likes: 12,
-  //     comments: 3,
-  //     views: 24,
-  //   },
-  // ];
+
   private service = inject(Service);
   private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
-  private http = inject(HttpClient);
 
   userId = localStorage.getItem('userId') || '';
   username = localStorage.getItem('username') || '';
@@ -76,6 +51,10 @@ export class UserProfile {
   currentRoute: any = '';
   private authService = inject(AuthService);
 
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
   ngOnInit() {
     this.imageapiUrl = apiUrl;
     this.currentLanguage = this.authService.getUserLanguage();
@@ -86,13 +65,16 @@ export class UserProfile {
   }
 
   fetchPersonalDetails(): void {
-    this.http.get<any>(`http://localhost:5000/api/personal-details/${this.userId}`).subscribe({
+    this.service.getPersonalDetails(this.userId, this.currentRouteLanguage).subscribe({
       next: (res) => {
         if (res.data) {
           console.log('res.data', res.data);
           this.data = res.data;
           if (res.data.profileImage) {
-            this.data.profileImage = `http://localhost:5000${res.data.profileImage}`;
+            const path = res.data.profileImage;
+            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+
+            this.data.profileImage = `${this.apiUrl}${cleanedPath}`;
             this.cd.detectChanges();
           }
         }

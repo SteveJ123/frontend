@@ -13,6 +13,7 @@ import { SidebarService } from '../../service/SidebarService';
 import { Service } from '../../service/service';
 import { filter, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { apiUrl } from '../../core/constants/api';
 
 interface CourseOption {
   label: string;
@@ -36,6 +37,7 @@ interface NotificationItem {
   styleUrl: './header.css',
 })
 export class Header {
+  private apiUrl = `${apiUrl}`;
   language = false;
   isSidebarOpen = signal(false);
   isProfileOpen = false;
@@ -163,7 +165,9 @@ export class Header {
       next: (res: any) => {
         console.log('res profile', res);
         if (res.data && res.data.profileImage) {
-          this.profileImage = `http://localhost:5000${res.data.profileImage}`;
+          const path = res.data.profileImage;
+          const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+          this.profileImage = `${this.apiUrl}${cleanedPath}`;
           this.cdr.detectChanges();
         }
       },

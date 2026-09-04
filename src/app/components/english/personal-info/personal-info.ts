@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
 import { AuthService } from '../../../service/AuthService';
+import { Service } from '../../../service/service';
 
 export interface PersonalDetails {
   _id?: string;
@@ -13,6 +13,7 @@ export interface PersonalDetails {
   aboutYou: string;
   gender: string;
   birthday: string;
+  language: string;
 }
 
 @Component({
@@ -22,7 +23,6 @@ export interface PersonalDetails {
   styleUrl: './personal-info.css',
 })
 export class PersonalInfo {
-  private http = inject(HttpClient);
   private router = inject(Router);
   private toastService = inject(ToastService);
   private cd = inject(ChangeDetectorRef);
@@ -34,6 +34,7 @@ export class PersonalInfo {
     aboutYou: '',
     gender: '',
     birthday: '',
+    language: '',
   };
 
   // Toggle edit state per field
@@ -44,6 +45,12 @@ export class PersonalInfo {
   currentLanguage: any = '';
   currentRoute: any = '';
   private authService = inject(AuthService);
+  private service = inject(Service);
+
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId') || '';
     this.currentLanguage = this.authService.getUserLanguage();
@@ -54,7 +61,7 @@ export class PersonalInfo {
 
   fetchDetails(): void {
     this.isLoading = true;
-    this.http.get<any>(`http://localhost:5000/api/personal-details/${this.userId}`).subscribe({
+    this.service.getPersonalDetails(this.userId, this.currentRouteLanguage).subscribe({
       next: (res) => {
         console.log('res', res);
         if (res.success && res.data) {
@@ -77,42 +84,42 @@ export class PersonalInfo {
 
   saveDetails(): void {
     this.isSaving = true;
+    this.details = {
+      ...this.details,
+      language: this.currentRouteLanguage,
+    };
     if (this.isEditing) {
-      this.http
-        .put<any>(`http://localhost:5000/api/personal-details/${this.userId}`, this.details)
-        .subscribe({
-          next: (res) => {
-            this.isSaving = false;
-            console.log('res', res);
-            if (res.success) {
-              this.toastService.success(`${this.editingField} field updated successfully!`);
-              this.editingField = null;
-            }
-          },
-          error: (err) => {
-            console.error('Error saving personal details:', err);
-            this.isSaving = false;
-            this.toastService.error(`${this.editingField} field not updated successfully!`);
-          },
-        });
+      this.service.updatePersonalDetails(this.userId, this.details).subscribe({
+        next: (res) => {
+          this.isSaving = false;
+          console.log('res', res);
+          if (res.success) {
+            this.toastService.success(`${this.editingField} field updated successfully!`);
+            this.editingField = null;
+          }
+        },
+        error: (err) => {
+          console.error('Error saving personal details:', err);
+          this.isSaving = false;
+          this.toastService.error(`${this.editingField} field not updated successfully!`);
+        },
+      });
     } else {
-      this.http
-        .post<any>(`http://localhost:5000/api/personal-details/${this.userId}`, this.details)
-        .subscribe({
-          next: (res) => {
-            this.isSaving = false;
-            console.log('res', res);
-            if (res.success) {
-              this.toastService.success(`${this.editingField} field updated successfully!`);
-              this.editingField = null;
-            }
-          },
-          error: (err) => {
-            console.error('Error saving personal details:', err);
-            this.isSaving = false;
-            this.toastService.error(`${this.editingField} field not updated successfully!`);
-          },
-        });
+      this.service.updatePersonalDetails(this.userId, this.details).subscribe({
+        next: (res) => {
+          this.isSaving = false;
+          console.log('res', res);
+          if (res.success) {
+            this.toastService.success(`${this.editingField} field updated successfully!`);
+            this.editingField = null;
+          }
+        },
+        error: (err) => {
+          console.error('Error saving personal details:', err);
+          this.isSaving = false;
+          this.toastService.error(`${this.editingField} field not updated successfully!`);
+        },
+      });
     }
   }
 
