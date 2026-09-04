@@ -283,7 +283,7 @@ export class CreateUserPost {
     // Record view in memory immediately to avoid duplicates
     this.viewedPostIds.add(post._id);
 
-    this.service.registerEnView(post._id).subscribe({
+    this.service.registerView(post._id).subscribe({
       next: (res: any) => {
         if (res.success) {
           post.views = res.views;
@@ -312,7 +312,7 @@ export class CreateUserPost {
     }
 
     // Sync with backend without reloading the entire posts$ stream
-    this.service.toggleEnLike(post._id, this.userId).subscribe({
+    this.service.toggleLike(post._id, this.userId).subscribe({
       next: (res: any) => {
         if (res.success) {
           post.likeCount = res.likeCount;

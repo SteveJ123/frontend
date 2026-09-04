@@ -70,24 +70,12 @@ export class Service {
     return this.http.post(this.apiUrl + 'posts', formData);
   }
 
-  enposts(formData: any) {
-    return this.http.post(this.apiUrl + 'en/posts', formData);
-  }
-
   registerView(postId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}posts/${postId}/view`, {});
   }
 
-  registerEnView(postId: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}em/posts/${postId}/view`, {});
-  }
-
   toggleLike(postId: string, userId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}posts/${postId}/like`, { userId });
-  }
-
-  toggleEnLike(postId: string, userId: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}en/posts/${postId}/like`, { userId });
   }
 
   getPostComments(postId: any) {
@@ -97,49 +85,6 @@ export class Service {
   postComments(commentPayload: any) {
     return this.http.post(`${this.apiUrl}comments`, commentPayload);
   }
-
-  // getCourseList(courseType: any, role: any) {
-  //   // return this.http.get(`${this.apiUrl}courses?search=${encodeURIComponent(url)}`);
-  //   let params = new HttpParams();
-
-  //   if (courseType) {
-  //     params = params.set('courseType', courseType);
-  //   }
-  //   if (role) {
-  //     params = params.set('role', role);
-  //   }
-
-  //   return this.http.get(`${this.apiUrl}courses`, { params });
-  // }
-
-  // createCourse(formData: any) {
-  //   return this.http.post(`${this.apiUrl}courses`, formData);
-  // }
-
-  // updateCourse(id: string, formData: any): Observable<any> {
-  //   return this.http.put<any>(`${this.apiUrl}courses/${id}`, formData);
-  // }
-
-  // /**
-  //  * Deletes a course by ID (backend will automatically unlink the thumbnail file).
-  //  */
-  // deleteCourse(id: string): Observable<any> {
-  //   return this.http.delete<any>(`${this.apiUrl}courses/${id}`);
-  // }
-
-  // getUserNotifications(userId: any) {
-  //   const params = new HttpParams().set('userId', userId);
-  //   return this.http.get(`${this.apiUrl}notifications`, { params });
-  // }
-
-  // getUserEnNotifications(userId: any) {
-  //   const params = new HttpParams().set('userId', userId);
-  //   return this.http.get(`${this.apiUrl}en/notifications`, { params });
-  // }
-
-  // getUserProfile(userId: any) {
-  //   return this.http.get(`${this.apiUrl}personal-details/${userId}`);
-  // }
 
   getCourses(language?: string, courseType?: string, role?: string): Observable<any> {
     let params = new HttpParams();
@@ -171,9 +116,9 @@ export class Service {
     return this.http.delete<any>(`${this.apiUrl}courses/${id}`);
   }
 
-  getUserProfile(userId: string, lang: string = 'te'): Observable<any> {
-    return this.http.get(`${this.getApiUrl(lang)}personal-details/${userId}`);
-  }
+  // getUserProfile(userId: string, lang: string = 'te'): Observable<any> {
+  //   return this.http.get(`${this.getApiUrl(lang)}personal-details/${userId}`);
+  // }
 
   private getApiUrl(lang: string = 'te'): string {
     const isEnglish =
@@ -183,13 +128,12 @@ export class Service {
 
   // --- NOTIFICATION API ENDPOINTS ---
 
-  fetchNotifications(userId: string, lang: string = 'te'): void {
+  fetchNotifications(userId: string): void {
     if (!userId) return;
     const params = new HttpParams().set('userId', userId);
-    const endpoint = `${this.getApiUrl(lang)}notifications`;
-
-    this.http.get<any>(endpoint, { params }).subscribe({
+    this.http.get<any>(`${this.apiUrl}notifications`, { params }).subscribe({
       next: (res) => {
+        console.log('res-----', res.data);
         const list = res.data || [];
         const unread = list.filter((n: any) => !n.isRead).length;
         this.notificationsSubject.next(list);
@@ -198,67 +142,6 @@ export class Service {
       error: (err) => console.error('Failed to load notifications', err),
     });
   }
-
-  getUserNotifications(userId: string, lang: string = 'te'): Observable<any> {
-    const params = new HttpParams().set('userId', userId);
-    return this.http.get(`${this.getApiUrl(lang)}notifications`, { params });
-  }
-
-  notificationsUpdateRead(notificationId: string, lang: string = 'te'): Observable<any> {
-    const endpoint = `${this.getApiUrl(lang)}notifications/${notificationId}/read`;
-
-    return this.http.patch(endpoint, {}).pipe(
-      tap(() => {
-        const currentList = this.notificationsSubject.value.map((item) => {
-          if (item._id === notificationId) {
-            return { ...item, isRead: true };
-          }
-          return item;
-        });
-
-        const newUnreadCount = currentList.filter((n) => !n.isRead).length;
-
-        this.notificationsSubject.next(currentList);
-        this.unreadCountSubject.next(newUnreadCount);
-      }),
-    );
-  }
-
-  // notificationsUpdateRead(notificationId: string): Observable<any> {
-  //   return this.http.patch(`${this.apiUrl}notifications/${notificationId}/read`, {}).pipe(
-  //     tap(() => {
-  //       // Update local state array
-  //       const currentList = this.notificationsSubject.value.map((item) => {
-  //         if (item._id === notificationId) {
-  //           return { ...item, isRead: true };
-  //         }
-  //         return item;
-  //       });
-
-  //       // Compute new unread total
-  //       const newUnreadCount = currentList.filter((n) => !n.isRead).length;
-
-  //       // Broadcast to all active subscribers instantly
-  //       this.notificationsSubject.next(currentList);
-  //       this.unreadCountSubject.next(newUnreadCount);
-  //     }),
-  //   );
-  // }
-
-  // fetchNotifications(userId: string): void {
-  //   if (!userId) return;
-  //   const params = new HttpParams().set('userId', userId);
-  //   this.http.get<any>(`${this.apiUrl}notifications`, { params }).subscribe({
-  //     next: (res) => {
-  //       console.log('res-----', res.data);
-  //       const list = res.data || [];
-  //       const unread = list.filter((n: any) => !n.isRead).length;
-  //       this.notificationsSubject.next(list);
-  //       this.unreadCountSubject.next(unread);
-  //     },
-  //     error: (err) => console.error('Failed to load notifications', err),
-  //   });
-  // }
 
   updatePost(postId: string, formData: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}posts/${postId}`, formData);
@@ -298,22 +181,6 @@ export class Service {
   deleteSession(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}session/${id}`);
   }
-
-  // getProducts() {
-  //   return this.http.get(`${this.apiUrl}products`);
-  // }
-
-  // createProduct(formData: any) {
-  //   return this.http.post(`${this.apiUrl}products`, formData);
-  // }
-
-  // updateProduct(id: any, formData: any) {
-  //   return this.http.put<any>(`${this.apiUrl}products/${id}`, formData);
-  // }
-
-  // deleteProduct(id: any) {
-  //   return this.http.delete<any>(`${this.apiUrl}products/${id}`);
-  // }
 
   getProducts(language?: string): Observable<any> {
     let params = new HttpParams();
@@ -523,6 +390,39 @@ export class Service {
   deleteLecture(courseId: string, lectureId: string, language: string): Observable<any> {
     return this.http.delete<any>(
       `${this.apiUrl}course/${courseId}/lectures/${lectureId}?language=${language}`,
+    );
+  }
+
+  /**
+   * GET /api/notifications?userId=xxx
+   * Direct observable method.
+   */
+  getUserNotifications(userId: string): Observable<any> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<any>(`${this.apiUrl}notifications`, { params });
+  }
+
+  /**
+   * PATCH /api/notifications/:id/read
+   * Marks a notification as read and updates state optimistically.
+   */
+  markAsRead(notificationId: string): Observable<any> {
+    const endpoint = `${this.apiUrl}notifications/${notificationId}/read`;
+
+    return this.http.patch<any>(endpoint, {}).pipe(
+      tap(() => {
+        const currentList = this.notificationsSubject.value.map((item) => {
+          if (item._id === notificationId) {
+            return { ...item, isRead: true };
+          }
+          return item;
+        });
+
+        const newUnreadCount = currentList.filter((item) => !item.isRead).length;
+
+        this.notificationsSubject.next(currentList);
+        this.unreadCountSubject.next(newUnreadCount);
+      }),
     );
   }
 }

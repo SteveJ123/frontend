@@ -92,7 +92,7 @@ export class Header {
       this.fetchUserProfile();
 
       // 2. Initial Notifications Fetch via service
-      this.service.fetchNotifications(this.userId, this.currentLang);
+      this.service.fetchNotifications(this.userId);
     }
     this.sub.add(
       this.service.notifications$.subscribe((list) => {
@@ -233,7 +233,7 @@ export class Header {
       this.recalculateUnreadCount();
 
       // Pass language to ensure correct patch route is hit
-      this.service.notificationsUpdateRead(notification._id, this.currentLang).subscribe({
+      this.service.markAsRead(notification._id).subscribe({
         error: (err) => {
           console.error('Failed to update notification status:', err);
           notification.isRead = false;
@@ -258,8 +258,36 @@ export class Header {
     this.isNotificationOpen = false;
   }
 
+  // onNotificationClick(notification: any): void {
+  //   console.log('notification.isRead', notification.isRead);
+  //   if (!notification.isRead) {
+  //     // Service tap() will update notificationsSubject and unreadCountSubject globally
+  //     this.service.markAsRead(notification._id).subscribe({
+  //       error: (err) => {
+  //         console.error('Failed to update notification status:', err);
+  //       },
+  //     });
+  //   }
+
+  //   const targetPostId =
+  //     typeof notification.postId === 'object' && notification.postId !== null
+  //       ? notification.postId._id
+  //       : notification.postId;
+
+  //   const targetRoute = notification.postModel === 'AdminPost' ? 'community-post' : 'user-feed';
+
+  //   if (targetPostId) {
+  //     this.router.navigate(['/', this.currentLang, targetRoute], {
+  //       queryParams: { postId: targetPostId },
+  //     });
+  //   }
+
+  //   this.isNotificationOpen = false;
+  // }
+
   private recalculateUnreadCount(): void {
     this.unreadCount = this.notifications.filter((n) => !n.isRead).length;
+    console.log('this.unreadCount', this.unreadCount);
     this.cdr.detectChanges();
   }
 
