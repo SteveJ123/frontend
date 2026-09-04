@@ -515,9 +515,21 @@ export class Service {
     return this.http.delete<any>(`${this.apiUrl}/${courseId}`, { params });
   }
 
-  // Delete specific lecture
+  // // Delete specific lecture
+  // deleteLecture(courseId: string, lectureId: string, language: string): Observable<any> {
+  //   const params = new HttpParams().set('language', language);
+  //   return this.http.delete<any>(`${this.apiUrl}/${courseId}/lectures/${lectureId}`, { params });
+  // }
+
+  // Update an existing lecture
+  updateLecture(courseId: string, lectureId: string, formData: FormData): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}course/${courseId}/lectures/${lectureId}`, formData);
+  }
+
+  // Delete a specific lecture
   deleteLecture(courseId: string, lectureId: string, language: string): Observable<any> {
-    const params = new HttpParams().set('language', language);
-    return this.http.delete<any>(`${this.apiUrl}/${courseId}/lectures/${lectureId}`, { params });
+    return this.http.delete<any>(
+      `${this.apiUrl}course/${courseId}/lectures/${lectureId}?language=${language}`,
+    );
   }
 }

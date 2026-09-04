@@ -238,7 +238,13 @@ export class CourseList implements OnInit {
     this.service.createCourse(formData).subscribe({
       next: (res: any) => {
         this.isSubmitting = false;
+        console.log('res', res);
         if (res.success) {
+          if (res && res.data) {
+            // 2. Prepend the new course object to the existing list
+            this.courses = [res.data, ...this.courses];
+            this.cd.detectChanges();
+          }
           this.successMessage = 'Course published successfully!';
           this.toastService.success('Course Created Succesfully!');
           this.showCreateCourse = false;
