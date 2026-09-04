@@ -2,8 +2,9 @@ import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../service/AuthService';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../../service/toast.service';
+import { apiUrl } from '../../../core/constants/api';
+import { Service } from '../../../service/service';
 
 export interface SettingsOption {
   id: string;
@@ -20,6 +21,7 @@ export interface SettingsOption {
   styleUrl: './edit-profile.css',
 })
 export class EditProfile {
+  private apiUrl = `${apiUrl}api/`;
   userName: string = '';
 
   curremtLanguage: any = '';
@@ -28,15 +30,21 @@ export class EditProfile {
 
   private authService = inject(AuthService);
   private router = inject(Router);
-  private http = inject(HttpClient);
   private toastService = inject(ToastService);
   private cd = inject(ChangeDetectorRef);
+  private service = inject(Service);
 
   userId: string = '';
   userRole = '';
   profileImage: string | null = null;
   isUploading: boolean = false;
   isEditing = false;
+
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
+
   ngOnInit() {
     this.curremtLanguage = this.authService.getUserLanguage() || null;
     this.currentRoute = this.curremtLanguage === 'English' ? 'en' : 'te';
@@ -102,12 +110,12 @@ export class EditProfile {
   }
 
   fetchPersonalDetails(): void {
-    this.http.get<any>(`http://localhost:5000/api/personal-details/${this.userId}`).subscribe({
-      next: (res) => {
+    this.service.getPersonalDetails(this.userId, this.currentRouteLanguage).subscribe({
+      next: (res: any) => {
         if (res.data) {
           this.userName = res.data.name || 'User';
           if (res.data.profileImage) {
-            this.profileImage = `http://localhost:5000${res.data.profileImage}`;
+            this.profileImage = `${this.apiUrl}${res.data.profileImage}`;
             this.cd.detectChanges();
           } else {
             this.isEditing = true;
@@ -127,50 +135,40 @@ export class EditProfile {
     // Create FormData object to handle multipart file payload
     const formData = new FormData();
     formData.append('image', file);
-
+    formData.append('language', this.currentRouteLanguage);
     this.isUploading = true;
     if (this.isEditing) {
-      this.http
-        .put<any>(
-          `http://localhost:5000/api/personal-details/${this.userId}/profile-image`,
-          formData,
-        )
-        .subscribe({
-          next: (res) => {
-            if (res.success && res.data.profileImage) {
-              // Update UI preview with updated uploaded avatar path
-              this.profileImage = `http://localhost:5000${res.data.profileImage}`;
-            }
-            this.isUploading = false;
-            this.toastService.success('Profile Image updated successfully!');
-          },
-          error: (err) => {
-            console.error('Failed to upload image:', err);
-            this.isUploading = false;
-            this.toastService.error('Profile Image Not updated successfully!');
-          },
-        });
+      this.service.uploadProfileImage(this.userId, formData).subscribe({
+        next: (res) => {
+          if (res.success && res.data.profileImage) {
+            // Update UI preview with updated uploaded avatar path
+            this.profileImage = `${this.apiUrl}${res.data.profileImage}`;
+          }
+          this.isUploading = false;
+          this.toastService.success('Profile Image updated successfully!');
+        },
+        error: (err) => {
+          console.error('Failed to upload image:', err);
+          this.isUploading = false;
+          this.toastService.error('Profile Image Not updated successfully!');
+        },
+      });
     } else {
       // Direct POST request for upload
-      this.http
-        .post<any>(
-          `http://localhost:5000/api/personal-details/${this.userId}/profile-image`,
-          formData,
-        )
-        .subscribe({
-          next: (res) => {
-            if (res.success && res.data.profileImage) {
-              this.profileImage = `http://localhost:5000${res.data.profileImage}`;
-              this.toastService.success('Profile Image Uploaded Succcessfully!');
-            }
-            this.isUploading = false;
-          },
-          error: (err) => {
-            console.error('Image upload failed:', err);
-            this.isUploading = false;
-            this.toastService.error('Profile Image Not Uploaded Succcessfully!');
-          },
-        });
+      this.service.uploadProfileImage(this.userId, formData).subscribe({
+        next: (res) => {
+          if (res.success && res.data.profileImage) {
+            this.profileImage = `${this.apiUrl}${res.data.profileImage}`;
+            this.toastService.success('Profile Image Uploaded Succcessfully!');
+          }
+          this.isUploading = false;
+        },
+        error: (err) => {
+          console.error('Image upload failed:', err);
+          this.isUploading = false;
+          this.toastService.error('Profile Image Not Uploaded Succcessfully!');
+        },
+      });
     }
   }
   onOptionClick(option: SettingsOption): void {
@@ -220,20 +218,18 @@ export class EditProfile {
 
     if (!confirm('Are you sure you want to delete your profile image?')) return;
 
-    this.http
-      .delete<any>(`http://localhost:5000/api/personal-details/${this.userId}/profile-image`)
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            // Reset UI state to null to re-render default avatar fallback
-            this.profileImage = null;
-            this.toastService.success('Profile Image Deleted Successfuly!');
-          }
-        },
-        error: (err) => {
-          console.error('Failed to delete image:', err);
-          this.toastService.error('Profile Image Not Deleted Successfuly!');
-        },
-      });
+    this.service.deleteProfileImage(this.userId, this.currentRouteLanguage).subscribe({
+      next: (res) => {
+        if (res.success) {
+          // Reset UI state to null to re-render default avatar fallback
+          this.profileImage = null;
+          this.toastService.success('Profile Image Deleted Successfuly!');
+        }
+      },
+      error: (err) => {
+        console.error('Failed to delete image:', err);
+        this.toastService.error('Profile Image Not Deleted Successfuly!');
+      },
+    });
   }
 }

@@ -454,10 +454,10 @@ export class CreateAdminPost {
   }
 
   publishPost(): void {
-    if (this.selectedFiles.length === 0) {
-      alert('Please select at least one media file to publish.');
-      return;
-    }
+    // if (this.selectedFiles.length === 0) {
+    //   alert('Please select at least one media file to publish.');
+    //   return;
+    // }
 
     // this.isUploading = true;
     // const formData = new FormData();

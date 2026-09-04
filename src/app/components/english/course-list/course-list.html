@@ -3,6 +3,7 @@
     type="submit"
     class="w-full py-3 px-6 bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
     (click)="toggleCreateCourse()"
+    *ngIf="userRole === 'admin'"
   >
     Create Course
   </button>
@@ -324,7 +325,7 @@
                 </svg>
               </button>
               <button
-                (click)="openDeleteModal(course._id!)"
+                (click)="openDeleteModal($event, course._id!)"
                 class="p-1.5 bg-white/90 hover:bg-white text-gray-700 hover:text-red-600 rounded-lg shadow-sm backdrop-blur-md transition-all"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

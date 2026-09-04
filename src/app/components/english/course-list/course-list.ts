@@ -125,6 +125,7 @@ export class CourseList implements OnInit {
       },
       error: (err) => {
         console.error('Update failed:', err);
+        this.cd.detectChanges();
         this.toastService.error('Course Not Updated Successfully!');
       },
     });
@@ -150,10 +151,12 @@ export class CourseList implements OnInit {
   viewCourseDetails(courseId: string): void {
     if (this.editingCourseId) return;
     console.log('Navigating to course:', courseId);
+    this.router.navigate(['/en/courses', courseId]);
   }
 
   // Opens the custom popup dialog
-  openDeleteModal(id: string): void {
+  openDeleteModal(event: any, id: string): void {
+    event.stopPropagation();
     this.productToDeleteId = id;
     this.showDeleteModal = true;
   }
@@ -239,6 +242,7 @@ export class CourseList implements OnInit {
           this.successMessage = 'Course published successfully!';
           this.toastService.success('Course Created Succesfully!');
           this.showCreateCourse = false;
+          this.cd.detectChanges();
           // setTimeout(() => {
           //   this.router.navigate(['/courses-list']); // Navigate to course list after creation
           // }, 1500);
@@ -248,6 +252,7 @@ export class CourseList implements OnInit {
         this.isSubmitting = false;
         this.errorMessage = err.error?.message || 'Failed to publish course. Please try again.';
         this.toastService.error('Course Not Created Succesfully!');
+        this.cd.detectChanges();
       },
     });
   }

@@ -63,10 +63,13 @@ export class Header {
   profileImage = '';
 
   currentLang = 'en';
-
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
   ngOnInit() {
-    const rawLang = this.authService.getUserLanguage() || 'en';
-    this.currentLang = rawLang.toLowerCase().trim() === 'telugu' ? 'te' : 'en';
+    const userLanguage = this.authService.getUserLanguage() || 'en';
+    this.currentLang = userLanguage.toLowerCase().trim() === 'telugu' ? 'te' : 'en';
     this.userId = localStorage.getItem('userId') || '';
 
     // 1. Get user role from Auth Service
@@ -156,8 +159,9 @@ export class Header {
   // }
 
   fetchUserProfile(): void {
-    this.service.getUserProfile(this.userId, this.currentLang).subscribe({
+    this.service.getPersonalDetails(this.userId, this.currentRouteLanguage).subscribe({
       next: (res: any) => {
+        console.log('res profile', res);
         if (res.data && res.data.profileImage) {
           this.profileImage = `http://localhost:5000${res.data.profileImage}`;
           this.cdr.detectChanges();

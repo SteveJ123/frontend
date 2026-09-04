@@ -5,6 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../../core/constants/api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Service } from '../../../service/service';
+import { ToastService } from '../../../service/toast.service';
 
 @Component({
   selector: 'app-course-details',
@@ -31,8 +34,15 @@ export class CourseDetails {
     private http: HttpClient,
   ) {}
 
+  private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
+  private service = inject(Service);
+  private toastService = inject(ToastService);
 
+  get currentRouteLanguage(): string {
+    const urlSegments = this.router.url.split('/').filter(Boolean);
+    return urlSegments[0] === 'te' ? 'Telugu' : 'English';
+  }
   ngOnInit(): void {
     this.courseId = this.route.snapshot.paramMap.get('id') || '';
     if (this.courseId) {
@@ -42,7 +52,7 @@ export class CourseDetails {
 
   fetchCourseDetails(): void {
     this.isLoading = true;
-    this.http.get<any>(`${apiUrl}api/course/${this.courseId}`).subscribe({
+    this.service.getCourseById(this.courseId, this.currentRouteLanguage).subscribe({
       next: (res) => {
         console.log('res', res);
         this.course = res.data;
@@ -83,16 +93,21 @@ export class CourseDetails {
     formData.append('title', this.videoForm.title);
     formData.append('duration', this.videoForm.duration);
     formData.append('video', this.selectedVideoFile);
+    formData.append('language', this.currentRouteLanguage);
 
-    this.http.post<any>(`${apiUrl}api/course/${this.courseId}/lectures`, formData).subscribe({
+    this.service.uploadLecture(this.courseId, formData).subscribe({
       next: (res) => {
         this.course = res.data;
         this.isSubmitting = false;
         this.closeModal();
+        this.toastService.success('Lecture updated succecssfully!');
+        this.cd.detectChanges();
       },
       error: (err) => {
         console.error('Failed to upload video:', err);
         this.isSubmitting = false;
+        this.toastService.error('Lecture not updated succecssfully!');
+        this.cd.detectChanges();
       },
     });
   }

@@ -434,4 +434,90 @@ export class Service {
     }
     return this.http.get<any>(`${this.apiUrl}admin-users-tracker`, { params });
   }
+
+  // getPersonalDetails(userId: any) {
+  //   return this.http.get<any>(`${this.apiUrl}personal-details/${userId}`);
+  // }
+  // uploadProfilePicture(userId: any, formData: any) {
+  //   return this.http.put<any>(`${this.apiUrl}personal-details/${userId}/profile-image`, formData);
+  // }
+
+  // postProfilePicture(userId: any, formData: any) {
+  //   return this.http.post<any>(`${this.apiUrl}personal-details/${userId}/profile-image`, formData);
+  // }
+
+  // deleteProfilePicture(userId: any) {
+  //   return this.http.delete<any>(`${this.apiUrl}personal-details/${userId}/profile-image`);
+  // }
+
+  /**
+   * GET: Fetch personal details for a user based on language
+   */
+  getPersonalDetails(userId: string, language: string): Observable<any> {
+    const params = new HttpParams().set('language', language);
+    return this.http.get<any>(`${this.apiUrl}personal-details/${userId}`, { params });
+  }
+
+  /**
+   * PUT: Update text personal details (name, aboutYou, gender, birthday, language)
+   */
+  updatePersonalDetails(userId: string, details: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}personal-details/${userId}`, details);
+  }
+
+  /**
+   * PUT: Upload or replace profile image file
+   */
+  uploadProfileImage(userId: string, formData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}personal-details/${userId}/profile-image`, formData);
+  }
+
+  /**
+   * DELETE: Remove profile image
+   */
+  deleteProfileImage(userId: string, language: string): Observable<any> {
+    const params = new HttpParams().set('language', language);
+    return this.http.delete<any>(`${this.apiUrl}personal-details/${userId}/profile-image`, {
+      params,
+    });
+  }
+
+  // Fetch all courses filtered by language
+  dgetCourses(language: string): Observable<any> {
+    const params = new HttpParams().set('language', language);
+    return this.http.get<any>(this.apiUrl, { params });
+  }
+
+  // Fetch single course details
+  getCourseById(courseId: string, language: string): Observable<any> {
+    const params = new HttpParams().set('language', language);
+    return this.http.get<any>(`${this.apiUrl}course/${courseId}`, { params });
+  }
+
+  // Create course (pass language in payload)
+  createCourseLecture(courseData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, courseData);
+  }
+
+  // Upload lecture video (append language inside FormData)
+  uploadLecture(courseId: string, formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}course/${courseId}/lectures`, formData);
+  }
+
+  // Update course
+  updateCourseLecture(courseId: string, courseData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${courseId}`, courseData);
+  }
+
+  // Delete course
+  deleteCourseLecture(courseId: string, language: string): Observable<any> {
+    const params = new HttpParams().set('language', language);
+    return this.http.delete<any>(`${this.apiUrl}/${courseId}`, { params });
+  }
+
+  // Delete specific lecture
+  deleteLecture(courseId: string, lectureId: string, language: string): Observable<any> {
+    const params = new HttpParams().set('language', language);
+    return this.http.delete<any>(`${this.apiUrl}/${courseId}/lectures/${lectureId}`, { params });
+  }
 }

@@ -125,7 +125,7 @@
             <input
               type="checkbox"
               [checked]="isTodayCompleted"
-              [disabled]="isTodayCompleted"
+              [disabled]="id ? true : isTodayCompleted"
               (change)="completeTodayHabit()"
               class="w-5 h-5 accent-emerald-600 rounded cursor-pointer disabled:cursor-not-allowed"
             />

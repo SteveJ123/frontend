@@ -94,7 +94,7 @@ export class DailyTracker implements OnInit {
       next: (res: any) => {
         if (res.message == 'Daily practice already completed for today.') {
           this.isTodayCompleted = true;
-          this.generateEvent();
+          // this.generateEvent();
           this.isLoadingTracker = false; // Hide spinner
           this.completedDates = res.completedPracticeDates || [];
           console.log('this.completedDates', this.completedDates);
