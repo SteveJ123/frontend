@@ -55,6 +55,18 @@ export class LeftSidebar {
     this.isSidebarOpen.update((v) => !v);
   }
 
+  navigateTo(courseRoute: any) {
+    this.sidebarService.setSidebarState(false);
+    this.router.navigate(['/', this.currentLang, courseRoute]);
+  }
+
+  toggleCoursesDropdown(): void {
+    // Navigate using array format with the current language prefix
+    this.sidebarService.setSidebarState(false);
+    this.router.navigate(['/', this.currentLang, 'courses-list']);
+    // this.router.navigate(['/courses-list']);
+  }
+
   ngOnDestroy(): void {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();

@@ -6,88 +6,116 @@
 <aside
   [class.translate-x-0]="sidebarService.isSidebarOpen$ | async"
   [class.-translate-x-full]="!(sidebarService.isSidebarOpen$ | async)"
-  class="fixed lg:static top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 transition-transform duration-200 ease-in-out lg:translate-x-0 p-4 flex flex-col justify-between shrink-0"
+  class="fixed lg:static top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 transition-transform duration-200 ease-in-out lg:translate-x-0 p-4 flex flex-col justify-between shrink-0 overflow-y-auto"
 >
   <div class="space-y-6">
-    <!-- Create Button -->
-    <!-- <button
-      class="w-full bg-[#88304E] hover:bg-[#6e253e] text-white font-semibold py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center space-x-2"
-    >
-      <span class="text-lg">+</span>
-      <span>Create</span>
-    </button> -->
+    <!-- Top Nav Links (Mobile Only) -->
+    <div class="md:hidden space-y-1 pb-4 border-b border-gray-200">
+      <a
+        [routerLink]="['/', currentLang, 'community-post']"
+        (click)="sidebarService.setSidebarState(false)"
+        class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition"
+      >
+        <span class="text-base">👥</span>
+        <span>{{ currentLang === 'en' ? 'COMMUNITY' : 'సంఘం' }}</span>
+      </a>
 
-    <!-- Navigation Menu -->
+      <a
+        [routerLink]="['/', currentLang, 'session']"
+        (click)="sidebarService.setSidebarState(false)"
+        class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition"
+      >
+        <span class="text-base">📹</span>
+        <span>{{ currentLang === 'en' ? 'LIVE SESSIONS' : 'ప్రత్యక్ష ప్రసారం' }}</span>
+      </a>
+
+      <!-- Mobile Courses Accordion / Dropdown -->
+      <div class="space-y-1">
+        <button
+          (click)="toggleCoursesDropdown()"
+          class="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition cursor-pointer text-left"
+        >
+          <div class="flex items-center space-x-3">
+            <span class="text-base">📖</span>
+            <span>{{ currentLang === 'en' ? 'COURSES' : 'పాఠ్యక్రమము' }}</span>
+          </div>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <a
+        [routerLink]="['/', currentLang, 'daily-tracker']"
+        (click)="sidebarService.setSidebarState(false)"
+        class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition"
+      >
+        <span class="text-base">📦</span>
+        <span>{{ currentLang === 'en' ? 'Daily Tracker' : 'రోజువారీ నివేదిక' }}</span>
+      </a>
+
+      <a
+        [routerLink]="['/', currentLang, 'shop']"
+        (click)="sidebarService.setSidebarState(false)"
+        class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition"
+      >
+        <span class="text-base">🛍️</span>
+        <span>{{ currentLang === 'en' ? 'SHOP' : 'అంగడి' }}</span>
+      </a>
+    </div>
+
+    <!-- Existing Navigation Menu -->
     <nav class="space-y-1">
       <a
         [routerLink]="['/', currentLang, 'support-team']"
+        (click)="sidebarService.setSidebarState(false)"
         class="flex items-center space-x-3 px-3 py-2 bg-pink-50 text-[#88304E] font-medium rounded-lg"
       >
         <span class="text-sm">🧭</span>
         <span>{{ currentLang === 'en' ? 'Support Team' : 'సహాయ బృందం' }}</span>
       </a>
-      <!-- <a
-        href="#"
-        class="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition"
-      >
-        <span class="text-sm">💬</span>
-        <span>Messages</span>
-      </a> -->
+
       <!-- Group 1 -->
       @if (userRole.trim().toLowerCase() === 'admin') {
         <div class="pt-4">
           <div
             class="text-xs font-semibold text-gray-500 px-3 flex items-center justify-between cursor-pointer"
           >
-            <!-- <span>🔻 Community</span> -->
             <a
               [routerLink]="['/', currentLang, 'team']"
+              (click)="sidebarService.setSidebarState(false)"
               class="flex items-center space-x-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
             >
               <span class="text-red-500">❤️</span>
-              <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">{{
-                currentLang === 'en' ? 'Participant List' : 'పాల్గొన్న వారు'
-              }}</span>
+              <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
+                {{ currentLang === 'en' ? 'Participant List' : 'పాల్గొన్న వారు' }}
+              </span>
             </a>
           </div>
-
-          <!-- <div class="mt-1 space-y-1 pl-3"> -->
-          <!-- <a
-            routerLink="/team"
-            class="flex items-center space-x-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
-          >
-            <span class="text-red-500">❤️</span>
-            <span>Participant List</span>
-          </a> -->
-          <!-- </div> -->
         </div>
       }
+
       @if (userRole.trim().toLowerCase() === 'admin') {
         <div class="pt-4">
           <div
             class="text-xs font-semibold text-gray-500 px-3 flex items-center justify-between cursor-pointer"
           >
-            <!-- <span>🔻 Community</span> -->
             <a
               [routerLink]="['/', currentLang, 'admin-user-tracker']"
+              (click)="sidebarService.setSidebarState(false)"
               class="flex items-center space-x-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
             >
               <span class="text-red-500">❤️</span>
-              <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">{{
-                currentLang === 'en' ? 'User Tracker List' : 'వాడుకరి ట్రాకర్ లిస్ట్'
-              }}</span>
+              <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
+                {{ currentLang === 'en' ? 'User Tracker List' : 'వాడుకరి ట్రాకర్ లిస్ట్' }}
+              </span>
             </a>
           </div>
-
-          <!-- <div class="mt-1 space-y-1 pl-3"> -->
-          <!-- <a
-            routerLink="/team"
-            class="flex items-center space-x-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
-          >
-            <span class="text-red-500">❤️</span>
-            <span>Participant List</span>
-          </a> -->
-          <!-- </div> -->
         </div>
       }
 
@@ -96,9 +124,9 @@
         <div
           class="text-xs font-semibold text-gray-500 px-3 flex items-center justify-between cursor-pointer"
         >
-          <!-- <span>🔻 ALH Practitioner <span class="text-red-500">•</span></span> -->
           <a
             [routerLink]="['/', currentLang, 'user-feed']"
+            (click)="sidebarService.setSidebarState(false)"
             class="flex items-center justify-between py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
           >
             <div class="flex items-center space-x-2">
@@ -107,63 +135,9 @@
                 {{ currentLang === 'en' ? 'Progress Ritual' : 'అభివృద్ధి అలవాట్లు' }}
               </span>
             </div>
-            <!-- <span class="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold"
-              >1</span -->
-            <!-- > -->
           </a>
         </div>
-        <div class="mt-1 space-y-1 pl-3">
-          <!-- <a
-            routerLink="/progress"
-            class="flex items-center justify-between px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
-          >
-            <div class="flex items-center space-x-2">
-              <span>🏆</span>
-              <span>Progress Ritual</span>
-            </div> -->
-          <!-- <span class="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold"
-              >1</span -->
-          <!-- >
-          </a> -->
-          <!-- <a
-            href="#"
-            class="flex items-center justify-between px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
-          >
-            <div class="flex items-center space-x-2">
-              <span>👁️</span>
-              <span>Final Reflection</span>
-            </div>
-            <span class="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold"
-              >3</span
-            >
-          </a> -->
-        </div>
       </div>
-
-      <!-- Group 3 -->
-      <!-- <div class="pt-2">
-        <div class="text-xs font-semibold text-gray-500 px-3">
-          <span>🔻 Elite Club</span>
-        </div>
-      </div> -->
     </nav>
   </div>
-
-  <!-- Bottom Banner -->
-  <!-- <div
-    class="bg-gradient-to-r from-[#31111d] to-[#521c30] text-white p-3.5 rounded-xl shadow relative overflow-hidden mt-6"
-  >
-    <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-2.5">
-        <div class="bg-white/10 p-2 rounded-lg">💳</div>
-        <div>
-          <h4 class="font-bold text-sm">Affiliates</h4>
-          <p class="text-[11px] text-gray-300 leading-tight mt-0.5">
-            Earn by sharing your affiliate link with others.
-          </p>
-        </div>
-      </div>
-      <span class="text-gray-400 font-bold">&gt;</span>
-    </div>
-  </div> -->
 </aside>
