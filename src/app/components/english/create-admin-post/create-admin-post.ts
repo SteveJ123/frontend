@@ -123,14 +123,6 @@ export class CreateAdminPost {
     },
   ];
 
-  // leaderboard: LeaderboardUser[] = [
-  //   { rank: 1, name: 'Uma Maheswari Amarnath', points: '51.98K ALHP' },
-  //   { rank: 2, name: 'Sushma William', points: '48.57K ALHP' },
-  //   { rank: 3, name: 'malathi', points: '44.27K ALHP' },
-  //   { rank: 4, name: 'Legala Manjula', points: '39.79K ALHP' },
-  //   { rank: 5, name: 'Baljit', points: '38.10K ALHP' },
-  // ];
-
   // toggleSidebar() {
   //   this.isSidebarOpen.update((v) => !v);
   // }
@@ -192,12 +184,8 @@ export class CreateAdminPost {
   // Track viewed posts during the session to avoid duplicate API calls
   productToDeleteId: string = '';
   showDeleteModal: boolean = false;
-  constructor(
-    // private http: HttpClient,
-    // private service: Service,
-    // private cd: ChangeDetectorRef,
-  ) {}
-  private http = inject(HttpClient);
+  constructor() {}
+
   private authService = inject(AuthService);
   private service = inject(Service);
   private route = inject(ActivatedRoute);
