@@ -73,7 +73,7 @@
             <!-- Clickable Name Column -->
             <td class="py-3.5 px-4">
               <button
-                (click)="navigateToUserTracker(user._id)"
+                (click)="navigateToUserTracker(user._id, user.name)"
                 class="font-semibold text-emerald-600 hover:text-emerald-800 hover:underline text-left"
               >
                 {{ user.name }}
@@ -97,7 +97,7 @@
 
             <td class="py-3.5 px-4 text-center">
               <button
-                (click)="navigateToUserTracker(user._id)"
+                (click)="navigateToUserTracker(user._id, user.name)"
                 class="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-medium rounded-md hover:bg-emerald-100 text-xs transition"
               >
                 View Tracker →

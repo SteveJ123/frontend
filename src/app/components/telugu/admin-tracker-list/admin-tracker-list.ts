@@ -78,7 +78,10 @@ export class AdminTrackerList {
     this.applyFilters();
   }
 
-  navigateToUserTracker(userId: string): void {
+  navigateToUserTracker(userId: string, username: string): void {
+    localStorage.removeItem('dailyTrackerUsername');
+    localStorage.setItem('dailyTrackerUsername', username);
+
     // Navigates dynamically to /en/daily-tracker/:userId or /te/daily-tracker/:userId
     this.router.navigate([`/${this.langPrefix}/daily-tracker`, userId]);
   }

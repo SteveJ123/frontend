@@ -1,5 +1,9 @@
 <div class="p-4 md:p-8 max-w-7xl mx-auto font-sans">
   <h1 class="text-2xl font-bold mb-6 text-gray-800">అలవాట్లు</h1>
+  @if (dailyTrackerUsername) {
+    <hr />
+    <h1 class="text-medium font-bold mb-6 text-gray-800">పేరు: {{ dailyTrackerUsername }}</h1>
+  }
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Left side: Calendar Section -->

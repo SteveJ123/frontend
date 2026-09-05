@@ -78,6 +78,7 @@ export class DailyTracker implements OnInit {
   private route = inject(ActivatedRoute);
   isLoadingTracker: boolean = false;
   id: any = '';
+  dailyTrackerUsername: any = '';
   ngOnInit(): void {
     this.locale = localStorage.getItem('language') === 'English' ? 'en-US' : 'te';
     this.userId = localStorage.getItem('userId') || '';
@@ -86,6 +87,7 @@ export class DailyTracker implements OnInit {
 
     if (this.id) {
       this.fetchTrackerStatus(this.id);
+      this.dailyTrackerUsername = localStorage.getItem('dailyTrackerUsername');
     } else {
       this.fetchTrackerStatus(this.userId);
     }

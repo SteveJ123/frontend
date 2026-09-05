@@ -73,6 +73,7 @@ export class DailyTracker implements OnInit {
   private route = inject(ActivatedRoute);
   isLoadingTracker: boolean = false;
   id: any = '';
+  dailyTrackerUsername: any = '';
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId') || '';
     // 1. Get the 'id' parameter from the URL snapshot or paramMap
@@ -80,6 +81,7 @@ export class DailyTracker implements OnInit {
 
     if (this.id) {
       this.fetchTrackerStatus(this.id);
+      this.dailyTrackerUsername = localStorage.getItem('dailyTrackerUsername');
     } else {
       this.fetchTrackerStatus(this.userId);
     }
