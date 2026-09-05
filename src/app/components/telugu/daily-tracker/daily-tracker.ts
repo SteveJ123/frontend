@@ -42,6 +42,9 @@ registerLocaleData(localeTe);
     },
   ],
   templateUrl: './daily-tracker.html',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class DailyTracker implements OnInit {
   viewDate: Date = new Date();

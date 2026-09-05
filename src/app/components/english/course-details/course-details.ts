@@ -14,6 +14,9 @@ import { ToastService } from '../../../service/toast.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './course-details.html',
   styleUrl: './course-details.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class CourseDetails {
   courseId: string = '';

@@ -19,6 +19,9 @@ export interface SettingsOption {
   imports: [CommonModule],
   templateUrl: './edit-profile.html',
   styleUrl: './edit-profile.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class EditProfile {
   private apiUrl = `${apiUrl}`;

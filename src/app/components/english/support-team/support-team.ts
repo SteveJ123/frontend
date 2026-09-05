@@ -21,6 +21,9 @@ export interface SupportMember {
   imports: [CommonModule, FormsModule],
   templateUrl: './support-team.html',
   styleUrl: './support-team.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class SupportTeam {
   // private apiUrl = 'http://localhost:5000/api/support-team';

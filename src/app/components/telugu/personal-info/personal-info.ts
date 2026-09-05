@@ -21,6 +21,9 @@ export interface PersonalDetails {
   imports: [CommonModule, FormsModule],
   templateUrl: './personal-info.html',
   styleUrl: './personal-info.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class PersonalInfo {
   private router = inject(Router);

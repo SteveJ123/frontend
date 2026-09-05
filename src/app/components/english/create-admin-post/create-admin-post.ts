@@ -95,6 +95,9 @@ interface Post {
   imports: [CommonModule, FormsModule],
   templateUrl: './create-admin-post.html',
   styleUrl: './create-admin-post.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class CreateAdminPost {
   // isSidebarOpen = signal(false);
@@ -219,7 +222,7 @@ export class CreateAdminPost {
   monthlyTopper: any = [];
   weeklyTopper: any = [];
 
-  activeTab: any = 'allTime';
+  activeTab: any = 'alltime';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -246,18 +249,16 @@ export class CreateAdminPost {
       next: (res) => {
         console.log('res data', res);
         if (res.success) {
-          this.allTimeTopper = res.allTime;
-          this.filteredUsers = this.allTimeTopper;
-          this.monthlyTopper = res.monthly;
-          this.weeklyTopper = res.weekly;
-          this.applyFilters();
+          this.allTimeTopper = [...res.allTime];
+          this.filteredUsers = [...this.allTimeTopper];
+          this.monthlyTopper = [...res.monthly];
+          this.weeklyTopper = [...res.weekly];
           this.cd.detectChanges();
         }
       },
       error: (err) => console.error('Error fetching users summary:', err),
     });
   }
-  applyFilters(): void {}
 
   getPostsObservable() {
     // // this.posts$ = this.service.getPosts().pipe(map((response) => response.data));
@@ -981,14 +982,14 @@ export class CreateAdminPost {
   setActiveTab(tab: any): void {
     this.activeTab = tab;
     if (tab == 'alltime') {
-      alert('alltime');
-      this.filteredUsers = this.allTimeTopper;
+      this.filteredUsers = [...this.allTimeTopper];
+      this.cd.detectChanges();
     } else if (tab == 'month') {
-      alert('Month');
-      this.filteredUsers = this.monthlyTopper;
-    } else {
-      alert('week');
-      this.filteredUsers = this.weeklyTopper;
+      this.filteredUsers = [...this.monthlyTopper];
+      this.cd.detectChanges();
+    } else if (tab == 'week') {
+      this.filteredUsers = [...this.weeklyTopper];
+      this.cd.detectChanges();
     }
   }
 }

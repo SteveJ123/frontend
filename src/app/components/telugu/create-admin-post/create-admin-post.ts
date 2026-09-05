@@ -76,6 +76,9 @@ interface Post {
   imports: [CommonModule, FormsModule],
   templateUrl: './create-admin-post.html',
   styleUrl: './create-admin-post.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class CreateAdminPost {
   // isSidebarOpen = signal(false);

@@ -96,7 +96,7 @@ interface Post {
   templateUrl: './create-user-post.html',
   styleUrl: './create-user-post.css',
   host: {
-    class: 'w-full block',
+    class: 'w-full block px-4',
   },
 })
 export class CreateUserPost {

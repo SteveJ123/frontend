@@ -24,6 +24,9 @@ export interface LiveSession {
   imports: [CommonModule, FormsModule],
   templateUrl: './session.html',
   styleUrl: './session.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class Session {
   // Edit / Form Management

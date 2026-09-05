@@ -96,7 +96,7 @@ interface Post {
   templateUrl: './create-user-post.html',
   styleUrl: './create-user-post.css',
   host: {
-    class: 'w-full block',
+    class: 'w-full block px-4',
   },
 })
 export class CreateUserPost {
@@ -240,7 +240,6 @@ export class CreateUserPost {
     });
   }
 
-  
   getPostsObservable() {
     // this.posts$ = this.service.getPosts().pipe(map((response) => response.data));
     // Pass the route language to fetch matching posts

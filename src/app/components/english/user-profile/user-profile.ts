@@ -24,6 +24,9 @@ export interface CommunityPost {
   imports: [CommonModule],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class UserProfile {
   private apiUrl = `${apiUrl}`;

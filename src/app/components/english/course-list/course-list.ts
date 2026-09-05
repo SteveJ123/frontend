@@ -10,6 +10,9 @@ import { ToastService } from '../../../service/toast.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './course-list.html',
   styleUrl: './course-list.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class CourseList implements OnInit {
   courses: any[] = [];

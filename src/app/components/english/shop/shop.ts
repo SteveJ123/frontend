@@ -21,6 +21,9 @@ export interface Product {
   imports: [CommonModule, FormsModule],
   templateUrl: './shop.html',
   styleUrl: './shop.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class Shop {
   // apiUrl = 'http://localhost:5000/api/products';
