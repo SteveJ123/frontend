@@ -36,7 +36,8 @@ export class Login {
         }
 
         if (res.role === 'admin') {
-          return this.router.navigate(['/admin']);
+          return this.router.navigate(['/te/community-post']);
+          // return this.router.navigate(['/admin']);
         }
 
         const rawLang = this.authService.getUserLanguage() ?? 'English';

@@ -405,8 +405,18 @@ export class Service {
    * GET /api/notifications?userId=xxx
    * Direct observable method.
    */
-  getUserNotifications(userId: string): Observable<any> {
-    const params = new HttpParams().set('userId', userId);
+  getUserNotifications(userId: string, language?: string): Observable<any> {
+    let params = new HttpParams();
+
+    if (userId) {
+      params = params.set('userId', userId);
+    }
+
+    // Only appends 'language' if a truthy string value is supplied
+    if (language && language.trim() !== '') {
+      params = params.set('language', language.trim());
+    }
+
     return this.http.get<any>(`${this.apiUrl}notifications`, { params });
   }
 

@@ -92,7 +92,8 @@ export class Header {
       this.fetchUserProfile();
 
       // 2. Initial Notifications Fetch via service
-      this.service.fetchNotifications(this.userId);
+      // this.service.fetchNotifications(this.userId);
+      this.fetchNotifications(this.userId);
     }
     this.sub.add(
       this.service.notifications$.subscribe((list) => {
@@ -182,7 +183,7 @@ export class Header {
   }
 
   fetchNotifications(userId: any): void {
-    this.service.getUserNotifications(userId).subscribe((data: any) => {
+    this.service.getUserNotifications(userId, this.currentRouteLanguage).subscribe((data: any) => {
       console.log('data', data);
       this.notifications = data.data;
       this.unreadCount = data.data.filter((n: any) => !n.isRead).length;
@@ -227,6 +228,7 @@ export class Header {
   // }
 
   onNotificationClick(notification: any): void {
+    console.log('notification', notification);
     if (!notification.isRead) {
       // Optimistic UI update
       notification.isRead = true;
@@ -248,6 +250,10 @@ export class Header {
         : notification.postId;
 
     const targetRoute = notification.postModel === 'AdminPost' ? 'community-post' : 'user-feed';
+
+    if (this.userType == 'admin') {
+      this.currentLang = notification.postId.language === 'English' ? 'en' : 'te';
+    }
 
     if (targetPostId) {
       this.router.navigate(['/', this.currentLang, targetRoute], {

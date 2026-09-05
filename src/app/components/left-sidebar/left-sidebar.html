@@ -91,7 +91,7 @@
               (click)="sidebarService.setSidebarState(false)"
               class="flex items-center space-x-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
             >
-              <span class="text-red-500">❤️</span>
+              <span class="text-red-500">🙋‍♂️</span>
               <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
                 {{ currentLang === 'en' ? 'Participant List' : 'పాల్గొన్న వారు' }}
               </span>
@@ -110,9 +110,32 @@
               (click)="sidebarService.setSidebarState(false)"
               class="flex items-center space-x-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
             >
-              <span class="text-red-500">❤️</span>
+              <span class="text-red-500">🗺️</span>
               <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
                 {{ currentLang === 'en' ? 'User Tracker List' : 'వాడుకరి ట్రాకర్ లిస్ట్' }}
+              </span>
+            </a>
+          </div>
+        </div>
+      }
+
+      @if (userRole.trim().toLowerCase() === 'admin') {
+        <div class="pt-4">
+          <div
+            class="text-xs font-semibold text-gray-500 px-3 flex items-center justify-between cursor-pointer"
+          >
+            <a
+              [routerLink]="[
+                '/',
+                currentLang === 'te' ? 'en' : currentLang === 'en' ? 'te' : '',
+                'community-post',
+              ]"
+              (click)="sidebarService.setSidebarState(false)"
+              class="flex items-center space-x-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg"
+            >
+              <span class="text-red-500">👥</span>
+              <span class="text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
+                {{ currentLang === 'en' ? 'Navigate to Telugu' : 'Navigate to English' }}
               </span>
             </a>
           </div>

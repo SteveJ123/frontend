@@ -24,6 +24,7 @@ export const roleGuard: CanMatchFn | CanActivateFn = (route: any, segments: any)
   // 4. Redirect unauthorized users based on role
   if (currentUserRole === 'admin') {
     return router.createUrlTree(['/admin-dashboard']);
+    // return router.createUrlTree(['/te/community-post']);
   }
 
   return router.createUrlTree(['/user-feed']);
