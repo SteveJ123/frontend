@@ -9,6 +9,9 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-tracker-list.html',
   styleUrl: './admin-tracker-list.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class AdminTrackerList {
   activeLanguage: string = 'Telugu'; // Default or managed via tab
