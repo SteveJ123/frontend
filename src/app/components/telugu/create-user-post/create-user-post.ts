@@ -220,10 +220,12 @@ export class CreateUserPost {
   userLanguage: any = '';
   userType: any = '';
   mediaApiUrl: any = '';
+  userProfileImage:any = ""
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
     this.userLanguage = this.authService.getUserLanguage();
+    this.userProfileImage= localStorage.getItem('profileImage');
     this.userType = this.authService.getUserRole();
     this.mediaApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
 

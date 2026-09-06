@@ -211,14 +211,17 @@ export class CreateAdminPost {
   weeklyTopper: any = [];
 
   activeTab: any = 'alltime';
-
+  mediaApiUrl: any = '';
   adminPicture = '';
+  userProfileImage: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
+    this.mediaApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
+    this.userProfileImage = localStorage.getItem('profileImage');
     if (this.authService.getUserId()) {
       this.userId = this.authService.getUserId();
-      this.fetchUserProfile();
+      // this.fetchUserProfile();
     }
 
     this.userType = localStorage.getItem('role') || '';
@@ -551,6 +554,11 @@ export class CreateAdminPost {
     formData.append('content', this.postContent);
     formData.append('role', localStorage.getItem('role') || '');
 
+    // Determine route language from current URL
+    const currentRouteLang = this.router.url.split('/').filter(Boolean)[0]; // 'te' or 'en'
+    const targetLanguage = currentRouteLang === 'te' ? 'Telugu' : 'English';
+
+    formData.append('targetLanguage', targetLanguage);
     // 2. Selected Tags (sending array of IDs/Names as JSON)
     const tagIds = this.savedTags().map((tag) => tag.id);
     formData.append('tagIds', JSON.stringify(tagIds));
@@ -817,29 +825,86 @@ export class CreateAdminPost {
   }
 
   // Submit comment or reply
-  submitComment(post: Post) {
-    if (!post.newCommentText?.trim()) return;
+  submitComment(post: any) {
+    // if (!post.newCommentText?.trim()) return;
 
-    const commentPayload = {
-      postId: post._id,
-      userId: this.userId,
-      username: this.commentUsername,
-      content: post.newCommentText,
-      parentId: post.replyingToId || null,
-    };
+    // const commentPayload = {
+    //   postId: post._id,
+    //   userId: this.userId,
+    //   username: this.commentUsername,
+    //   content: post.newCommentText,
+    //   parentId: post.replyingToId || null,
+    // };
 
-    // this.http.post('http://localhost:5000/api/comments', commentPayload)
-    this.service.postAdminComments(commentPayload).subscribe({
-      next: (newComment: any) => {
-        if (!post.comments) post.comments = [];
-        post.comments.push(newComment);
-        post.newCommentText = '';
-        post.replyingToId = null;
-        // post.showComments = !post.showComments;
-        this.cd.detectChanges();
-      },
-      error: (err) => console.error('Failed to submit comment', err),
-    });
+    // // this.http.post('http://localhost:5000/api/comments', commentPayload)
+    // this.service.postAdminComments(commentPayload).subscribe({
+    //   next: (newComment: any) => {
+    //     if (!post.comments) post.comments = [];
+    //     post.comments.push(newComment);
+    //     post.newCommentText = '';
+    //     post.replyingToId = null;
+    //     // post.showComments = !post.showComments;
+    //     this.cd.detectChanges();
+    //   },
+    //   error: (err) => console.error('Failed to submit comment', err),
+    // });
+    const text = post.newCommentText?.trim();
+    if (!text) return;
+
+    if (post.replyingToId) {
+      // Logic for adding a nested reply
+      const payload = {
+        postId: post._id,
+        userId: this.userId,
+        username: this.commentUsername,
+        content: text,
+        parentId: post.replyingToId || null,
+      };
+
+      this.service.postAdminComments(payload).subscribe({
+        next: (response: any) => {
+          console.log('response reply', response);
+          // Find parent comment and append reply locally
+          const parentComment = post.allComments.find((c: any) => c._id === post.replyingToId);
+          console.log('parentComment', parentComment);
+          if (parentComment) {
+            // parentComment.replies = parentComment.replies || [];
+            if (!parentComment.replies) {
+              parentComment.replies = [];
+            }
+            // parentComment.replies.push(response);
+            parentComment.replies = [...(parentComment.replies || []), response];
+            this.cd.detectChanges();
+          }
+          // Reset reply input state
+          post.replyingToId = null;
+          post.newCommentText = '';
+          this.cd.detectChanges();
+        },
+        error: (err: any) => console.error('Error submitting reply', err),
+      });
+    } else {
+      const commentPayload = {
+        postId: post._id,
+        userId: this.userId,
+        username: this.commentUsername,
+        content: post.newCommentText,
+        parentId: post.replyingToId || null,
+      };
+      // this.http.post('http://localhost:5000/api/comments', commentPayload)
+      this.service.postAdminComments(commentPayload).subscribe({
+        next: (newComment: any) => {
+          console.log('newComment', newComment);
+          if (!post.comments) post.allComments = [];
+          post.allComments.push(newComment);
+          post.newCommentText = '';
+          post.replyingToId = null;
+          // post.showComments = !post.showComments;
+          this.cd.detectChanges();
+        },
+        error: (err) => console.error('Failed to submit comment', err),
+      });
+    }
   }
 
   startEditing(post: any): void {
@@ -995,7 +1060,7 @@ export class CreateAdminPost {
         if (res.data && res.data.profileImage) {
           const path = res.data.profileImage;
           const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-          this.adminPicture = `${this.apiUrl}${cleanedPath}`;
+          this.userProfileImage = `${this.apiUrl}${cleanedPath}`;
           console.log('this.adminPicture', this.adminPicture);
           this.cd.detectChanges();
         }

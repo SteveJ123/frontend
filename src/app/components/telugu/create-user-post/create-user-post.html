@@ -799,19 +799,22 @@
                     >
                       <span
                         >Replying to <strong>{{ comment.username }}</strong></span
-                      >--replyto
+                      >
                       <button
                         (click)="post.replyingToId = null"
                         class="text-[#88304E] hover:underline font-semibold"
                       >
-                        Cancel --- replyto
+                        Cancel
                       </button>
                     </div>
 
                     <div class="flex items-start gap-2.5">
                       <div class="w-7 h-7 rounded-full bg-gray-300 shrink-0 overflow-hidden">
                         <img
-                          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                          [src]="
+                            mediaApiUrl + userProfileImage ||
+                            'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+                          "
                           alt="User"
                           class="w-full h-full object-cover"
                         />
@@ -834,7 +837,7 @@
                             [disabled]="!post.newCommentText?.trim()"
                             class="text-xs font-semibold px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 transition"
                           >
-                            Post Reply---submitComment
+                            Post Reply
                           </button>
                         </div>
                       </div>
@@ -889,7 +892,10 @@
                 <div class="flex items-start gap-3">
                   <div class="w-9 h-9 rounded-full bg-gray-300 shrink-0 overflow-hidden">
                     <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                      [src]="
+                        mediaApiUrl + this.userProfileImage ||
+                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+                      "
                       alt="User"
                       class="w-full h-full object-cover"
                     />
