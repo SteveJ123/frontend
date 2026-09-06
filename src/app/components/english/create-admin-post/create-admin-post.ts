@@ -101,7 +101,7 @@ interface Post {
 })
 export class CreateAdminPost {
   // isSidebarOpen = signal(false);
-
+  private apiUrl = `${apiUrl}`;
   upcomingSessions: Session[] = [
     {
       id: '1',
@@ -193,7 +193,7 @@ export class CreateAdminPost {
   private cd = inject(ChangeDetectorRef);
   username: any = this.authService.getUserName();
   commentUsername = this.authService.getUserName();
-  userId = this.authService.getUserId();
+  userId: any = '';
 
   private toastService = inject(ToastService);
 
@@ -211,9 +211,16 @@ export class CreateAdminPost {
   weeklyTopper: any = [];
 
   activeTab: any = 'alltime';
+
+  adminPicture = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
+    if (this.authService.getUserId()) {
+      this.userId = this.authService.getUserId();
+      this.fetchUserProfile();
+    }
+
     this.userType = localStorage.getItem('role') || '';
 
     this.fetchLeaderBoard();
@@ -979,5 +986,23 @@ export class CreateAdminPost {
       this.filteredUsers = [...this.weeklyTopper];
       this.cd.detectChanges();
     }
+  }
+
+  fetchUserProfile(): void {
+    this.service.getPersonalDetails(this.userId, 'English').subscribe({
+      next: (res: any) => {
+        console.log('res profile', res);
+        if (res.data && res.data.profileImage) {
+          const path = res.data.profileImage;
+          const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+          this.adminPicture = `${this.apiUrl}${cleanedPath}`;
+          console.log('this.adminPicture', this.adminPicture);
+          this.cd.detectChanges();
+        }
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch profile image for header:', err);
+      },
+    });
   }
 }

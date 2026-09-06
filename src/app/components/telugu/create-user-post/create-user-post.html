@@ -762,7 +762,7 @@
                   <div class="flex items-start gap-3">
                     <img
                       [src]="
-                        comment.avatar ||
+                        mediaApiUrl + comment.userId.profileImage ||
                         'https://api.dicebear.com/7.x/avataaars/svg?seed=' + comment.username
                       "
                       class="w-9 h-9 rounded-full object-cover shrink-0"
@@ -799,12 +799,12 @@
                     >
                       <span
                         >Replying to <strong>{{ comment.username }}</strong></span
-                      >
+                      >--replyto
                       <button
                         (click)="post.replyingToId = null"
                         class="text-[#88304E] hover:underline font-semibold"
                       >
-                        Cancel
+                        Cancel --- replyto
                       </button>
                     </div>
 
@@ -834,7 +834,7 @@
                             [disabled]="!post.newCommentText?.trim()"
                             class="text-xs font-semibold px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 transition"
                           >
-                            Post Reply
+                            Post Reply---submitComment
                           </button>
                         </div>
                       </div>
@@ -849,7 +849,7 @@
                     <div *ngFor="let reply of comment.replies" class="flex items-start gap-2.5">
                       <img
                         [src]="
-                          reply.avatar ||
+                          mediaApiUrl + reply.userId.profileImage ||
                           'https://api.dicebear.com/7.x/avataaars/svg?seed=' + reply.username
                         "
                         class="w-7 h-7 rounded-full object-cover shrink-0"

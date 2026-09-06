@@ -78,7 +78,7 @@
                     class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200 shadow-xs"
                   >
                     <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Legala"
+                      [src]="adminPicture"
                       alt="User Avatar"
                       class="w-full h-full object-cover"
                     />
@@ -785,11 +785,8 @@
                 <div *ngFor="let comment of post.comments" class="space-y-3">
                   <!-- Main/Parent Comment -->
                   <div class="flex items-start gap-3">
-                    <img
-                      [src]="
-                        comment.avatar ||
-                        'https://api.dicebear.com/7.x/avataaars/svg?seed=' + comment.username
-                      "
+                    ----<img
+                      [src]="'https://api.dicebear.com/7.x/avataaars/svg?seed='"
                       class="w-9 h-9 rounded-full object-cover shrink-0"
                       alt="Avatar"
                     />

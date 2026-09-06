@@ -80,15 +80,15 @@ interface Comment {
 //   replyingToId?: string | null; // Tracks comment ID being replied to
 // }
 
-interface Post {
-  _id: string;
-  content: string;
-  comments: Comment[];
-  showComments: boolean;
-  newCommentText: string;
-  replyingToId: string | null;
-  loadingComments?: boolean; // Add this line
-}
+// interface Post {
+//   _id: string;
+//   content: string;
+//   comments: Comment[];
+//   showComments: boolean;
+//   newCommentText: string;
+//   replyingToId: string | null;
+//   loadingComments?: boolean; // Add this line
+// }
 
 @Component({
   selector: 'app-create-user-post',
@@ -101,6 +101,13 @@ interface Post {
 })
 export class CreateUserPost {
   // isSidebarOpen = signal(false);
+  private apiUrl = apiUrl;
+
+  // Public getter for template access
+  mediaApiUrl: any = '';
+  // get mediaApiUrl(): string {
+  //   return this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
+  // }
   private toastService = inject(ToastService);
   upcomingSessions: Session[] = [
     {
@@ -207,6 +214,7 @@ export class CreateUserPost {
   commentUsername = this.authService.getUserName();
   userId = this.authService.getUserId();
 
+  profileImage = localStorage.getItem('profileImage');
   viewedPostIds: any = new Set<string>();
   get currentRouteLanguage(): string {
     const urlSegments = this.router.url.split('/').filter(Boolean); // e.g. ['te', 'user-feed']
@@ -222,6 +230,7 @@ export class CreateUserPost {
     // 1. Capture target postId from query parameters
     this.userLanguage = this.authService.getUserLanguage();
     this.userType = this.authService.getUserRole();
+    this.mediaApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
 
     this.getPostsObservable();
 
@@ -721,7 +730,7 @@ export class CreateUserPost {
   }
 
   // Toggle comments section and load comments from backend
-  toggleComments(post: Post) {
+  toggleComments(post: any) {
     post.showComments = !post.showComments;
     console.log('post.showComments', post.showComments);
 
@@ -731,7 +740,7 @@ export class CreateUserPost {
     }
   }
 
-  loadComments(post: Post) {
+  loadComments(post: any) {
     this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`).subscribe({
       next: (data) => {
         const comments = data?.comments || [];
@@ -748,12 +757,12 @@ export class CreateUserPost {
   }
 
   // Prepare component state when user clicks 'Reply' on a specific comment
-  setReplyTo(post: Post, parentCommentId: string) {
+  setReplyTo(post: any, parentCommentId: string) {
     post.replyingToId = parentCommentId;
   }
 
   // Submit comment or reply
-  submitComment(post: Post) {
+  submitComment(post: any) {
     if (!post.newCommentText?.trim()) return;
 
     const commentPayload = {
@@ -764,12 +773,14 @@ export class CreateUserPost {
       parentId: post.replyingToId || null,
     };
 
-    this.http.post('http://localhost:5000/api/comments', commentPayload).subscribe({
+    this.service.postComments(commentPayload).subscribe({
       next: (newComment: any) => {
         if (!post.comments) post.comments = [];
-        post.comments.push(newComment);
+        // post.comments.push(newComment);
+        post.comments = [...post.comments, newComment];
         post.newCommentText = '';
         post.replyingToId = null;
+        alert();
         // post.showComments = !post.showComments;
         this.cd.detectChanges();
       },

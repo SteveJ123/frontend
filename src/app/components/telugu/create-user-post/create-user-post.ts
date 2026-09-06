@@ -101,6 +101,7 @@ interface Post {
 })
 export class CreateUserPost {
   // isSidebarOpen = signal(false);
+  private apiUrl = apiUrl;
   private toastService = inject(ToastService);
   upcomingSessions: Session[] = [
     {
@@ -218,12 +219,13 @@ export class CreateUserPost {
   }
   userLanguage: any = '';
   userType: any = '';
-
+  mediaApiUrl: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
     this.userLanguage = this.authService.getUserLanguage();
     this.userType = this.authService.getUserRole();
+    this.mediaApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
 
     this.getPostsObservable();
 
@@ -751,33 +753,69 @@ export class CreateUserPost {
   }
 
   // Prepare component state when user clicks 'Reply' on a specific comment
-  setReplyTo(post: Post, parentCommentId: string) {
+  setReplyTo(post: any, parentCommentId: string) {
     post.replyingToId = parentCommentId;
   }
 
   // Submit comment or reply
-  submitComment(post: Post) {
-    if (!post.newCommentText?.trim()) return;
+  submitComment(post: any) {
+    // if (!post.newCommentText?.trim()) return;
+    const text = post.newCommentText?.trim();
+    if (!text) return;
 
-    const commentPayload = {
-      postId: post._id,
-      userId: this.userId,
-      username: this.commentUsername,
-      content: post.newCommentText,
-      parentId: post.replyingToId || null,
-    };
+    if (post.replyingToId) {
+      // Logic for adding a nested reply
+      const payload = {
+        postId: post._id,
+        userId: this.userId,
+        username: this.commentUsername,
+        content: text,
+        parentId: post.replyingToId || null,
+      };
 
-    this.http.post('http://localhost:5000/api/comments', commentPayload).subscribe({
-      next: (newComment: any) => {
-        if (!post.comments) post.comments = [];
-        post.comments.push(newComment);
-        post.newCommentText = '';
-        post.replyingToId = null;
-        // post.showComments = !post.showComments;
-        this.cd.detectChanges();
-      },
-      error: (err) => console.error('Failed to submit comment', err),
-    });
+      this.service.postComments(payload).subscribe({
+        next: (response: any) => {
+          console.log('response reply', response);
+          // Find parent comment and append reply locally
+          const parentComment = post.comments.find((c: any) => c._id === post.replyingToId);
+          console.log('parentComment', parentComment);
+          if (parentComment) {
+            // parentComment.replies = parentComment.replies || [];
+            if (!parentComment.replies) {
+              parentComment.replies = [];
+            }
+            // parentComment.replies.push(response);
+            parentComment.replies = [...(parentComment.replies || []), response];
+            this.cd.detectChanges();
+          }
+          // Reset reply input state
+          post.replyingToId = null;
+          post.newCommentText = '';
+          this.cd.detectChanges();
+        },
+        error: (err: any) => console.error('Error submitting reply', err),
+      });
+    } else {
+      const commentPayload = {
+        postId: post._id,
+        userId: this.userId,
+        username: this.commentUsername,
+        content: post.newCommentText,
+        parentId: post.replyingToId || null,
+      };
+      // this.http.post('http://localhost:5000/api/comments', commentPayload)
+      this.service.postComments(commentPayload).subscribe({
+        next: (newComment: any) => {
+          if (!post.comments) post.comments = [];
+          post.comments.push(newComment);
+          post.newCommentText = '';
+          post.replyingToId = null;
+          // post.showComments = !post.showComments;
+          this.cd.detectChanges();
+        },
+        error: (err) => console.error('Failed to submit comment', err),
+      });
+    }
   }
 
   startEditing(post: any): void {

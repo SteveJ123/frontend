@@ -15,6 +15,7 @@ export interface LoginResponse {
   courseType: string;
   id: string;
   language: string;
+  profileImage: string;
 }
 
 @Injectable({
@@ -84,6 +85,7 @@ export class AuthService {
           localStorage.setItem('courseType', response.courseType);
           localStorage.setItem('userId', response.id);
           localStorage.setItem('language', response.language);
+          localStorage.setItem('profileImage', response.profileImage);
           // 2. Fetch notifications immediately
           this.service.fetchNotifications(response.id);
           this.isLoggedIn.set(true);
