@@ -402,7 +402,7 @@
               </div>
 
               <!-- EDIT/DELETE DROPDOWN (ONLY FOR POST OWNER) -->
-              <div *ngIf="post.userId === userId" class="relative group">
+              <div *ngIf="userType === 'admin'" class="relative group">
                 <button
                   (click)="toggleMenu(post._id, $event)"
                   class="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"

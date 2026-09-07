@@ -786,7 +786,6 @@ export class CreateAdminPost {
 
   // Submit comment or reply
   submitComment(post: any) {
-    alert();
     // if (!post.newCommentText?.trim()) return;
 
     // const commentPayload = {
@@ -815,6 +814,7 @@ export class CreateAdminPost {
 
     if (post.replyingToId) {
       // Logic for adding a nested reply
+      alert();
       const payload = {
         postId: post._id,
         userId: this.userId,
