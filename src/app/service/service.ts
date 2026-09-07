@@ -420,6 +420,10 @@ export class Service {
     return this.http.get<any>(`${this.apiUrl}notifications`, { params });
   }
 
+  getAdminProfile() {
+    return this.http.get(`${this.apiUrl}admin-profile`);
+  }
+
   /**
    * PATCH /api/notifications/:id/read
    * Marks a notification as read and updates state optimistically.

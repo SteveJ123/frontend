@@ -212,8 +212,10 @@ export class CreateAdminPost {
 
   activeTab: any = 'alltime';
   mediaApiUrl: any = '';
-  adminPicture = '';
+  // adminPicture = '';
   userProfileImage: any = '';
+  adminProfile: any = '';
+
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -225,6 +227,7 @@ export class CreateAdminPost {
     }
 
     this.userType = localStorage.getItem('role') || '';
+    this.fetchAdminProfile();
 
     this.fetchLeaderBoard();
 
@@ -239,6 +242,18 @@ export class CreateAdminPost {
           this.scrollToPost(this.targetPostId);
         }
       }
+    });
+  }
+
+  fetchAdminProfile() {
+    this.service.getAdminProfile().subscribe({
+      next: (response: any) => {
+        console.log('response admin profile', response);
+        this.adminProfile = response;
+      },
+      error: (error) => {
+        console.log(error);
+      },
     });
   }
 
@@ -1053,21 +1068,21 @@ export class CreateAdminPost {
     }
   }
 
-  fetchUserProfile(): void {
-    this.service.getPersonalDetails(this.userId, 'English').subscribe({
-      next: (res: any) => {
-        console.log('res profile', res);
-        if (res.data && res.data.profileImage) {
-          const path = res.data.profileImage;
-          const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-          this.userProfileImage = `${this.apiUrl}${cleanedPath}`;
-          console.log('this.adminPicture', this.adminPicture);
-          this.cd.detectChanges();
-        }
-      },
-      error: (err: any) => {
-        console.error('Failed to fetch profile image for header:', err);
-      },
-    });
-  }
+  // fetchUserProfile(): void {
+  //   this.service.getPersonalDetails(this.userId, 'English').subscribe({
+  //     next: (res: any) => {
+  //       console.log('res profile', res);
+  //       if (res.data && res.data.profileImage) {
+  //         const path = res.data.profileImage;
+  //         const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+  //         this.userProfileImage = `${this.apiUrl}${cleanedPath}`;
+  //         console.log('this.adminPicture', this.adminPicture);
+  //         this.cd.detectChanges();
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Failed to fetch profile image for header:', err);
+  //     },
+  //   });
+  // }
 }

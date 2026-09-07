@@ -196,6 +196,8 @@ export class CreateAdminPost {
   mediaApiUrl: any = '';
   adminPicture = '';
   userProfileImage: any = '';
+
+  adminProfile: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -204,9 +206,11 @@ export class CreateAdminPost {
     this.userProfileImage = localStorage.getItem('profileImage');
     this.mediaApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
 
+    this.fetchAdminProfile();
+
     if (this.authService.getUserId()) {
       this.userId = this.authService.getUserId();
-      this.fetchUserProfile();
+      // this.fetchUserProfile();
     }
 
     this.fetchLeaderBoard();
@@ -222,6 +226,20 @@ export class CreateAdminPost {
           this.scrollToPost(this.targetPostId);
         }
       }
+    });
+  }
+
+  fetchAdminProfile() {
+    this.service.getAdminProfile().subscribe({
+      next: (response: any) => {
+        console.log('response admin profile', response);
+        if (response.success) {
+          this.adminProfile = response.data[0].profileImage;
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
     });
   }
 
@@ -814,7 +832,6 @@ export class CreateAdminPost {
 
     if (post.replyingToId) {
       // Logic for adding a nested reply
-      alert();
       const payload = {
         postId: post._id,
         userId: this.userId,
@@ -1015,21 +1032,21 @@ export class CreateAdminPost {
     }
   }
 
-  fetchUserProfile(): void {
-    this.service.getPersonalDetails(this.userId, 'English').subscribe({
-      next: (res: any) => {
-        console.log('res profile', res);
-        if (res.data && res.data.profileImage) {
-          const path = res.data.profileImage;
-          const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-          this.adminPicture = `${this.apiUrl}${cleanedPath}`;
-          console.log('this.adminPicture', this.adminPicture);
-          this.cd.detectChanges();
-        }
-      },
-      error: (err: any) => {
-        console.error('Failed to fetch profile image for header:', err);
-      },
-    });
-  }
+  // fetchUserProfile(): void {
+  //   this.service.getPersonalDetails(this.userId, 'English').subscribe({
+  //     next: (res: any) => {
+  //       console.log('res profile', res);
+  //       if (res.data && res.data.profileImage) {
+  //         const path = res.data.profileImage;
+  //         const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+  //         this.adminPicture = `${this.apiUrl}${cleanedPath}`;
+  //         console.log('this.adminPicture', this.adminPicture);
+  //         this.cd.detectChanges();
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Failed to fetch profile image for header:', err);
+  //     },
+  //   });
+  // }
 }
