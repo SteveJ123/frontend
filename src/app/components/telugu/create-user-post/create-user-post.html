@@ -897,6 +897,11 @@
                       placeholder="కామెంట్‌ను జోడించండి..."
                       class="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
                     ></textarea>
+                    <emoji-picker
+                      *ngIf="showCommentPicker"
+                      class="w-full h-[320px] [--num-columns:6]"
+                      (emoji-click)="addCommentEmoji($event, commentContent, post)"
+                    ></emoji-picker>
 
                     <div class="flex items-center justify-between pt-1 border-t border-gray-200/60">
                       <div class="flex items-center space-x-2 text-gray-500">
@@ -906,13 +911,9 @@
                           (click)="toggleCommentPicker()"
                         >
                           😊
-                          <emoji-picker
-                            *ngIf="showCommentPicker"
-                            class="w-full h-[320px] [--num-columns:6]"
-                            (emoji-click)="addCommentEmoji($event, commentContent, post)"
-                          ></emoji-picker>
                         </button>
                         <!-- <button type="button" class="hover:text-gray-700 text-base">📷</button> -->
+                        <button type="button" class="hover:text-gray-700 text-base"></button>
                       </div>
 
                       <button

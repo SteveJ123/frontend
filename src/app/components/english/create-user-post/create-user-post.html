@@ -2,7 +2,6 @@
   class="bg-[#F4F5F7] font-sans text-gray-800 flex flex-col w-full min-h-screen overflow-x-hidden"
 >
   <!-- TOP NAVIGATION BAR -->
-
   <!-- MAIN CONTAINER LAYOUT -->
   <div class="flex flex-1 relative w-full max-w-6xl mx-auto">
     <!-- CENTER CONTENT AREA -->
@@ -808,6 +807,7 @@
                       >
                         <textarea
                           rows="2"
+                          #commentTextArea
                           [(ngModel)]="post.newCommentText"
                           [placeholder]="'Reply to ' + comment.username + '...'"
                           class="w-full bg-transparent text-xs text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
@@ -886,15 +886,29 @@
                   >
                     <textarea
                       rows="2"
+                      #commentContent
                       [(ngModel)]="post.newCommentText"
+                      (click)="showCommentPicker = false"
                       placeholder="Add a comment..."
                       class="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
                     ></textarea>
+                    <emoji-picker
+                      *ngIf="showCommentPicker"
+                      class="w-full h-[320px] [--num-columns:6]"
+                      (emoji-click)="addCommentEmoji($event, commentContent, post)"
+                    ></emoji-picker>
 
                     <div class="flex items-center justify-between pt-1 border-t border-gray-200/60">
                       <div class="flex items-center space-x-2 text-gray-500">
-                        <button type="button" class="hover:text-gray-700 text-base">😊</button>
-                        <button type="button" class="hover:text-gray-700 text-base">📷</button>
+                        <button
+                          type="button"
+                          class="hover:text-gray-700 text-base"
+                          (click)="toggleCommentPicker()"
+                        >
+                          😊
+                        </button>
+                        <!-- <button type="button" class="hover:text-gray-700 text-base">📷</button> -->
+                        <button type="button" class="hover:text-gray-700 text-base"></button>
                       </div>
 
                       <button

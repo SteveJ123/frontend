@@ -6,6 +6,7 @@ import {
   inject,
   signal,
   ViewChild,
+  CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +18,7 @@ import { AuthService } from '../../../service/AuthService';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
 import { Router } from '@angular/router';
+import 'emoji-picker-element'; // Import the web component side-effects
 
 interface LeaderboardUser {
   rank: number;
@@ -74,6 +76,7 @@ interface Post {
 @Component({
   selector: 'app-create-admin-post',
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], //
   templateUrl: './create-admin-post.html',
   styleUrl: './create-admin-post.css',
   host: {
@@ -1049,4 +1052,55 @@ export class CreateAdminPost {
   //     },
   //   });
   // }
+
+  messageText = '';
+  messageCommentText = '';
+  showPicker = false;
+  showCommentPicker = false;
+
+  togglePicker() {
+    this.showPicker = !this.showPicker;
+  }
+
+  toggleCommentPicker() {
+    this.showCommentPicker = !this.showCommentPicker;
+  }
+
+  addEmoji(event: any, textarea: HTMLTextAreaElement) {
+    const emoji = event.detail.unicode;
+
+    // Insert emoji at cursor position
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    this.postContent =
+      this.postContent +
+      this.messageText.substring(0, start) +
+      emoji +
+      this.messageText.substring(end);
+
+    // Restore focus & set cursor position after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    });
+  }
+
+  addCommentEmoji(event: any, textarea: HTMLTextAreaElement, post: any) {
+    const emoji = event.detail.unicode;
+
+    // Insert emoji at cursor position
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    post.newCommentText =
+      post.newCommentText +
+      this.messageCommentText.substring(0, start) +
+      emoji +
+      this.messageCommentText.substring(end);
+
+    // Restore focus & set cursor position after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    });
+  }
 }

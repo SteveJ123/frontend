@@ -972,18 +972,24 @@ export class CreateUserPost {
     this.activeMenuPostId = this.activeMenuPostId === postId ? null : postId;
   }
 
+  messageText = '';
+  messageCommentText = '';
+  showPicker = false;
+  showCommentPicker = false;
   // Clear error dynamically when the user starts typing
   onContentInput(): void {
     if (this.postContent.trim()) {
       this.showPostContentError = false;
     }
+    this.showPicker = false;
   }
-
-  messageText = '';
-  showPicker = false;
 
   togglePicker() {
     this.showPicker = !this.showPicker;
+  }
+
+  toggleCommentPicker() {
+    this.showCommentPicker = !this.showCommentPicker;
   }
 
   addEmoji(event: any, textarea: HTMLTextAreaElement) {
@@ -993,7 +999,29 @@ export class CreateUserPost {
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     this.postContent =
-      this.messageText.substring(0, start) + emoji + this.messageText.substring(end);
+      this.postContent +
+      this.messageText.substring(0, start) +
+      emoji +
+      this.messageText.substring(end);
+
+    // Restore focus & set cursor position after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    });
+  }
+
+  addCommentEmoji(event: any, textarea: HTMLTextAreaElement, post: any) {
+    const emoji = event.detail.unicode;
+
+    // Insert emoji at cursor position
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    post.newCommentText =
+      post.newCommentText +
+      this.messageCommentText.substring(0, start) +
+      emoji +
+      this.messageCommentText.substring(end);
 
     // Restore focus & set cursor position after emoji
     setTimeout(() => {
