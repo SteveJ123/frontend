@@ -6,6 +6,7 @@ import {
   inject,
   signal,
   ViewChild,
+  CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +18,7 @@ import { AuthService } from '../../../service/AuthService';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
 import { Router } from '@angular/router';
+import 'emoji-picker-element'; // Import the web component side-effects
 
 interface LeaderboardUser {
   rank: number;
@@ -93,6 +95,7 @@ interface Comment {
 @Component({
   selector: 'app-create-user-post',
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], //
   templateUrl: './create-user-post.html',
   styleUrl: './create-user-post.css',
   host: {
@@ -974,5 +977,28 @@ export class CreateUserPost {
     if (this.postContent.trim()) {
       this.showPostContentError = false;
     }
+  }
+
+  messageText = '';
+  showPicker = false;
+
+  togglePicker() {
+    this.showPicker = !this.showPicker;
+  }
+
+  addEmoji(event: any, textarea: HTMLTextAreaElement) {
+    const emoji = event.detail.unicode;
+
+    // Insert emoji at cursor position
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    this.postContent =
+      this.messageText.substring(0, start) + emoji + this.messageText.substring(end);
+
+    // Restore focus & set cursor position after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    });
   }
 }

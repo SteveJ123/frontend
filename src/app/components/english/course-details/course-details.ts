@@ -29,7 +29,7 @@ export class CourseDetails {
   selectedVideoFile: File | null = null;
   videoForm = {
     title: '',
-    duration: '',
+    videoUrl: '',
   };
 
   isEditMode: boolean = false;
@@ -82,7 +82,7 @@ export class CourseDetails {
     } else {
       this.isEditMode = false;
       this.selectedLectureId = null;
-      this.videoForm = { title: '', duration: '' };
+      this.videoForm = { title: '', videoUrl: '' };
     }
     this.selectedVideoFile = null;
     this.isModalOpen = true;
@@ -93,7 +93,7 @@ export class CourseDetails {
     this.isEditMode = false;
     this.selectedLectureId = null;
     this.selectedVideoFile = null;
-    this.videoForm = { title: '', duration: '' };
+    this.videoForm = { title: '', videoUrl: '' };
   }
 
   onFileSelected(event: Event): void {
@@ -107,17 +107,22 @@ export class CourseDetails {
     if (!this.videoForm.title) return;
 
     this.isSubmitting = true;
-    const formData = new FormData();
-    formData.append('title', this.videoForm.title);
-    formData.append('language', this.currentRouteLanguage);
+    // const formData = new FormData();
+    // formData.append('title', this.videoForm.title);
+    // formData.append('language', this.currentRouteLanguage);
 
-    if (this.selectedVideoFile) {
-      formData.append('video', this.selectedVideoFile);
-    }
+    const payload = {
+      title: this.videoForm.title,
+      language: this.currentRouteLanguage,
+      videoUrl: this.videoForm.videoUrl,
+    };
+    // if (this.selectedVideoFile) {
+    //   formData.append('video', this.selectedVideoFile);
+    // }
 
     if (this.isEditMode && this.selectedLectureId) {
       // Update existing lecture
-      this.service.updateLecture(this.courseId, this.selectedLectureId, formData).subscribe({
+      this.service.updateLecture(this.courseId, this.selectedLectureId, payload).subscribe({
         next: (res) => {
           this.course = res.data;
           this.isSubmitting = false;
@@ -134,9 +139,9 @@ export class CourseDetails {
       });
     } else {
       // Add new lecture
-      if (!this.selectedVideoFile) return;
+      if (!this.videoForm.videoUrl) return;
 
-      this.service.uploadLecture(this.courseId, formData).subscribe({
+      this.service.uploadLecture(this.courseId, payload).subscribe({
         next: (res) => {
           this.course = res.data;
           this.isSubmitting = false;

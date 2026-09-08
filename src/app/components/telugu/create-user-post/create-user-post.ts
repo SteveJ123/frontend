@@ -6,6 +6,7 @@ import {
   inject,
   signal,
   ViewChild,
+  CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +18,7 @@ import { AuthService } from '../../../service/AuthService';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
 import { Router } from '@angular/router';
-
+import 'emoji-picker-element'; // Import the web component side-effects
 interface LeaderboardUser {
   rank: number;
   name: string;
@@ -93,6 +94,7 @@ interface Post {
 @Component({
   selector: 'app-create-user-post',
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], //
   templateUrl: './create-user-post.html',
   styleUrl: './create-user-post.css',
   host: {
@@ -103,6 +105,7 @@ export class CreateUserPost {
   // isSidebarOpen = signal(false);
   private apiUrl = apiUrl;
   private toastService = inject(ToastService);
+  private elementRef = inject(ElementRef);
   upcomingSessions: Session[] = [
     {
       id: '1',
@@ -946,10 +949,63 @@ export class CreateUserPost {
     this.activeMenuPostId = this.activeMenuPostId === postId ? null : postId;
   }
 
+  messageText = '';
+  messageCommentText = '';
+  showPicker = false;
+  showCommentPicker = false;
   // Clear error dynamically when the user starts typing
   onContentInput(): void {
     if (this.postContent.trim()) {
       this.showPostContentError = false;
     }
+    this.showPicker = false;
   }
+
+  togglePicker() {
+    this.showPicker = !this.showPicker;
+  }
+
+  toggleCommentPicker() {
+    this.showCommentPicker = !this.showCommentPicker;
+  }
+
+  addEmoji(event: any, textarea: HTMLTextAreaElement) {
+    const emoji = event.detail.unicode;
+
+    // Insert emoji at cursor position
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    this.postContent =
+      this.postContent +
+      this.messageText.substring(0, start) +
+      emoji +
+      this.messageText.substring(end);
+
+    // Restore focus & set cursor position after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    });
+  }
+
+  addCommentEmoji(event: any, textarea: HTMLTextAreaElement, post: any) {
+    const emoji = event.detail.unicode;
+
+    // Insert emoji at cursor position
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    post.newCommentText =
+      post.newCommentText +
+      this.messageCommentText.substring(0, start) +
+      emoji +
+      this.messageCommentText.substring(end);
+
+    // Restore focus & set cursor position after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    });
+  }
+
+  // Listen for clicks anywhere in the document
 }

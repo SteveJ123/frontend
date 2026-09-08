@@ -82,9 +82,9 @@
             <video
               controls
               preload="metadata"
-              class="w-full max-h-[300px] rounded-lg object-contain"
+              class="w-[1920px] h-[600px] rounded-lg object-contain"
             >
-              <source [src]="'http://localhost:5000' + lecture.videoUrl" type="video/mp4" />
+              <source [src]="lecture.videoUrl" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
@@ -148,11 +148,17 @@
 
         <div>
           <label class="block text-xs font-semibold text-gray-700 mb-1">Video File</label>
-          <input
+          <!-- <input
             type="file"
             accept="video/*"
             (change)="onFileSelected($event)"
             class="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-xl bg-white text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer outline-none"
+          /> -->
+          <input
+            type="text"
+            [(ngModel)]="videoForm.videoUrl"
+            placeholder="update url link for video"
+            class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"
           />
           <p *ngIf="selectedVideoFile" class="text-[10px] text-gray-500 mt-1">
             Selected: {{ selectedVideoFile.name }}

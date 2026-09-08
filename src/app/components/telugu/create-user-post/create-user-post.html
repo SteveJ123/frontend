@@ -89,6 +89,7 @@
                     #postContentInput
                     [(ngModel)]="postContent"
                     (input)="onContentInput()"
+                    (click)="showPicker = false"
                     placeholder="భావాలను మరియు ఆలోచనలను వ్యక్తపరచండి"
                     class="w-full bg-transparent text-gray-700 placeholder-gray-400 text-sm sm:text-base leading-relaxed focus:outline-none resize-none scrollbar-thin"
                   ></textarea>
@@ -209,7 +210,7 @@
                     <button
                       type="button"
                       class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition cursor-pointer"
-                      (click)="toggleEmojiPicker()"
+                      (click)="togglePicker()"
                     >
                       <svg
                         class="w-4 h-4 sm:w-5 sm:h-5"
@@ -228,34 +229,17 @@
 
                     <!-- Emoji Picker Popover -->
                     <div
-                      *ngIf="showEmojiPicker"
+                      *ngIf="showPicker"
                       class="absolute bottom-12 left-0 z-50 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-gray-200 p-3 animate-fadeIn"
+                      (click)="$event.stopPropagation()"
                     >
                       <!-- Popup Header -->
-                      <div
-                        class="flex items-center justify-between pb-2 mb-2 border-b border-gray-100"
-                      >
-                        <span class="text-xs font-bold text-gray-700">Select Emoji</span>
-                        <button
-                          (click)="toggleEmojiPicker()"
-                          class="text-gray-400 hover:text-gray-600 text-xs font-bold w-5 h-5 rounded-full hover:bg-gray-100 flex items-center justify-center"
-                        >
-                          ✕
-                        </button>
-                      </div>
 
                       <!-- Emoji Grid Collection -->
-                      <div
-                        class="grid grid-cols-6 gap-1 max-h-48 overflow-y-auto scrollbar-thin p-1"
-                      >
-                        <button
-                          *ngFor="let emoji of emojiList"
-                          (click)="selectEmoji(emoji)"
-                          class="w-8 h-8 text-lg flex items-center justify-center rounded-lg hover:bg-gray-100 transition cursor-pointer"
-                        >
-                          {{ emoji }}
-                        </button>
-                      </div>
+                      <emoji-picker
+                        (emoji-click)="addEmoji($event, postContentInput)"
+                        class="w-full h-[320px] [--num-columns:6]"
+                      ></emoji-picker>
                     </div>
                   </div>
                 </div>
@@ -825,6 +809,7 @@
                       >
                         <textarea
                           rows="2"
+                          #commentTextArea
                           [(ngModel)]="post.newCommentText"
                           [placeholder]="'Reply to ' + comment.username + '...'"
                           class="w-full bg-transparent text-xs text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
@@ -906,15 +891,28 @@
                   >
                     <textarea
                       rows="2"
+                      #commentContent
                       [(ngModel)]="post.newCommentText"
+                      (click)="showCommentPicker = false"
                       placeholder="కామెంట్‌ను జోడించండి..."
                       class="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none resize-none"
                     ></textarea>
 
                     <div class="flex items-center justify-between pt-1 border-t border-gray-200/60">
                       <div class="flex items-center space-x-2 text-gray-500">
-                        <button type="button" class="hover:text-gray-700 text-base">😊</button>
-                        <button type="button" class="hover:text-gray-700 text-base">📷</button>
+                        <button
+                          type="button"
+                          class="hover:text-gray-700 text-base"
+                          (click)="toggleCommentPicker()"
+                        >
+                          😊
+                          <emoji-picker
+                            *ngIf="showCommentPicker"
+                            class="w-full h-[320px] [--num-columns:6]"
+                            (emoji-click)="addCommentEmoji($event, commentContent, post)"
+                          ></emoji-picker>
+                        </button>
+                        <!-- <button type="button" class="hover:text-gray-700 text-base">📷</button> -->
                       </div>
 
                       <button
