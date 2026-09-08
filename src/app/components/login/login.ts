@@ -39,7 +39,7 @@ export class Login {
           return this.router.navigate(['/te/community-post']);
           // return this.router.navigate(['/admin']);
         }
-
+        console.log('this.authService.getUserLanguage()', this.authService.getUserLanguage());
         const rawLang = this.authService.getUserLanguage() ?? 'English';
         const lang = rawLang.toLowerCase().trim() === 'english' ? 'en' : 'te';
 

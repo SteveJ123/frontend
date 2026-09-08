@@ -741,8 +741,9 @@ export class CreateUserPost {
   }
 
   loadComments(post: any) {
-    this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`).subscribe({
-      next: (data) => {
+    // this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`)
+    this.service.getPostComments(post._id).subscribe({
+      next: (data: any) => {
         const comments = data?.comments || [];
         post.comments = [...comments];
         post.loadingComments = false; // Stop loading state
@@ -763,29 +764,85 @@ export class CreateUserPost {
 
   // Submit comment or reply
   submitComment(post: any) {
-    if (!post.newCommentText?.trim()) return;
+    // if (!post.newCommentText?.trim()) return;
 
-    const commentPayload = {
-      postId: post._id,
-      userId: this.userId,
-      username: this.commentUsername,
-      content: post.newCommentText,
-      parentId: post.replyingToId || null,
-    };
+    // const commentPayload = {
+    //   postId: post._id,
+    //   userId: this.userId,
+    //   username: this.commentUsername,
+    //   content: post.newCommentText,
+    //   parentId: post.replyingToId || null,
+    // };
 
-    this.service.postComments(commentPayload).subscribe({
-      next: (newComment: any) => {
-        if (!post.comments) post.comments = [];
-        // post.comments.push(newComment);
-        post.comments = [...post.comments, newComment];
-        post.newCommentText = '';
-        post.replyingToId = null;
-        alert();
-        // post.showComments = !post.showComments;
-        this.cd.detectChanges();
-      },
-      error: (err) => console.error('Failed to submit comment', err),
-    });
+    // this.service.postComments(commentPayload).subscribe({
+    //   next: (newComment: any) => {
+    //     if (!post.comments) post.comments = [];
+    //     // post.comments.push(newComment);
+    //     post.comments = [...post.comments, newComment];
+    //     post.newCommentText = '';
+    //     post.replyingToId = null;
+    //     // post.showComments = !post.showComments;
+    //     this.cd.detectChanges();
+    //   },
+    //   error: (err) => console.error('Failed to submit comment', err),
+    // });
+
+    const text = post.newCommentText?.trim();
+    if (!text) return;
+
+    if (post.replyingToId) {
+      // Logic for adding a nested reply
+      const payload = {
+        postId: post._id,
+        userId: this.userId,
+        username: this.commentUsername,
+        content: text,
+        parentId: post.replyingToId || null,
+      };
+
+      this.service.postComments(payload).subscribe({
+        next: (response: any) => {
+          console.log('response reply', response);
+          // Find parent comment and append reply locally
+          const parentComment = post.comments.find((c: any) => c._id === post.replyingToId);
+          console.log('parentComment', parentComment);
+          if (parentComment) {
+            // parentComment.replies = parentComment.replies || [];
+            if (!parentComment.replies) {
+              parentComment.replies = [];
+            }
+            // parentComment.replies.push(response);
+            parentComment.replies = [...(parentComment.replies || []), response];
+            this.cd.detectChanges();
+          }
+          // Reset reply input state
+          post.replyingToId = null;
+          post.newCommentText = '';
+          this.cd.detectChanges();
+        },
+        error: (err: any) => console.error('Error submitting reply', err),
+      });
+    } else {
+      const commentPayload = {
+        postId: post._id,
+        userId: this.userId,
+        username: this.commentUsername,
+        content: post.newCommentText,
+        parentId: post.replyingToId || null,
+      };
+      // this.http.post('http://localhost:5000/api/comments', commentPayload)
+      this.service.postComments(commentPayload).subscribe({
+        next: (newComment: any) => {
+          if (!post.comments) post.comments = [];
+          post.comments.push(newComment);
+          post.newCommentText = '';
+          post.replyingToId = null;
+          // post.showComments = !post.showComments;
+          this.cd.detectChanges();
+        },
+        error: (err) => console.error('Failed to submit comment', err),
+      });
+    }
   }
 
   startEditing(post: any): void {

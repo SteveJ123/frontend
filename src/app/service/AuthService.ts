@@ -123,7 +123,7 @@ export class AuthService {
     return localStorage.getItem('userId');
   }
 
-  getUserLanguage(): string | null {
+  getUserLanguage(): any {
     return localStorage.getItem('language');
   }
 }

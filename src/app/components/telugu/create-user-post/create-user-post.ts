@@ -220,12 +220,12 @@ export class CreateUserPost {
   userLanguage: any = '';
   userType: any = '';
   mediaApiUrl: any = '';
-  userProfileImage:any = ""
+  userProfileImage: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
     this.userLanguage = this.authService.getUserLanguage();
-    this.userProfileImage= localStorage.getItem('profileImage');
+    this.userProfileImage = localStorage.getItem('profileImage');
     this.userType = this.authService.getUserRole();
     this.mediaApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
 
@@ -739,8 +739,9 @@ export class CreateUserPost {
   }
 
   loadComments(post: Post) {
-    this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`).subscribe({
-      next: (data) => {
+    // this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`)
+    this.service.getPostComments(post._id).subscribe({
+      next: (data: any) => {
         const comments = data?.comments || [];
         post.comments = [...comments];
         post.loadingComments = false; // Stop loading state

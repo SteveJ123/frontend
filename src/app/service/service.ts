@@ -368,7 +368,7 @@ export class Service {
   }
 
   // Upload lecture video (append language inside FormData)
-  uploadLecture(courseId: string, formData: FormData): Observable<any> {
+  uploadLecture(courseId: string, formData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}course/${courseId}/lectures`, formData);
   }
 
@@ -390,7 +390,7 @@ export class Service {
   // }
 
   // Update an existing lecture
-  updateLecture(courseId: string, lectureId: string, formData: FormData): Observable<any> {
+  updateLecture(courseId: string, lectureId: string, formData: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}course/${courseId}/lectures/${lectureId}`, formData);
   }
 
