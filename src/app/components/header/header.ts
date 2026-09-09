@@ -190,43 +190,6 @@ export class Header {
     });
   }
 
-  // onNotificationClick(notification: any): void {
-  //   // Step 1: Handle read status updates dynamically
-  //   if (!notification.isRead) {
-  //     // Optimistic UI update
-  //     notification.isRead = true;
-  //     this.recalculateUnreadCount();
-
-  //     this.service.notificationsUpdateRead(notification._id).subscribe({
-  //       error: (err) => {
-  //         console.error('Failed to update notification status:', err);
-  //         // Rollback on API failure
-  //         notification.isRead = false;
-  //         this.recalculateUnreadCount();
-  //       },
-  //     });
-  //   }
-
-  //   // Step 2: Safely extract target postId string
-  //   const targetPostId =
-  //     typeof notification.postId === 'object' && notification.postId !== null
-  //       ? notification.postId._id
-  //       : notification.postId;
-
-  //   // Step 3: Determine target route based on post type (User vs Admin Post)
-  //   const targetRoute = notification.postModel === 'AdminPost' ? 'community-post' : 'user-feed';
-
-  //   // Step 4: Navigate to the target route with the postId query parameter for auto-scrolling
-  //   if (targetPostId) {
-  //     this.router.navigate(['/', this.currentLang, targetRoute], {
-  //       queryParams: { postId: targetPostId },
-  //     });
-  //   }
-
-  //   // Step 5: Close dropdown
-  //   this.isNotificationOpen = false;
-  // }
-
   onNotificationClick(notification: any): void {
     console.log('notification', notification);
     if (!notification.isRead) {
@@ -255,8 +218,46 @@ export class Header {
       this.currentLang = notification.postId.language === 'English' ? 'en' : 'te';
     }
 
+    // 4. Navigate conditionally based on 'comment' vs 'post' type
+    // if (notification.type === 'comment') {
+    //   this.router.navigate(['/', this.currentLang, 'community-post'], {
+    //     queryParams: {
+    //       postId: targetPostId,
+    //       commentId: notification.commentId,
+    //     },
+    //     fragment: `comment-${notification.commentId}`, // Enables auto-scroll positioning
+    //   });
+    // } else {
+    //   this.router.navigate(['/', this.currentLang, 'community-post'], {
+    //     queryParams: { postId: targetPostId },
+    //   });
+    // }
+
     if (targetPostId) {
       this.router.navigate(['/', this.currentLang, targetRoute], {
+        queryParams: { postId: targetPostId },
+      });
+    }
+
+    // Check if commentId exists, or if postModel indicates an AdminPost comment
+    const isComment = !!notification.commentId || notification.postModel === 'AdminPost';
+
+    if (isComment) {
+      const targetPostId =
+        typeof notification.postId === 'object' ? notification.postId._id : notification.postId;
+
+      this.router.navigate(['/', this.currentLang, 'community-post'], {
+        queryParams: {
+          postId: targetPostId,
+          commentId: notification.commentId,
+        },
+        fragment: notification.commentId ? `comment-${notification.commentId}` : undefined,
+      });
+    } else {
+      const targetPostId =
+        typeof notification.postId === 'object' ? notification.postId._id : notification.postId;
+
+      this.router.navigate(['/', this.currentLang, 'community-post'], {
         queryParams: { postId: targetPostId },
       });
     }

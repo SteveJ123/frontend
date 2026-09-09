@@ -776,7 +776,11 @@
 
               <!-- List of Comments -->
               <ng-template #commentsList>
-                <div *ngFor="let comment of post.allComments" class="space-y-3">
+                <div
+                  *ngFor="let comment of post.allComments"
+                  class="space-y-3"
+                  [id]="'comment-' + comment._id"
+                >
                   <!-- Main/Parent Comment -->
                   <div class="flex items-start gap-3">
                     <img
@@ -868,7 +872,11 @@
                     *ngIf="comment.replies?.length"
                     class="ml-10 pl-3 border-l-2 border-gray-200 space-y-3"
                   >
-                    <div *ngFor="let reply of comment.replies" class="flex items-start gap-2.5">
+                    <div
+                      *ngFor="let reply of comment.replies"
+                      class="flex items-start gap-2.5"
+                      [id]="'comment-' + reply._id"
+                    >
                       <img
                         [src]="
                           mediaApiUrl + reply.userId.profileImage ||

@@ -877,6 +877,7 @@ export class CreateAdminPost {
         username: this.commentUsername,
         content: text,
         parentId: post.replyingToId || null,
+        language: this.currentRouteLanguage,
       };
 
       this.service.postAdminComments(payload).subscribe({
@@ -908,6 +909,7 @@ export class CreateAdminPost {
         username: this.commentUsername,
         content: post.newCommentText,
         parentId: post.replyingToId || null,
+        language: this.currentRouteLanguage,
       };
       // this.http.post('http://localhost:5000/api/comments', commentPayload)
       this.service.postAdminComments(commentPayload).subscribe({

@@ -201,6 +201,7 @@ export class CreateAdminPost {
   userProfileImage: any = '';
 
   adminProfile: any = '';
+  targetCommentId: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -219,17 +220,94 @@ export class CreateAdminPost {
     this.fetchLeaderBoard();
 
     this.getPostsObservable();
+    // this.route.queryParams.subscribe((params) => {
+    //   this.targetPostId = params['postId'] || null;
+    //   if (this.targetPostId) {
+    //     console.log('this.cachedPosts', this.cachedPosts);
+    //     if (this.cachedPosts.length > 0) {
+    //       // User is ALREADY on the feed page and data is loaded:
+    //       // Scroll immediately without re-fetching posts
+    //       this.scrollToPost(this.targetPostId);
+    //     }
+    //   }
+    // });
+
     this.route.queryParams.subscribe((params) => {
       this.targetPostId = params['postId'] || null;
+      this.targetCommentId = params['commentId'] || null;
+
       if (this.targetPostId) {
-        console.log('this.cachedPosts', this.cachedPosts);
-        if (this.cachedPosts.length > 0) {
-          // User is ALREADY on the feed page and data is loaded:
-          // Scroll immediately without re-fetching posts
-          this.scrollToPost(this.targetPostId);
-        }
+        this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
       }
     });
+  }
+
+  handlePostAndCommentNavigation(postId: string, commentId: string | null): void {
+    // Locate target post in post array
+    const post = this.posts.find((p: any) => p._id === postId);
+
+    if (post) {
+      // 1. Expand comments section if it isn't already open
+      if (!post.showComments) {
+        this.toggleComments(post); // Opens comments section & loads comments from backend
+      }
+
+      // 2. Scroll and highlight target element
+      setTimeout(() => {
+        if (commentId) {
+          // Attempt to scroll to specific comment element
+          const commentElement = document.getElementById(`comment-${commentId}`);
+          console.log("commentElement", commentElement)
+          if (commentElement) {
+            commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            this.highlightElement(commentElement);
+            return;
+          }
+        }
+
+        // Fallback: Scroll to post container
+        this.scrollToPost(postId);
+      }, 500); // 500ms timeout ensures DOM renders comments section
+    }
+  }
+
+  scrollToPost(postId: string): void {
+    const postElement = document.getElementById(`post-${postId}`);
+    if (postElement) {
+      postElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.highlightElement(postElement);
+    }
+  }
+
+  highlightElement(element: HTMLElement): void {
+    element.classList.add('ring-2', 'ring-blue-500', 'transition-all', 'duration-500');
+    setTimeout(() => {
+      element.classList.remove('ring-2', 'ring-blue-500');
+    }, 3000);
+  }
+
+  // Ensure this triggers whenever posts are fetched/updated from backend API
+  onPostsLoaded(postsData: any[]): void {
+    this.posts = postsData;
+    if (this.targetPostId) {
+      this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+    }
+  }
+
+  toggleComments(post: any): void {
+    post.showComments = !post.showComments;
+    if (post.showComments && (!post.allComments || post.allComments.length === 0)) {
+      this.fetchCommentsForPost(post);
+    }
+  }
+
+  fetchCommentsForPost(post: any): void {
+    post.loadingComments = true;
+    // Replace with your service call to load comments
+    /* this.service.getComments(post._id).subscribe((comments) => {
+      post.allComments = comments;
+      post.loadingComments = false;
+    }); */
   }
 
   fetchAdminProfile() {
@@ -294,22 +372,22 @@ export class CreateAdminPost {
     });
   }
 
-  scrollToPost(postId: string): void {
-    const element = document.getElementById('post-' + postId);
+  // scrollToPost(postId: string): void {
+  //   const element = document.getElementById('post-' + postId);
 
-    if (element) {
-      // Smooth scroll to the post element
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //   if (element) {
+  //     // Smooth scroll to the post element
+  //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Highlight post briefly to draw user attention
-      element.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50/30');
+  //     // Highlight post briefly to draw user attention
+  //     element.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50/30');
 
-      setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50/30');
-        this.cd.detectChanges();
-      }, 2500);
-    }
-  }
+  //     setTimeout(() => {
+  //       element.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50/30');
+  //       this.cd.detectChanges();
+  //     }, 2500);
+  //   }
+  // }
 
   trackPostView(post: any): void {
     // Record view in memory immediately to avoid duplicates
@@ -773,15 +851,15 @@ export class CreateAdminPost {
   }
 
   // Toggle comments section and load comments from backend
-  toggleComments(post: any) {
-    post.showComments = !post.showComments;
-    console.log('post.showComments', post.showComments);
+  // toggleComments(post: any) {
+  //   post.showComments = !post.showComments;
+  //   console.log('post.showComments', post.showComments);
 
-    if (post.showComments && !post.comments) {
-      post.loadingComments = true;
-      this.loadComments(post);
-    }
-  }
+  //   if (post.showComments && !post.comments) {
+  //     post.loadingComments = true;
+  //     this.loadComments(post);
+  //   }
+  // }
 
   loadComments(post: any) {
     // this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`)
@@ -841,6 +919,7 @@ export class CreateAdminPost {
         username: this.commentUsername,
         content: text,
         parentId: post.replyingToId || null,
+        language: this.currentRouteLanguage,
       };
 
       this.service.postAdminComments(payload).subscribe({
@@ -872,6 +951,7 @@ export class CreateAdminPost {
         username: this.commentUsername,
         content: post.newCommentText,
         parentId: post.replyingToId || null,
+        language: this.currentRouteLanguage,
       };
       // this.http.post('http://localhost:5000/api/comments', commentPayload)
       this.service.postAdminComments(commentPayload).subscribe({
