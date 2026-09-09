@@ -257,7 +257,7 @@ export class CreateAdminPost {
         if (commentId) {
           // Attempt to scroll to specific comment element
           const commentElement = document.getElementById(`comment-${commentId}`);
-          console.log("commentElement", commentElement)
+          console.log('commentElement', commentElement);
           if (commentElement) {
             commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             this.highlightElement(commentElement);
@@ -294,21 +294,21 @@ export class CreateAdminPost {
     }
   }
 
-  toggleComments(post: any): void {
-    post.showComments = !post.showComments;
-    if (post.showComments && (!post.allComments || post.allComments.length === 0)) {
-      this.fetchCommentsForPost(post);
-    }
-  }
+  // toggleComments(post: any): void {
+  //   post.showComments = !post.showComments;
+  //   if (post.showComments && (!post.allComments || post.allComments.length === 0)) {
+  //     this.fetchCommentsForPost(post);
+  //   }
+  // }
 
-  fetchCommentsForPost(post: any): void {
-    post.loadingComments = true;
-    // Replace with your service call to load comments
-    /* this.service.getComments(post._id).subscribe((comments) => {
+  // fetchCommentsForPost(post: any): void {
+  //   post.loadingComments = true;
+  //   // Replace with your service call to load comments
+  /* this.service.getComments(post._id).subscribe((comments) => {
       post.allComments = comments;
       post.loadingComments = false;
     }); */
-  }
+  // }
 
   fetchAdminProfile() {
     this.service.getAdminProfile().subscribe({
@@ -851,15 +851,15 @@ export class CreateAdminPost {
   }
 
   // Toggle comments section and load comments from backend
-  // toggleComments(post: any) {
-  //   post.showComments = !post.showComments;
-  //   console.log('post.showComments', post.showComments);
+  toggleComments(post: any) {
+    post.showComments = !post.showComments;
+    console.log('post.showComments', post.showComments);
 
-  //   if (post.showComments && !post.comments) {
-  //     post.loadingComments = true;
-  //     this.loadComments(post);
-  //   }
-  // }
+    if (post.showComments && !post.comments) {
+      post.loadingComments = true;
+      this.loadComments(post);
+    }
+  }
 
   loadComments(post: any) {
     // this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`)
