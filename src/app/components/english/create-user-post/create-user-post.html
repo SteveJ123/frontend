@@ -303,10 +303,10 @@
 
       <!-- Upcoming Live Sessions Horizontal Carousel -->
       <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 space-y-3">
-        <div *ngIf="posts$ | async as posts">
+        <div>
           <div *ngIf="posts.length === 0">No data</div>
         </div>
-        <div class="w-full max-w-2xl mx-auto space-y-4" *ngIf="posts$ | async as posts">
+        <div class="w-full max-w-2xl mx-auto space-y-4" *ngIf="posts.length > 0">
           <!-- POST -->
           <article
             *ngFor="let post of posts"
@@ -742,7 +742,11 @@
 
               <!-- List of Comments -->
               <ng-template #commentsList>
-                <div *ngFor="let comment of post.comments" class="space-y-3">
+                <div
+                  *ngFor="let comment of post.comments"
+                  class="space-y-3"
+                  [id]="'comment-' + comment._id"
+                >
                   <!-- Main/Parent Comment -->
                   <div class="flex items-start gap-3">
                     <img
@@ -832,7 +836,11 @@
                     *ngIf="comment.replies?.length"
                     class="ml-10 pl-3 border-l-2 border-gray-200 space-y-3"
                   >
-                    <div *ngFor="let reply of comment.replies" class="flex items-start gap-2.5">
+                    <div
+                      *ngFor="let reply of comment.replies"
+                      class="flex items-start gap-2.5"
+                      [id]="'comment-' + reply._id"
+                    >
                       <img
                         [src]="
                           reply.avatar ||

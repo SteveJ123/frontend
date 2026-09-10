@@ -218,26 +218,11 @@ export class Header {
       this.currentLang = notification.postId.language === 'English' ? 'en' : 'te';
     }
 
-    // 4. Navigate conditionally based on 'comment' vs 'post' type
-    // if (notification.type === 'comment') {
-    //   this.router.navigate(['/', this.currentLang, 'community-post'], {
-    //     queryParams: {
-    //       postId: targetPostId,
-    //       commentId: notification.commentId,
-    //     },
-    //     fragment: `comment-${notification.commentId}`, // Enables auto-scroll positioning
-    //   });
-    // } else {
-    //   this.router.navigate(['/', this.currentLang, 'community-post'], {
+    // if (targetPostId) {
+    //   this.router.navigate(['/', this.currentLang, targetRoute], {
     //     queryParams: { postId: targetPostId },
     //   });
     // }
-
-    if (targetPostId) {
-      this.router.navigate(['/', this.currentLang, targetRoute], {
-        queryParams: { postId: targetPostId },
-      });
-    }
 
     // Check if commentId exists, or if postModel indicates an AdminPost comment
     const isComment = !!notification.commentId || notification.postModel === 'AdminPost';
@@ -246,7 +231,7 @@ export class Header {
       const targetPostId =
         typeof notification.postId === 'object' ? notification.postId._id : notification.postId;
 
-      this.router.navigate(['/', this.currentLang, 'community-post'], {
+      this.router.navigate(['/', this.currentLang, targetRoute], {
         queryParams: {
           postId: targetPostId,
           commentId: notification.commentId,
@@ -257,7 +242,7 @@ export class Header {
       const targetPostId =
         typeof notification.postId === 'object' ? notification.postId._id : notification.postId;
 
-      this.router.navigate(['/', this.currentLang, 'community-post'], {
+      this.router.navigate(['/', this.currentLang, targetRoute], {
         queryParams: { postId: targetPostId },
       });
     }

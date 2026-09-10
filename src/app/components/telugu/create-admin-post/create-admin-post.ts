@@ -236,7 +236,7 @@ export class CreateAdminPost {
       this.targetPostId = params['postId'] || null;
       this.targetCommentId = params['commentId'] || null;
 
-      if (this.targetPostId) {
+      if (this.targetPostId && this.posts && this.posts.length > 0) {
         this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
       }
     });
@@ -289,6 +289,7 @@ export class CreateAdminPost {
   // Ensure this triggers whenever posts are fetched/updated from backend API
   onPostsLoaded(postsData: any[]): void {
     this.posts = postsData;
+
     if (this.targetPostId) {
       this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
     }
@@ -360,10 +361,13 @@ export class CreateAdminPost {
         this.cd.detectChanges();
 
         // 4. Trigger auto-scrolling if a targetPostId parameter exists
+        // if (this.targetPostId) {
+        //   setTimeout(() => {
+        //     this.scrollToPost(this.targetPostId!);
+        //   }, 300);
+        // }
         if (this.targetPostId) {
-          setTimeout(() => {
-            this.scrollToPost(this.targetPostId!);
-          }, 300);
+          this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
         }
       },
       error: (err) => {
@@ -869,6 +873,9 @@ export class CreateAdminPost {
         post.comments = [...comments];
         post.loadingComments = false; // Stop loading state
         this.cd.detectChanges();
+        if (this.targetPostId && this.posts && this.posts.length > 0) {
+          this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+        }
       },
       error: (err: any) => {
         console.error('Failed to load comments', err);

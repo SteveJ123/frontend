@@ -777,7 +777,7 @@
               <!-- List of Comments -->
               <ng-template #commentsList>
                 <div
-                  *ngFor="let comment of post.allComments"
+                  *ngFor="let comment of post.comments"
                   class="space-y-3"
                   [id]="'comment-' + comment._id"
                 >

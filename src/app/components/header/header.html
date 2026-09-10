@@ -45,14 +45,14 @@
   >
     <a
       [routerLink]="['/', currentLang, 'community-post']"
-      class="w-28 h-12 flex flex-col items-center text-white bg-red-600 hover:text-gray-900 border-b-2 border-[#88304E] pb-1 px-2"
+      class="w-28 h-12 flex flex-col items-center text-white bg-red-600 hover:text-gray-900 border-b-2 border-[#88304E] pb-1 px-2 rounded-full"
     >
       <span class="text-base mb-0.5">👥 </span>
       {{ currentLang === 'en' ? 'COMMUNITY' : 'సంఘం' }}
     </a>
     <a
       [routerLink]="['/', currentLang, 'session']"
-      class="w-28 h-12 flex flex-col items-center text-white bg-blue-600 hover:text-gray-900 pb-1 px-2"
+      class="w-28 h-12 flex flex-col items-center text-white bg-blue-600 hover:text-gray-900 pb-1 px-2 rounded-full"
     >
       <span class="text-base mb-0.5">📹</span>
 
@@ -64,7 +64,7 @@
     <div class="relative">
       <button
         (click)="toggleCoursesDropdown()"
-        class="w-28 h-12 flex flex-col items-center hover:text-gray-900 pb-1 focus:outline-none cursor-pointer bg-green-600 text-white px-2"
+        class="w-28 h-12 flex flex-col items-center hover:text-gray-900 pb-1 focus:outline-none cursor-pointer bg-green-600 text-white px-2 rounded-full"
       >
         <span class="text-base mb-0.5">📖</span>
         <span class="flex items-center">
@@ -75,7 +75,7 @@
     </div>
     <a
       [routerLink]="['/', currentLang, 'daily-tracker']"
-      class="w-28 h-12 flex flex-col items-center bg-purple-600 text-white hover:text-gray-900 pb-1 px-2"
+      class="w-28 h-12 flex flex-col items-center bg-purple-600 text-white hover:text-gray-900 pb-1 px-2 rounded-full"
     >
       <span class="text-base mb-0.5">📦</span>
 
@@ -83,7 +83,7 @@
     </a>
     <a
       [routerLink]="['/', currentLang, 'shop']"
-      class="w-28 h-12 flex flex-col items-center bg-orange-600 text-white hover:text-gray-900 pb-1 px-2"
+      class="w-28 h-12 flex flex-col items-center bg-orange-600 text-white hover:text-gray-900 pb-1 px-2 rounded-full"
     >
       <span class="text-base mb-0.5">🛍️</span>
 

@@ -228,6 +228,7 @@ export class CreateUserPost {
 
   userLanguage: any = '';
   userType: any = '';
+  targetCommentId: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -237,58 +238,181 @@ export class CreateUserPost {
 
     this.getPostsObservable();
 
+    // this.route.queryParams.subscribe((params) => {
+    //   this.targetPostId = params['postId'] || null;
+    //   if (this.targetPostId) {
+    //     console.log('this.cachedPosts', this.cachedPosts);
+    //     if (this.cachedPosts.length > 0) {
+    //       // User is ALREADY on the feed page and data is loaded:
+    //       // Scroll immediately without re-fetching posts
+    //       this.scrollToPost(this.targetPostId);
+    //     }
+    //   }
+    // });
+
     this.route.queryParams.subscribe((params) => {
       this.targetPostId = params['postId'] || null;
-      if (this.targetPostId) {
-        console.log('this.cachedPosts', this.cachedPosts);
-        if (this.cachedPosts.length > 0) {
-          // User is ALREADY on the feed page and data is loaded:
-          // Scroll immediately without re-fetching posts
-          this.scrollToPost(this.targetPostId);
-        }
+      this.targetCommentId = params['commentId'] || null;
+
+      if (this.targetPostId && this.posts && this.posts.length > 0) {
+        this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
       }
     });
   }
 
+  handlePostAndCommentNavigation(postId: string, commentId: string | null): void {
+    // Locate target post in post array
+    const post = this.posts.find((p: any) => p._id === postId);
+
+    if (post) {
+      // 1. Expand comments section if it isn't already open
+      if (!post.showComments) {
+        this.toggleComments(post); // Opens comments section & loads comments from backend
+      }
+
+      // 2. Scroll and highlight target element
+      setTimeout(() => {
+        if (commentId) {
+          // Attempt to scroll to specific comment element
+          const commentElement = document.getElementById(`comment-${commentId}`);
+          console.log('commentElement', commentElement);
+          if (commentElement) {
+            commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            this.highlightElement(commentElement);
+            return;
+          }
+        }
+
+        // Fallback: Scroll to post container
+        this.scrollToPost(postId);
+      }, 500); // 500ms timeout ensures DOM renders comments section
+    }
+  }
+
+  scrollToPost(postId: string): void {
+    const postElement = document.getElementById(`post-${postId}`);
+    if (postElement) {
+      postElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.highlightElement(postElement);
+    }
+  }
+
+  highlightElement(element: HTMLElement): void {
+    element.classList.add('ring-2', 'ring-blue-500', 'transition-all', 'duration-500');
+    setTimeout(() => {
+      element.classList.remove('ring-2', 'ring-blue-500');
+    }, 3000);
+  }
+
+  // Ensure this triggers whenever posts are fetched/updated from backend API
+  onPostsLoaded(postsData: any[]): void {
+    this.posts = postsData;
+    if (this.targetPostId) {
+      this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+    }
+  }
+
+  // getPostsObservable() {
+  //   // this.posts$ = this.service.getPosts().pipe(map((response) => response.data));
+  //   const activeLanguage = this.currentRouteLanguage;
+  //   this.posts$ = this.service.getPosts(activeLanguage).pipe(
+  //     map((response) => response.data || []),
+  //     tap((posts: any[]) => {
+  //       // Automatically track a view for each loaded post once per session
+  //       // Cache posts in component state
+  //       this.cachedPosts = posts;
+  //       console.log('posts', posts);
+  //       posts.forEach((post) => {
+  //         if (post._id && !this.viewedPostIds.has(post._id)) {
+  //           this.trackPostView(post);
+  //         }
+  //       });
+  //       // 2. Trigger auto-scrolling if a targetPostId parameter exists
+  //       if (this.targetPostId) {
+  //         setTimeout(() => {
+  //           this.scrollToPost(this.targetPostId!);
+  //         }, 300);
+  //       }
+  //     }),
+  //     shareReplay(1),
+  //   );
+  // }
+
+  // scrollToPost(postId: string): void {
+  //   const element = document.getElementById('post-' + postId);
+
+  //   if (element) {
+  //     // Smooth scroll to the post element
+  //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  //     // Highlight post briefly to draw user attention
+  //     element.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50/30');
+  //     setTimeout(() => {
+  //       element.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50/30');
+  //     }, 2500);
+  //   }
+  // }
+
   getPostsObservable() {
     // this.posts$ = this.service.getPosts().pipe(map((response) => response.data));
+    // Pass the route language to fetch matching posts
+    // const activeLanguage = this.currentRouteLanguage;
+    // this.posts$ = this.service.getPosts(activeLanguage).pipe(
+    //   map((response) => response.data || []),
+    //   tap((posts: any[]) => {
+    // Automatically track a view for each loaded post once per session
+    // Cache posts in component state
+    // this.cachedPosts = posts;
+    // console.log('posts', posts);
+    // Handle deep-linking navigation AFTER posts are loaded in DOM
+
+    // posts.forEach((post) => {
+    //   if (post._id && !this.viewedPostIds.has(post._id)) {
+    //     this.trackPostView(post);
+    //   }
+    // });
+    // 2. Trigger auto-scrolling if a targetPostId parameter exists
+    //     if (this.targetPostId) {
+    //       setTimeout(() => {
+    //         this.scrollToPost(this.targetPostId!);
+    //       }, 300);
+    //     }
+    //   }),
+    //   shareReplay(1),
+    // );
+
     const activeLanguage = this.currentRouteLanguage;
-    this.posts$ = this.service.getPosts(activeLanguage).pipe(
-      map((response) => response.data || []),
-      tap((posts: any[]) => {
-        // Automatically track a view for each loaded post once per session
-        // Cache posts in component state
-        this.cachedPosts = posts;
-        console.log('posts', posts);
-        posts.forEach((post) => {
+
+    this.service.getPosts(activeLanguage).subscribe({
+      next: (response) => {
+        console.log('posts response:', response);
+
+        // 1. Assign posts array
+
+        this.posts = response.data || [];
+        this.cachedPosts = this.posts;
+
+        // 2. Automatically track views once per post per session
+        this.posts.forEach((post: any) => {
           if (post._id && !this.viewedPostIds.has(post._id)) {
             this.trackPostView(post);
           }
         });
-        // 2. Trigger auto-scrolling if a targetPostId parameter exists
-        if (this.targetPostId) {
-          setTimeout(() => {
-            this.scrollToPost(this.targetPostId!);
-          }, 300);
-        }
-      }),
-      shareReplay(1),
-    );
-  }
 
-  scrollToPost(postId: string): void {
-    const element = document.getElementById('post-' + postId);
+        // 3. Force change detection so Angular renders *ngFor before DOM operations
+        this.cd.detectChanges();
 
-    if (element) {
-      // Smooth scroll to the post element
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      // Highlight post briefly to draw user attention
-      element.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50/30');
-      setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50/30');
-      }, 2500);
-    }
+        // 4. Trigger deep-link navigation (scrolling to post/comment)
+        requestAnimationFrame(() => {
+          if (this.targetPostId) {
+            this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load posts:', err);
+      },
+    });
   }
 
   trackPostView(post: any): void {
@@ -747,10 +871,14 @@ export class CreateUserPost {
     // this.http.get<any>(`http://localhost:5000/api/comments/post/${post._id}`)
     this.service.getPostComments(post._id).subscribe({
       next: (data: any) => {
+        console.log('data comment', data);
         const comments = data?.comments || [];
         post.comments = [...comments];
         post.loadingComments = false; // Stop loading state
         this.cd.detectChanges();
+        if (this.targetPostId && this.posts && this.posts.length > 0) {
+        this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+      }
       },
       error: (err) => {
         console.error('Failed to load comments', err);
