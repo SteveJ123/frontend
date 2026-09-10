@@ -373,7 +373,9 @@
 
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <h3 class="truncate text-sm font-semibold text-gray-900">{{ username }}</h3>
+                    <h3 class="truncate text-sm font-semibold text-gray-900">
+                      {{ post.userId.username }}
+                    </h3>
                   </div>
 
                   <div class="flex min-w-0 items-center gap-1 text-xs text-gray-500">
@@ -793,7 +795,7 @@
                     />
                     <div class="flex-1 text-xs space-y-1">
                       <div class="flex items-center gap-2">
-                        <span class="font-bold text-gray-900">{{ comment.username }}</span>
+                        <span class="font-bold text-gray-900">{{ comment.userId.username }}</span>
                         <span
                           *ngIf="comment.isCreator"
                           class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-amber-200"
