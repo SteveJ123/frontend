@@ -944,7 +944,7 @@ export class CreateAdminPost {
         next: (response: any) => {
           console.log('response reply', response);
           // Find parent comment and append reply locally
-          const parentComment = post.allComments.find((c: any) => c._id === post.replyingToId);
+          const parentComment = post.comments.find((c: any) => c._id === post.replyingToId);
           console.log('parentComment', parentComment);
           if (parentComment) {
             // parentComment.replies = parentComment.replies || [];
@@ -975,8 +975,8 @@ export class CreateAdminPost {
       this.service.postAdminComments(commentPayload).subscribe({
         next: (newComment: any) => {
           console.log('newComment', newComment);
-          if (!post.comments) post.allComments = [];
-          post.allComments.push(newComment);
+          if (!post.comments) post.comments = [];
+          post.comments.push(newComment);
           post.newCommentText = '';
           post.replyingToId = null;
           // post.showComments = !post.showComments;

@@ -69,10 +69,18 @@
                   <div
                     class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200 shadow-xs"
                   >
-                    <img
+                    <!-- <img
                       src="https://api.dicebear.com/7.x/avataaars/svg?seed=Legala"
                       alt="User Avatar"
                       class="w-full h-full object-cover"
+                    /> -->
+                    <img
+                      [src]="
+                        mediaApiUrl + userProfileImage ||
+                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Legala'
+                      "
+                      alt="User"
+                      class="h-full w-full object-cover"
                     />
                   </div>
                   <span>{{ username }}</span>
