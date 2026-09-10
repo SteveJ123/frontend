@@ -157,7 +157,8 @@ export class CourseList implements OnInit {
   }
 
   // Opens the custom popup dialog
-  openDeleteModal(id: string): void {
+  openDeleteModal(event: any, id: string): void {
+    event.stopPropagation();
     this.productToDeleteId = id;
     this.showDeleteModal = true;
   }
@@ -239,12 +240,18 @@ export class CourseList implements OnInit {
       next: (res: any) => {
         this.isSubmitting = false;
         if (res.success) {
+          if (res && res.data) {
+            // 2. Prepend the new course object to the existing list
+            this.courses = [res.data, ...this.courses];
+            this.cd.detectChanges();
+          }
           this.successMessage = 'Course published successfully!';
           this.toastService.success('Course Created Succesfully!');
           this.showCreateCourse = false;
           // setTimeout(() => {
           //   this.router.navigate(['/courses-list']); // Navigate to course list after creation
           // }, 1500);
+          this.cd.detectChanges();
         }
       },
       error: (err) => {

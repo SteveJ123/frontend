@@ -403,11 +403,10 @@ export class CreateUserPost {
         this.cd.detectChanges();
 
         // 4. Trigger deep-link navigation (scrolling to post/comment)
-        requestAnimationFrame(() => {
-          if (this.targetPostId) {
-            this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
-          }
-        });
+
+        if (this.targetPostId) {
+          this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+        }
       },
       error: (err) => {
         console.error('Failed to load posts:', err);
@@ -877,8 +876,8 @@ export class CreateUserPost {
         post.loadingComments = false; // Stop loading state
         this.cd.detectChanges();
         if (this.targetPostId && this.posts && this.posts.length > 0) {
-        this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
-      }
+          this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
+        }
       },
       error: (err) => {
         console.error('Failed to load comments', err);

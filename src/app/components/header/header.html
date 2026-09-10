@@ -2,7 +2,7 @@
   class="relative bg-white border-b border-gray-200 sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between shadow-sm"
 >
   <!-- Left Section: Mobile Menu + Logo -->
-  <div class="flex items-center space-x-3">
+  <div class="flex items-center space-x-3 h-20">
     <!-- Mobile Menu Button (Changed to md:hidden to match nav breakpoint) -->
     <button
       (click)="toggleSidebar()"
@@ -20,28 +20,30 @@
 
     <!-- Logo -->
     <div class="flex items-center space-x-2">
-      <div class="bg-black text-white font-bold text-lg rounded flex items-center tracking-tighter">
-        <img src="logo.jpeg" alt="logo" class="w-12 h-8 object-fit" />
-      </div>
-      <div>
+      <div
+        class="flex flex-col text-white font-bold text-lg rounded flex items-center tracking-tighter"
+      >
         <span
-          class="hidden lg:inline text-xs tracking-widest text-gray-500 font-semibold uppercase"
+          class="lg:block text-xs tracking-widest text-gray-500 font-semibold uppercase loading-tight whitespace-normal"
           >{{ currentLang === 'en' ? 'Gyan Murli Foundation' : 'జ్ఞాన్ మురళి ఫౌండేషన్' }}</span
         >
-        <hr />
+        <img src="logo.jpeg" alt="logo" class="w-auto h-14 object-fit" />
         <span
-          class="hidden lg:inline text-xs tracking-widest text-gray-500 font-semibold uppercase"
+          class="lg:inline text-xs tracking-widest text-gray-500 font-semibold uppercase loading-tight whitespace-normal"
           >{{
             currentLang === 'en' ? 'Young, Happy & Healthy' : 'యవ్వనం, సంతోషం మరియు ఆరోగ్యం'
           }}</span
         >
+      </div>
+      <div>
+        <hr />
       </div>
     </div>
   </div>
 
   <!-- Center Nav Links (Dead-Centered on Medium+ Screens) -->
   <nav
-    class="hidden md:flex items-center space-x-4 lg:space-x-8 text-xs font-semibold tracking-wider md:absolute md:left-1/2 md:-translate-x-1/2"
+    class="hidden lg:flex items-center space-x-4 lg:space-x-8 text-xs font-semibold tracking-wider md:absolute md:left-1/2 md:-translate-x-1/2"
   >
     <a
       [routerLink]="['/', currentLang, 'community-post']"

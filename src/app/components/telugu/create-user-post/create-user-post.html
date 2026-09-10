@@ -328,7 +328,11 @@
                 <div
                   class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200"
                 >
-                  <img src="assets/avatar.jpg" alt="User" class="h-full w-full object-cover" />
+                  <img
+                    [src]="mediaApiUrl + post.userId.profileImage"
+                    alt="User"
+                    class="h-full w-full object-cover"
+                  />
                 </div>
 
                 <div class="min-w-0">
