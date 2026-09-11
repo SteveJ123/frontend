@@ -14,7 +14,11 @@
         <div class="w-full flex" (click)="openModal()">
           <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 overflow-hidden">
             <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+              [src]="
+                userProfileImage
+                  ? mediaApiUrl + userProfileImage
+                  : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+              "
               alt="User Avatar"
               class="w-full h-full object-cover"
             />
@@ -71,14 +75,15 @@
                     class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200 shadow-xs"
                   >
                     <!-- <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Legala"
+                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
                       alt="User Avatar"
                       class="w-full h-full object-cover"
                     /> -->
                     <img
                       [src]="
-                        mediaApiUrl + userProfileImage ||
-                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Legala'
+                        userProfileImage
+                          ? mediaApiUrl + userProfileImage
+                          : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
                       "
                       alt="User"
                       class="h-full w-full object-cover"
@@ -337,7 +342,11 @@
                   class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200"
                 >
                   <img
-                    [src]="mediaApiUrl + post.userId.profileImage"
+                    [src]="
+                      post.userId.profileImage
+                        ? mediaApiUrl + post.userId.profileImage
+                        : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+                    "
                     alt="User"
                     class="h-full w-full object-cover"
                   />
@@ -762,8 +771,9 @@
                   <div class="flex items-start gap-3">
                     <img
                       [src]="
-                        mediaApiUrl + comment.userId.profileImage ||
-                        'https://api.dicebear.com/7.x/avataaars/svg?seed=' + comment.userId.username
+                        comment.userId.profileImage
+                          ? mediaApiUrl + comment.userId.profileImage
+                          : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
                       "
                       class="w-9 h-9 rounded-full object-cover shrink-0"
                       alt="Avatar"
@@ -812,8 +822,9 @@
                       <div class="w-7 h-7 rounded-full bg-gray-300 shrink-0 overflow-hidden">
                         <img
                           [src]="
-                            mediaApiUrl + userProfileImage ||
-                            'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+                            userProfileImage
+                              ? mediaApiUrl + userProfileImage
+                              : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
                           "
                           alt="User"
                           class="w-full h-full object-cover"
@@ -857,8 +868,9 @@
                     >
                       <img
                         [src]="
-                          mediaApiUrl + reply.userId.profileImage ||
-                          'https://api.dicebear.com/7.x/avataaars/svg?seed=' + reply.username
+                          reply.userId.profileImage
+                            ? mediaApiUrl + reply.userId.profileImage
+                            : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
                         "
                         class="w-7 h-7 rounded-full object-cover shrink-0"
                         alt="Avatar"
@@ -898,8 +910,9 @@
                   <div class="w-9 h-9 rounded-full bg-gray-300 shrink-0 overflow-hidden">
                     <img
                       [src]="
-                        mediaApiUrl + this.userProfileImage ||
-                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+                        this.userProfileImage
+                          ? mediaApiUrl + this.userProfileImage
+                          : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
                       "
                       alt="User"
                       class="w-full h-full object-cover"

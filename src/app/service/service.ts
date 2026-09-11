@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { apiUrl } from '../core/constants/api';
 import { HttpParams } from '@angular/common/http';
 
@@ -446,5 +446,23 @@ export class Service {
         this.unreadCountSubject.next(newUnreadCount);
       }),
     );
+  }
+
+  uploadMedia(file: File, folder: string = 'media'): Observable<string> {
+    // Step 1: Get presigned upload URL from backend
+    return this.http
+      .post<{ success: boolean; uploadUrl: string; fileUrl: string }>(
+        `${this.apiUrl}/media/upload-url`,
+        { fileType: file.type, folder },
+      )
+      .pipe(
+        switchMap((res) => {
+          const headers = new HttpHeaders({ 'Content-Type': file.type });
+          // Step 2: Directly PUT binary file to AWS S3
+          return this.http.put(res.uploadUrl, file, { headers }).pipe(
+            map(() => res.fileUrl), // Returns the clean S3 file URL upon completion
+          );
+        }),
+      );
   }
 }
