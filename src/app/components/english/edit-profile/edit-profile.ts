@@ -148,7 +148,7 @@ export class EditProfile {
           }
           this.isUploading = false;
           this.toastService.success('Profile Image updated successfully!');
-          window.location.reload();
+          // window.location.reload();
         },
         error: (err) => {
           console.error('Failed to upload image:', err);
@@ -168,7 +168,7 @@ export class EditProfile {
             this.toastService.success('Profile Image Uploaded Succcessfully!');
           }
           this.isUploading = false;
-          window.location.reload();
+          // window.location.reload();
         },
         error: (err) => {
           console.error('Image upload failed:', err);
