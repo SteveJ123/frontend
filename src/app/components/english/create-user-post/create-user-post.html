@@ -13,9 +13,11 @@
         <div class="w-full flex" (click)="openModal()">
           <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 overflow-hidden">
             <img
-              [src]="userProfileImage
-                          ? mediaApiUrl + userProfileImage
-                          : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'"
+              [src]="
+                userProfileImage
+                  ? mediaApiUrl + userProfileImage
+                  : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+              "
               alt="User Avatar"
               class="w-full h-full object-cover"
             />
@@ -765,9 +767,10 @@
                   <!-- Main/Parent Comment -->
                   <div class="flex items-start gap-3">
                     <img
-                      [src]="comment.userId.profileImage ?
-                        mediaApiUrl + comment.userId.profileImage :
-                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+                      [src]="
+                        comment.userId.profileImage
+                          ? mediaApiUrl + comment.userId.profileImage
+                          : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
                       "
                       class="w-9 h-9 rounded-full object-cover shrink-0"
                       alt="Avatar"
