@@ -143,7 +143,7 @@ export class Service {
     });
   }
 
-  updatePost(postId: string, formData: FormData): Observable<any> {
+  updatePost(postId: string, formData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}posts/${postId}`, formData);
   }
 
@@ -464,5 +464,9 @@ export class Service {
           );
         }),
       );
+  }
+
+  uploadAWSMedia(formData: any) {
+    return this.http.post(this.apiUrl + 'upload_parallel', formData);
   }
 }
