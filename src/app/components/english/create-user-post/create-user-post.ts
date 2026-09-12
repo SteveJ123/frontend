@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Service } from '../../../service/service';
-import { map, Observable, tap, shareReplay } from 'rxjs';
+import { map, Observable, tap, shareReplay, firstValueFrom } from 'rxjs';
 import { apiUrl } from '../../../core/constants/api';
 import { AuthService } from '../../../service/AuthService';
 import { ActivatedRoute } from '@angular/router';
@@ -229,6 +229,7 @@ export class CreateUserPost {
   userLanguage: any = '';
   userType: any = '';
   targetCommentId: any = '';
+  selectedFile: any = '';
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -586,13 +587,40 @@ export class CreateUserPost {
   selectedFiles: SelectedMedia[] = [];
   isUploading = false;
 
+  // onFileSelected(event: Event, type: 'image' | 'video' | 'audio'): void {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files[0]) {
+  //     const file = input.files[0];
+  //     const previewUrl = URL.createObjectURL(file);
+
+  //     this.selectedFiles.push({ file, type, previewUrl });
+
+  //     // Reset input value to allow selecting the same file again if needed
+  //     input.value = '';
+  //   }
+  // }
+
+  clearSelectedFiles(): void {
+    this.selectedFiles.forEach((item) => {
+      if (item.previewUrl) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+    });
+    this.selectedFiles = [];
+    this.selectedFile = null;
+  }
+
   onFileSelected(event: Event, type: 'image' | 'video' | 'audio'): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
+      // 1. Clear previous selections to enforce single-file limit
+      this.clearSelectedFiles();
+
       const file = input.files[0];
       const previewUrl = URL.createObjectURL(file);
 
       this.selectedFiles.push({ file, type, previewUrl });
+      this.selectedFile = input.files[0];
 
       // Reset input value to allow selecting the same file again if needed
       input.value = '';
@@ -608,8 +636,68 @@ export class CreateUserPost {
     console.log('Poll feature clicked');
   }
 
-  publishPost(): void {
-    // Reset error state on attempt
+  // publishPost(): void {
+  //   // Reset error state on attempt
+  //   this.showPostContentError = false;
+
+  //   if (!this.postContent.trim()) {
+  //     this.showPostContentError = true;
+  //     return;
+  //   }
+
+  //   this.isUploading = true;
+
+  //   // Build multipart FormData payload
+  //   const formData = new FormData();
+
+  //   // 1. Text Content]
+  //   formData.append('userId', localStorage.getItem('userId') || '');
+  //   formData.append('content', this.postContent);
+  //   formData.append('role', localStorage.getItem('role') || '');
+
+  //   // 2. Selected Tags (sending array of IDs/Names as JSON)
+  //   const tagIds = this.savedTags().map((tag) => tag.id);
+  //   formData.append('tagIds', JSON.stringify(tagIds));
+
+  //   // 3. Selected Memberships
+  //   const membershipIds = this.savedMemberships().map((m) => m.id);
+  //   formData.append('membershipIds', JSON.stringify(membershipIds));
+
+  //   if (this.userType === 'user') {
+  //     formData.append('targetLanguage', this.userLanguage); // Pass current URL language
+  //   } else {
+  //     formData.append('targetLanguage', this.currentRouteLanguage === 'te' ? 'Telugu' : 'English'); // Pass current URL language
+  //   }
+  //   // 4. File attachments
+  //   this.selectedFiles.forEach((item, index) => {
+  //     formData.append(`files`, item.file, item.file.name);
+  //     formData.append(`fileTypes`, item.type);
+  //   });
+  //   // console.log('formdata', formData);
+  //   for (const [key, value] of formData.entries()) {
+  //     console.log(`${key}:`, value);
+  //   }
+
+  //   // Send payload to backend API endpoint
+  //   this.service.posts(formData).subscribe({
+  //     next: (response: any) => {
+  //       this.isUploading = false;
+  //       this.selectedFiles = []; // Clear attachments after success
+  //       this.resetForm();
+  //       this.getPostsObservable();
+  //       this.closeModal();
+  //       this.toastService.success('Post Created Successfully');
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Upload failed:', error);
+  //       this.isUploading = false;
+  //       this.toastService.error('Post Not Created Successfully');
+  //     },
+  //   });
+  // }
+
+  async publishPost(): Promise<void> {
+    // 1. Reset error state
     this.showPostContentError = false;
 
     if (!this.postContent.trim()) {
@@ -617,55 +705,68 @@ export class CreateUserPost {
       return;
     }
 
+    const file: any = this.selectedFile;
+    if (!file) {
+      alert('Please select a file');
+      return;
+    }
+
     this.isUploading = true;
 
-    // Build multipart FormData payload
-    const formData = new FormData();
+    try {
+      const startTime = new Date();
 
-    // 1. Text Content]
-    formData.append('userId', localStorage.getItem('userId') || '');
-    formData.append('content', this.postContent);
-    formData.append('role', localStorage.getItem('role') || '');
+      // 2. Upload file to AWS S3
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
 
-    // 2. Selected Tags (sending array of IDs/Names as JSON)
-    const tagIds = this.savedTags().map((tag) => tag.id);
-    formData.append('tagIds', JSON.stringify(tagIds));
+      const uploadRes: any = await firstValueFrom(this.service.uploadAWSMedia(uploadFormData));
 
-    // 3. Selected Memberships
-    const membershipIds = this.savedMemberships().map((m) => m.id);
-    formData.append('membershipIds', JSON.stringify(membershipIds));
+      if (!uploadRes || !uploadRes.success) {
+        throw new Error('Error uploading media file to AWS');
+      }
 
-    if (this.userType === 'user') {
-      formData.append('targetLanguage', this.userLanguage); // Pass current URL language
-    } else {
-      formData.append('targetLanguage', this.currentRouteLanguage === 'te' ? 'Telugu' : 'English'); // Pass current URL language
+      const fileLink = uploadRes.data;
+      const endTime = new Date();
+      console.log('File uploaded to S3:', fileLink);
+      console.log('Upload time:', (endTime.getTime() - startTime.getTime()) / 1000, 'seconds');
+
+      // Target Language Selection
+      const targetLanguage =
+        this.userType === 'user'
+          ? this.userLanguage
+          : this.currentRouteLanguage === 'te'
+            ? 'Telugu'
+            : 'English';
+
+      const tagIds = this.savedTags().map((tag) => tag.id);
+      const membershipIds = this.savedMemberships().map((m) => m.id);
+      // 3. Construct Post Payload with the S3 fileLink
+      const postData = {
+        userId: localStorage.getItem('userId') || '',
+        content: this.postContent,
+        role: localStorage.getItem('role') || '',
+        fileLink: fileLink,
+        tagIds: JSON.stringify(tagIds),
+        membershipIds: JSON.stringify(membershipIds),
+        targetLanguage: targetLanguage,
+      };
+
+      // 4. Submit Post Data to Backend API
+      const postResponse: any = await firstValueFrom(this.service.posts(postData));
+
+      // 5. Success UI Cleanup
+      this.selectedFiles = [];
+      this.resetForm();
+      this.getPostsObservable();
+      this.closeModal();
+      this.toastService.success('Post Created Successfully');
+    } catch (error: any) {
+      console.error('Publishing failed:', error);
+      this.toastService.error('Post Not Created Successfully');
+    } finally {
+      this.isUploading = false;
     }
-    // 4. File attachments
-    this.selectedFiles.forEach((item, index) => {
-      formData.append(`files`, item.file, item.file.name);
-      formData.append(`fileTypes`, item.type);
-    });
-    // console.log('formdata', formData);
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-
-    // Send payload to backend API endpoint
-    this.service.posts(formData).subscribe({
-      next: (response: any) => {
-        this.isUploading = false;
-        this.selectedFiles = []; // Clear attachments after success
-        this.resetForm();
-        this.getPostsObservable();
-        this.closeModal();
-        this.toastService.success('Post Created Successfully');
-      },
-      error: (error: any) => {
-        console.error('Upload failed:', error);
-        this.isUploading = false;
-        this.toastService.error('Post Not Created Successfully');
-      },
-    });
   }
 
   // Reset form after successful submission
@@ -1014,36 +1115,87 @@ export class CreateUserPost {
     this.newEditFiles.splice(index, 1);
   }
 
-  saveEdit(post: any): void {
+  // saveEdit(post: any): void {
+  //   if (!this.userId) {
+  //     console.error('User is not authenticated.');
+  //     return;
+  //   }
+  //   const formData = new FormData();
+  //   formData.append('userId', this.userId);
+  //   formData.append('content', this.editContent);
+
+  //   // Append IDs of files to remove
+  //   this.removedMediaIds.forEach((id) => formData.append('removedMediaIds', id));
+
+  //   // Append new media files to upload
+  //   this.newEditFiles.forEach((item) => formData.append('newFiles', item.file));
+
+  //   this.service.updatePost(post._id, formData).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+  //         post.content = res.data.content;
+  //         post.mediaFiles = res.data.mediaFiles;
+  //         this.cancelEditing();
+  //         this.cd.detectChanges();
+  //         this.toastService.success('Post Updated Successfully!');
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to update post:', err);
+  //       this.toastService.error('Post Not Updated Successfully!');
+  //     },
+  //   });
+  // }
+
+  async saveEdit(post: any): Promise<void> {
     if (!this.userId) {
       console.error('User is not authenticated.');
       return;
     }
-    const formData = new FormData();
-    formData.append('userId', this.userId);
-    formData.append('content', this.editContent);
 
-    // Append IDs of files to remove
-    this.removedMediaIds.forEach((id) => formData.append('removedMediaIds', id));
+    this.isUploading = true;
 
-    // Append new media files to upload
-    this.newEditFiles.forEach((item) => formData.append('newFiles', item.file));
+    try {
+      let newFileLink = '';
 
-    this.service.updatePost(post._id, formData).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          post.content = res.data.content;
-          post.mediaFiles = res.data.mediaFiles;
-          this.cancelEditing();
-          this.cd.detectChanges();
-          this.toastService.success('Post Updated Successfully!');
+      // 1. If a new media file was selected, upload it directly to S3 first
+      if (this.newEditFiles && this.newEditFiles.length > 0) {
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', this.newEditFiles[0].file);
+
+        const uploadRes: any = await firstValueFrom(this.service.uploadAWSMedia(uploadFormData));
+
+        if (!uploadRes || !uploadRes.success) {
+          throw new Error('Failed to upload new media file to AWS S3');
         }
-      },
-      error: (err) => {
-        console.error('Failed to update post:', err);
-        this.toastService.error('Post Not Updated Successfully!');
-      },
-    });
+
+        newFileLink = uploadRes.data;
+      }
+
+      // 2. Prepare JSON Payload for the PUT update request
+      const updatePayload = {
+        userId: this.userId,
+        content: this.editContent,
+        removedMediaIds: this.removedMediaIds, // Array of MongoDB media _ids to delete
+        fileLink: newFileLink, // S3 link for newly added media (if any)
+      };
+
+      // 3. Send update request to Express API
+      const res: any = await firstValueFrom(this.service.updatePost(post._id, updatePayload));
+
+      if (res.success) {
+        post.content = res.data.content;
+        post.mediaFiles = res.data.mediaFiles;
+        this.cancelEditing();
+        this.cd.detectChanges();
+        this.toastService.success('Post Updated Successfully!');
+      }
+    } catch (err) {
+      console.error('Failed to update post:', err);
+      this.toastService.error('Post Not Updated Successfully!');
+    } finally {
+      this.isUploading = false;
+    }
   }
 
   // deletePost(postId: string): void {

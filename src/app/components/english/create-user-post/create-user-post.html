@@ -444,12 +444,12 @@
                   >
                     <img
                       *ngIf="media.mediaType === 'image'"
-                      [src]="getMediaUrl(media.path)"
+                      [src]="media.fileLink"
                       class="w-full h-full object-cover"
                     />
                     <video
                       *ngIf="media.mediaType === 'video'"
-                      [src]="getMediaUrl(media.path)"
+                      [src]="media.fileLink"
                       class="w-full h-full object-cover"
                     ></video>
                     <div
@@ -572,7 +572,7 @@
                 <!-- IMAGE -->
                 <img
                   *ngIf="media.mediaType === 'image'"
-                  [src]="getMediaUrl(media.path)"
+                  [src]="media.fileLink"
                   [alt]="media.filename"
                   class="block h-auto max-h-[650px] w-full object-cover"
                 />
@@ -583,12 +583,12 @@
                   controls
                   class="block max-h-[650px] w-full"
                 >
-                  <source [src]="getMediaUrl(media.path)" [type]="media.mimetype" />
+                  <source [src]="media.fileLink"/>
                 </video>
 
                 <!-- AUDIO -->
                 <audio *ngIf="media.mediaType === 'audio'" controls class="w-full p-2">
-                  <source [src]="getMediaUrl(media.path)" [type]="media.mimetype" />
+                  <source [src]="media.fileLink" />
                 </audio>
 
                 <!-- OTHER FILE -->

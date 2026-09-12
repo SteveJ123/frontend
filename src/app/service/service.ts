@@ -221,7 +221,7 @@ export class Service {
     return this.http.post(this.apiUrl + 'admin-posts', formData);
   }
 
-  updateAdminPost(postId: string, formData: FormData): Observable<any> {
+  updateAdminPost(postId: string, formData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}admin-posts/${postId}`, formData);
   }
 
