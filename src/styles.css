@@ -28,3 +28,25 @@ select,
 textarea {
   font-family: inherit;
 }
+
+/* styles.scss */
+
+/* Enforce strict cell width and text truncation */
+.cal-month-view {
+  .cal-day-cell {
+    min-width: 0 !important; /* Prevents cell expansion */
+  }
+
+  .cal-event-title {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
+
+  /* Keep the event badges within bounds */
+  .cal-events {
+    max-height: 40px;
+    overflow-y: auto;
+  }
+}

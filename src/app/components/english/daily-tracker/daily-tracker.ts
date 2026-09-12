@@ -58,12 +58,23 @@ export class DailyTracker implements OnInit {
   // todayDateStr: string = format(new Date(), 'yyyy-MM-dd');
   todayDateStr: string = new Date().toISOString().split('T')[0];
   events: CalendarEvent[] = [];
-
+  // const today = new Date();
+  // const year = today.getFullYear();
+  // const month = String(today.getMonth() + 1).padStart(2, '0');
+  // const day = String(today.getDate()).padStart(2, '0');
+  // return `${year}-${month}-${day}`;
   get localTodayStr(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+
+    const year = parts.find((p) => p.type === 'year')?.value || '';
+    const month = parts.find((p) => p.type === 'month')?.value || '';
+    const day = parts.find((p) => p.type === 'day')?.value || '';
+
     return `${year}-${month}-${day}`;
   }
 
@@ -102,7 +113,7 @@ export class DailyTracker implements OnInit {
           this.cd.detectChanges();
         } else {
           this.completedDates = res.completedPracticeDates || [];
-          this.checkTodayStatus();
+          // this.checkTodayStatus();
           this.generateCalendarEvents();
           this.isLoadingTracker = false; // Hide spinner
           this.cd.detectChanges();
@@ -159,12 +170,13 @@ export class DailyTracker implements OnInit {
         console.log('res.completedPracticeDates', res.completedPracticeDates);
 
         // Optimistic fallback if backend didn't append today immediately
-        if (!this.completedDates.includes(this.localTodayStr)) {
-          this.completedDates.push(this.localTodayStr);
-        }
+        // if (!this.completedDates.includes(this.localTodayStr)) {
+        //   this.completedDates.push(this.localTodayStr);
+        // }
 
-        this.checkTodayStatus();
+        // this.checkTodayStatus();
         this.generateCalendarEvents();
+        this.isTodayCompleted = true;
         this.isSubmitting = false;
         this.cd.detectChanges();
       },

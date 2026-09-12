@@ -62,13 +62,29 @@ export class DailyTracker implements OnInit {
   todayDateStr: string = new Date().toISOString().split('T')[0];
   events: CalendarEvent[] = [];
 
+  // get localTodayStr(): string {
+  //   const today = new Date();
+  //   const year = today.getFullYear();
+  //   const month = String(today.getMonth() + 1).padStart(2, '0');
+  //   const day = String(today.getDate()).padStart(2, '0');
+  //   return `${year}-${month}-${day}`;
+  // }
+
   get localTodayStr(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+
+    const year = parts.find((p) => p.type === 'year')?.value || '';
+    const month = parts.find((p) => p.type === 'month')?.value || '';
+    const day = parts.find((p) => p.type === 'day')?.value || '';
+
     return `${year}-${month}-${day}`;
   }
+
   completedTime: any = '';
   constructor(private http: HttpClient) {}
   private service = inject(Service);
@@ -107,7 +123,7 @@ export class DailyTracker implements OnInit {
           this.cd.detectChanges();
         } else {
           this.completedDates = res.completedPracticeDates || [];
-          this.checkTodayStatus();
+          // this.checkTodayStatus();
           this.generateCalendarEvents();
           this.isLoadingTracker = false; // Hide spinner
           this.cd.detectChanges();
@@ -165,19 +181,20 @@ export class DailyTracker implements OnInit {
         this.completedDates = res.completedPracticeDates || [];
 
         // Optimistic fallback if backend didn't append today immediately
-        if (!this.completedDates.includes(this.localTodayStr)) {
-          this.completedDates.push(this.localTodayStr);
-        }
+        // if (!this.completedDates.includes(this.localTodayStr)) {
+        //   this.completedDates.push(this.localTodayStr);
+        // }
 
         // Capture current formatted time (e.g., "10:45 AM")
-        this.completedTime = new Date().toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        });
+        // this.completedTime = new Date().toLocaleTimeString([], {
+        //   hour: '2-digit',
+        //   minute: '2-digit',
+        //   hour12: true,
+        // });
 
-        this.checkTodayStatus();
+        // this.checkTodayStatus();
         this.generateCalendarEvents();
+        this.isTodayCompleted = true;
         this.isSubmitting = false;
         this.cd.detectChanges();
       },
