@@ -744,10 +744,7 @@ export class CreateAdminPost {
       console.log('Upload time:', (endTime.getTime() - startTime.getTime()) / 1000, 'seconds');
 
       // Target Language Selection
-      const targetLanguage =
-        this.currentRouteLanguage === 'te'
-            ? 'Telugu'
-            : 'English';
+      const targetLanguage = this.currentRouteLanguage;
 
       const tagIds = this.savedTags().map((tag) => tag.id);
       const membershipIds = this.savedMemberships().map((m) => m.id);
