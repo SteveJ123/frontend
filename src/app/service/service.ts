@@ -105,7 +105,7 @@ export class Service {
   /**
    * PUT: Update an existing course by ID (handles optional file replacement)
    */
-  updateCourse(id: string, formData: FormData): Observable<any> {
+  updateCourse(id: string, formData: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}courses/${id}`, formData);
   }
 

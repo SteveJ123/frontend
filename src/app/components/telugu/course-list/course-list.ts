@@ -106,32 +106,84 @@ export class CourseList implements OnInit {
     }
   }
 
-  saveEdit(course: any): void {
-    const formData = new FormData();
-    formData.append('title', this.editData.title);
-    formData.append('instructor', this.editData.instructor);
-    formData.append('description', this.editData.description || '');
-    formData.append('isNewCourse', String(this.editData.isNewCourse));
-    formData.append('language', this.currentRouteLanguage || '');
+  // saveEdit(course: any): void {
+  //   const formData = new FormData();
+  //   formData.append('title', this.editData.title);
+  //   formData.append('instructor', this.editData.instructor);
+  //   formData.append('description', this.editData.description || '');
+  //   formData.append('isNewCourse', String(this.editData.isNewCourse));
+  //   formData.append('language', this.currentRouteLanguage || '');
 
-    if (this.selectedEditFile) {
-      formData.append('thumbnail', this.selectedEditFile);
-    }
+  //   if (this.selectedEditFile) {
+  //     formData.append('thumbnail', this.selectedEditFile);
+  //   }
 
-    this.service.updateCourse(course._id, formData).subscribe({
-      next: (res) => {
-        if (res.success) {
-          Object.assign(course, res.data);
-          this.cancelEditing();
-          this.cd.detectChanges();
-          this.toastService.success('Course Updated Successfully!');
+  //   this.service.updateCourse(course._id, formData).subscribe({
+  //     next: (res) => {
+  //       if (res.success) {
+  //         Object.assign(course, res.data);
+  //         this.cancelEditing();
+  //         this.cd.detectChanges();
+  //         this.toastService.success('Course Updated Successfully!');
+  //       }
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Update failed:', err);
+  //       this.toastService.error('Course Not Updated Successfully!');
+  //     },
+  //   });
+  // }
+
+  async saveEdit(course: any): Promise<void> {
+    try {
+      let thumbnailUrl = course.thumbnail;
+
+      // 1. If a new file was selected, upload it to S3 first under 'courseThumbnail'
+      if (this.selectedEditFile) {
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', this.selectedEditFile, this.selectedEditFile.name);
+        uploadFormData.append('folder', 'courseThumbnail');
+
+        const uploadRes: any = await firstValueFrom(this.service.uploadAWSMedia(uploadFormData));
+
+        if (!uploadRes || !uploadRes.success || !uploadRes.data) {
+          throw new Error('Failed to upload updated thumbnail to S3');
         }
-      },
-      error: (err: any) => {
-        console.error('Update failed:', err);
-        this.toastService.error('Course Not Updated Successfully!');
-      },
-    });
+
+        thumbnailUrl = uploadRes.data;
+      }
+
+      // 2. Prepare JSON payload
+      const payload = {
+        title: this.editData.title,
+        instructor: this.editData.instructor,
+        description: this.editData.description || '',
+        isNewCourse: Boolean(this.editData.isNewCourse),
+        language: this.currentRouteLanguage || '',
+        thumbnail: thumbnailUrl,
+      };
+
+      // 3. Send JSON payload to backend PUT endpoint
+      this.service.updateCourse(course._id, payload).subscribe({
+        next: (res: any) => {
+          if (res && res.success) {
+            Object.assign(course, res.data);
+            this.selectedEditFile = null;
+            this.cancelEditing();
+            this.cd.detectChanges();
+            this.toastService.success('Course Updated Successfully!');
+          }
+        },
+        error: (err: any) => {
+          console.error('Update failed:', err);
+          this.toastService.error('Course Not Updated Successfully!');
+          this.cd.detectChanges();
+        },
+      });
+    } catch (error: any) {
+      console.error('Save edit error:', error);
+      this.toastService.error(error.message || 'Error updating course thumbnail');
+    }
   }
 
   deleteCourse(event: Event, courseId: string): void {
