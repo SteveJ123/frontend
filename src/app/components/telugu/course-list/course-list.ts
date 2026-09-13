@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Service } from '../../../service/service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-course-list',
@@ -212,7 +213,57 @@ export class CourseList implements OnInit {
     }
   }
   // Handle Form Submission using FormData
-  onSubmit(): void {
+  // onSubmit(): void {
+  //   if (!this.course.title || !this.course.description || !this.selectedFile) {
+  //     this.errorMessage = 'Please complete all required fields and upload a thumbnail.';
+  //     return;
+  //   }
+
+  //   this.isSubmitting = true;
+  //   this.errorMessage = '';
+  //   this.successMessage = '';
+
+  //   const formData = new FormData();
+  //   formData.append('title', this.course.title);
+  //   formData.append('description', this.course.description);
+  //   formData.append('instructor', this.course.instructor);
+  //   formData.append('sectionsCount', this.course.sectionsCount.toString());
+  //   formData.append('lecturesCount', this.course.lecturesCount.toString());
+  //   formData.append('isPaid', String(this.course.isPaid));
+  //   formData.append('isNewCourse', String(this.course.isNewCourse));
+  //   formData.append('membershipType', this.course.membershipType);
+  //   formData.append('language', this.currentRouteLanguage);
+
+  //   // Attach the image file under the 'thumbnail' key expected by upload.single('thumbnail')
+  //   formData.append('thumbnail', this.selectedFile, this.selectedFile.name);
+
+  //   this.service.createCourse(formData).subscribe({
+  //     next: (res: any) => {
+  //       this.isSubmitting = false;
+  //       if (res.success) {
+  //         if (res && res.data) {
+  //           // 2. Prepend the new course object to the existing list
+  //           this.courses = [res.data, ...this.courses];
+  //           this.cd.detectChanges();
+  //         }
+  //         this.successMessage = 'Course published successfully!';
+  //         this.toastService.success('Course Created Succesfully!');
+  //         this.showCreateCourse = false;
+  //         // setTimeout(() => {
+  //         //   this.router.navigate(['/courses-list']); // Navigate to course list after creation
+  //         // }, 1500);
+  //         this.cd.detectChanges();
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.isSubmitting = false;
+  //       this.errorMessage = err.error?.message || 'Failed to publish course. Please try again.';
+  //       this.toastService.error('Course Not Created Succesfully!');
+  //     },
+  //   });
+  // }
+
+  async onSubmit(): Promise<void> {
     if (!this.course.title || !this.course.description || !this.selectedFile) {
       this.errorMessage = 'Please complete all required fields and upload a thumbnail.';
       return;
@@ -222,44 +273,62 @@ export class CourseList implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    const formData = new FormData();
-    formData.append('title', this.course.title);
-    formData.append('description', this.course.description);
-    formData.append('instructor', this.course.instructor);
-    formData.append('sectionsCount', this.course.sectionsCount.toString());
-    formData.append('lecturesCount', this.course.lecturesCount.toString());
-    formData.append('isPaid', String(this.course.isPaid));
-    formData.append('isNewCourse', String(this.course.isNewCourse));
-    formData.append('membershipType', this.course.membershipType);
-    formData.append('language', this.currentRouteLanguage);
+    try {
+      // 1. Upload thumbnail file to AWS S3 under 'courseThumbnail' folder
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', this.selectedFile, this.selectedFile.name);
+      uploadFormData.append('folder', 'courseThumbnail');
 
-    // Attach the image file under the 'thumbnail' key expected by upload.single('thumbnail')
-    formData.append('thumbnail', this.selectedFile, this.selectedFile.name);
+      const uploadRes: any = await firstValueFrom(this.service.uploadAWSMedia(uploadFormData));
 
-    this.service.createCourse(formData).subscribe({
-      next: (res: any) => {
-        this.isSubmitting = false;
-        if (res.success) {
-          if (res && res.data) {
-            // 2. Prepend the new course object to the existing list
-            this.courses = [res.data, ...this.courses];
+      if (!uploadRes || !uploadRes.success || !uploadRes.data) {
+        throw new Error('Failed to upload thumbnail to AWS S3');
+      }
+
+      const fileLink = uploadRes.data;
+
+      // 2. Build course payload with the S3 URL string
+      const coursePayload = {
+        title: this.course.title,
+        description: this.course.description,
+        instructor: this.course.instructor,
+        sectionsCount: Number(this.course.sectionsCount),
+        lecturesCount: Number(this.course.lecturesCount),
+        isPaid: Boolean(this.course.isPaid),
+        isNewCourse: Boolean(this.course.isNewCourse),
+        membershipType: this.course.membershipType,
+        language: this.currentRouteLanguage,
+        thumbnail: fileLink, // S3 URL string
+      };
+
+      // 3. Create course record in backend database
+      this.service.createCourse(coursePayload).subscribe({
+        next: (res: any) => {
+          this.isSubmitting = false;
+          if (res && res.success) {
+            if (res.data) {
+              this.courses = [res.data, ...this.courses];
+            }
+            this.successMessage = 'Course published successfully!';
+            this.toastService.success('Course Created Successfully!');
+            this.showCreateCourse = false;
             this.cd.detectChanges();
           }
-          this.successMessage = 'Course published successfully!';
-          this.toastService.success('Course Created Succesfully!');
-          this.showCreateCourse = false;
-          // setTimeout(() => {
-          //   this.router.navigate(['/courses-list']); // Navigate to course list after creation
-          // }, 1500);
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          this.errorMessage = err.error?.message || 'Failed to publish course. Please try again.';
+          this.toastService.error('Course Not Created Successfully!');
           this.cd.detectChanges();
-        }
-      },
-      error: (err) => {
-        this.isSubmitting = false;
-        this.errorMessage = err.error?.message || 'Failed to publish course. Please try again.';
-        this.toastService.error('Course Not Created Succesfully!');
-      },
-    });
+        },
+      });
+    } catch (error: any) {
+      console.error('Submission failed:', error);
+      this.isSubmitting = false;
+      this.errorMessage = error.message || 'Error uploading course thumbnail. Please try again.';
+      this.toastService.error('Thumbnail upload failed!');
+      this.cd.detectChanges();
+    }
   }
 
   toggleCreateCourse() {

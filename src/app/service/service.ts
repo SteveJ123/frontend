@@ -98,7 +98,7 @@ export class Service {
   /**
    * POST: Create a new course with multipart form data (handles file upload)
    */
-  createCourse(formData: FormData): Observable<any> {
+  createCourse(formData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}courses`, formData);
   }
 

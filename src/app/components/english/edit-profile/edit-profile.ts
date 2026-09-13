@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../service/toast.service';
 import { Service } from '../../../service/service';
 import { apiUrl } from '../../../core/constants/api';
+import { firstValueFrom } from 'rxjs';
 
 export interface SettingsOption {
   id: string;
@@ -114,8 +115,9 @@ export class EditProfile {
           this.userName = res.data.name || 'User';
           if (res.data.profileImage) {
             const path = res.data.profileImage;
-            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-            this.profileImage = `${this.apiUrl}${cleanedPath}`;
+            // const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            // this.profileImage = `${this.apiUrl}${cleanedPath}`;
+            this.profileImage = path;
             this.cd.detectChanges();
           } else {
             this.isEditing = true;
@@ -126,25 +128,104 @@ export class EditProfile {
     });
   }
 
-  onFileSelected(event: Event): void {
+  // onFileSelected(event: Event): void {
+  //   const input = event.target as HTMLInputElement;
+  //   if (!input.files || input.files.length === 0) return;
+
+  //   const file = input.files[0];
+
+  //   // Create FormData object to handle multipart file payload
+  //   const formData = new FormData();
+  //   formData.append('image', file);
+  //   formData.append('language', this.currentRouteLanguage);
+  //   this.isUploading = true;
+  //   if (this.isEditing) {
+  //     this.service.uploadProfileImage(this.userId, formData).subscribe({
+  //       next: (res) => {
+  //         if (res.success && res.data.profileImage) {
+  //           // Update UI preview with updated uploaded avatar path
+  //           const path = res.data.profileImage;
+  //           const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+  //           this.profileImage = `${this.apiUrl}${cleanedPath}`;
+  //         }
+  //         this.isUploading = false;
+  //         this.toastService.success('Profile Image updated successfully!');
+  //         // window.location.reload();
+  //       },
+  //       error: (err) => {
+  //         console.error('Failed to upload image:', err);
+  //         this.isUploading = false;
+  //         this.toastService.error('Profile Image Not updated successfully!');
+  //       },
+  //     });
+  //   } else {
+  //     // Direct POST request for upload
+
+  //     this.service.uploadProfileImage(this.userId, formData).subscribe({
+  //       next: (res) => {
+  //         if (res.success && res.data.profileImage) {
+  //           const path = res.data.profileImage;
+  //           const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+  //           this.profileImage = `${this.apiUrl}${cleanedPath}`;
+  //           this.toastService.success('Profile Image Uploaded Succcessfully!');
+  //         }
+  //         this.isUploading = false;
+  //         // window.location.reload();
+  //       },
+  //       error: (err) => {
+  //         console.error('Image upload failed:', err);
+  //         this.isUploading = false;
+  //         this.toastService.error('Profile Image Not Uploaded Succcessfully!');
+  //       },
+  //     });
+  //   }
+  // }
+
+  async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
+    let fileLink: any = '';
+    try {
+      const startTime = new Date();
+      const formData = new FormData();
+      formData.append('image', file);
+      // 2. Upload file to AWS S3
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
 
+      const uploadRes: any = await firstValueFrom(this.service.uploadAWSMedia(uploadFormData));
+
+      if (!uploadRes || !uploadRes.success) {
+        throw new Error('Error uploading media file to AWS');
+      }
+      fileLink = uploadRes.data;
+    } catch (error: any) {
+      console.error('Publishing failed:', error);
+      this.toastService.error('Post Not Created Successfully');
+    } finally {
+      this.isUploading = false;
+    }
+
+    const endTime = new Date();
+    const targetLanguage = this.currentRouteLanguage;
+    let payload = {
+      profileImage: fileLink,
+      language: targetLanguage,
+    };
     // Create FormData object to handle multipart file payload
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('language', this.currentRouteLanguage);
+
     this.isUploading = true;
     if (this.isEditing) {
-      this.service.uploadProfileImage(this.userId, formData).subscribe({
+      this.service.uploadProfileImage(this.userId, payload).subscribe({
         next: (res) => {
+          console.log('res editing', res);
           if (res.success && res.data.profileImage) {
             // Update UI preview with updated uploaded avatar path
             const path = res.data.profileImage;
-            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-            this.profileImage = `${this.apiUrl}${cleanedPath}`;
+            // const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            this.profileImage = path;
           }
           this.isUploading = false;
           this.toastService.success('Profile Image updated successfully!');
@@ -159,12 +240,13 @@ export class EditProfile {
     } else {
       // Direct POST request for upload
 
-      this.service.uploadProfileImage(this.userId, formData).subscribe({
+      this.service.uploadProfileImage(this.userId, payload).subscribe({
         next: (res) => {
+          console.log('res editing----', res);
           if (res.success && res.data.profileImage) {
             const path = res.data.profileImage;
-            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-            this.profileImage = `${this.apiUrl}${cleanedPath}`;
+            // const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            this.profileImage = path;
             this.toastService.success('Profile Image Uploaded Succcessfully!');
           }
           this.isUploading = false;

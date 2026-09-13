@@ -68,9 +68,10 @@ export class UserProfile {
           this.data = res.data;
           if (res.data.profileImage) {
             const path = res.data.profileImage;
-            const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+            // const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
 
-            this.data.profileImage = `${this.apiUrl}${cleanedPath}`;
+            // this.data.profileImage = `${this.apiUrl}${cleanedPath}`;
+            this.data.profileImage = path;
             this.cd.detectChanges();
           }
         }

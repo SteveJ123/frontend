@@ -167,8 +167,9 @@ export class Header {
         console.log('res profile', res);
         if (res.data && res.data.profileImage) {
           const path = res.data.profileImage;
-          const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-          this.profileImage = `${this.apiUrl}${cleanedPath}`;
+          // const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+          // this.profileImage = `${this.apiUrl}${cleanedPath}`;
+          this.profileImage = path;
           this.cdr.detectChanges();
         }
       },
