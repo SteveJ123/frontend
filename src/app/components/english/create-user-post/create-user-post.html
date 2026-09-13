@@ -363,7 +363,7 @@
               </div>
 
               <!-- EDIT/DELETE DROPDOWN (ONLY FOR POST OWNER) -->
-              <div *ngIf="post.userId._id === userId" class="relative group">
+              <div *ngIf="post.userId._id == userId" class="relative group">
                 <button
                   (click)="toggleMenu(post._id, $event)"
                   class="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
@@ -416,10 +416,7 @@
               </button>
 
               <!-- Edit Text Area Input (ONLY FOR POST OWNER IN EDIT MODE) -->
-              <div
-                *ngIf="post.userId._id === userId && editingPostId === post._id"
-                class="space-y-3"
-              >
+              <div *ngIf="post.userId._id == userId && editingPostId == post._id" class="space-y-3">
                 <textarea
                   rows="3"
                   [(ngModel)]="editContent"
@@ -429,6 +426,7 @@
             </div>
 
             <!-- EDIT MODE MEDIA MANAGEMENT (ONLY FOR POST OWNER IN EDIT MODE) -->
+
             <div
               *ngIf="post.userId._id === userId && editingPostId === post._id"
               class="p-3 bg-gray-50 border-t border-gray-200 space-y-3 mt-3"
@@ -583,7 +581,7 @@
                   controls
                   class="block max-h-[650px] w-full"
                 >
-                  <source [src]="media.fileLink"/>
+                  <source [src]="media.fileLink" />
                 </video>
 
                 <!-- AUDIO -->

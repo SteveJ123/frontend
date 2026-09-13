@@ -215,7 +215,7 @@ export class CreateUserPost {
   private cd = inject(ChangeDetectorRef);
   username: any = this.authService.getUserName();
   commentUsername = this.authService.getUserName();
-  userId = this.authService.getUserId();
+  userId: any = '';
 
   profileImage = localStorage.getItem('profileImage');
   viewedPostIds: any = new Set<string>();
@@ -233,6 +233,7 @@ export class CreateUserPost {
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
+    this.userId = this.authService.getUserId();
     this.userLanguage = this.authService.getUserLanguage();
     this.userProfileImage = localStorage.getItem('profileImage');
     this.userType = this.authService.getUserRole();

@@ -209,7 +209,7 @@ export class CreateUserPost {
   private cd = inject(ChangeDetectorRef);
   username: any = this.authService.getUserName();
   commentUsername = this.authService.getUserName();
-  userId = this.authService.getUserId();
+  userId: any = '';
 
   viewedPostIds: any = new Set<string>();
 
@@ -229,6 +229,7 @@ export class CreateUserPost {
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
+    this.userId = this.authService.getUserId();
     this.userLanguage = this.authService.getUserLanguage();
     this.userProfileImage = localStorage.getItem('profileImage');
     this.userType = this.authService.getUserRole();
@@ -311,39 +312,11 @@ export class CreateUserPost {
   }
 
   getPostsObservable() {
-    // this.posts$ = this.service.getPosts().pipe(map((response) => response.data));
-    // Pass the route language to fetch matching posts
-    // const activeLanguage = this.currentRouteLanguage;
-    // this.posts$ = this.service.getPosts(activeLanguage).pipe(
-    //   map((response) => response.data || []),
-    //   tap((posts: any[]) => {
-    // Automatically track a view for each loaded post once per session
-    // Cache posts in component state
-    // this.cachedPosts = posts;
-    // console.log('posts', posts);
-    // Handle deep-linking navigation AFTER posts are loaded in DOM
-
-    // posts.forEach((post) => {
-    //   if (post._id && !this.viewedPostIds.has(post._id)) {
-    //     this.trackPostView(post);
-    //   }
-    // });
-    // 2. Trigger auto-scrolling if a targetPostId parameter exists
-    //     if (this.targetPostId) {
-    //       setTimeout(() => {
-    //         this.scrollToPost(this.targetPostId!);
-    //       }, 300);
-    //     }
-    //   }),
-    //   shareReplay(1),
-    // );
-
     const activeLanguage = this.currentRouteLanguage;
 
     this.service.getPosts(activeLanguage).subscribe({
       next: (response) => {
         console.log('posts response:', response);
-
         // 1. Assign posts array
 
         this.posts = response.data || [];
