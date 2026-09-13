@@ -167,8 +167,9 @@ export class Header {
         console.log('res profile', res);
         if (res.data && res.data.profileImage) {
           const path = res.data.profileImage;
-          const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
-          this.profileImage = `${this.apiUrl}${cleanedPath}`;
+          // const cleanedPath = path.startsWith('/') ? path.slice(1) : path;
+          // this.profileImage = `${this.apiUrl}${cleanedPath}`;
+          this.profileImage = path;
           this.cdr.detectChanges();
         }
       },
@@ -189,6 +190,66 @@ export class Header {
       this.unreadCount = data.data.filter((n: any) => !n.isRead).length;
     });
   }
+
+  // onNotificationClick(notification: any): void {
+  //   console.log('notification', notification);
+  //   if (!notification.isRead) {
+  //     // Optimistic UI update
+  //     notification.isRead = true;
+  //     this.recalculateUnreadCount();
+
+  //     // Pass language to ensure correct patch route is hit
+  //     this.service.markAsRead(notification._id).subscribe({
+  //       error: (err) => {
+  //         console.error('Failed to update notification status:', err);
+  //         notification.isRead = false;
+  //         this.recalculateUnreadCount();
+  //       },
+  //     });
+  //   }
+
+  //   const targetPostId =
+  //     typeof notification.postId === 'object' && notification.postId !== null
+  //       ? notification.postId._id
+  //       : notification.postId;
+
+  //   const targetRoute = notification.postModel === 'AdminPost' ? 'community-post' : 'user-feed';
+
+  //   if (this.userType == 'admin') {
+  //     this.currentLang = notification.postId.language === 'English' ? 'en' : 'te';
+  //   }
+
+  //   // if (targetPostId) {
+  //   //   this.router.navigate(['/', this.currentLang, targetRoute], {
+  //   //     queryParams: { postId: targetPostId },
+  //   //   });
+  //   // }
+
+  //   // Check if commentId exists, or if postModel indicates an AdminPost comment
+  //   const isComment = !!notification.commentId || notification.postModel === 'AdminPost';
+
+  //   if (isComment) {
+  //     const targetPostId =
+  //       typeof notification.postId === 'object' ? notification.postId._id : notification.postId;
+
+  //     this.router.navigate(['/', this.currentLang, targetRoute], {
+  //       queryParams: {
+  //         postId: targetPostId,
+  //         commentId: notification.commentId,
+  //       },
+  //       fragment: notification.commentId ? `comment-${notification.commentId}` : undefined,
+  //     });
+  //   } else {
+  //     const targetPostId =
+  //       typeof notification.postId === 'object' ? notification.postId._id : notification.postId;
+
+  //     this.router.navigate(['/', this.currentLang, targetRoute], {
+  //       queryParams: { postId: targetPostId },
+  //     });
+  //   }
+
+  //   this.isNotificationOpen = false;
+  // }
 
   onNotificationClick(notification: any): void {
     console.log('notification', notification);
