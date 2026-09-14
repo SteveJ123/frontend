@@ -8,7 +8,7 @@ import { LeftSidebar } from './components/left-sidebar/left-sidebar';
   imports: [RouterOutlet, Header, LeftSidebar],
   template: `
     <app-header></app-header>
-    <div class="flex">
+    <div class="flex bg-[#f3fab5]">
       <app-left-sidebar></app-left-sidebar>
       <router-outlet></router-outlet>
     </div>

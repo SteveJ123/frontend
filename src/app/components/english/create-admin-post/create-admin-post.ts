@@ -328,10 +328,10 @@ export class CreateAdminPost {
   // }
 
   fetchAdminProfile() {
-    this.service.getAdminProfile().subscribe({
+    this.service.getAdminProfileById(this.userId).subscribe({
       next: (response: any) => {
         console.log('response admin profile', response);
-        this.adminProfile = response;
+        this.adminProfile = response.data.profileImage;
       },
       error: (error) => {
         console.log(error);

@@ -423,6 +423,9 @@ export class Service {
   getAdminProfile() {
     return this.http.get(`${this.apiUrl}admin-profile`);
   }
+  getAdminProfileById(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}admin-profile/${userId}`);
+  }
 
   /**
    * PATCH /api/notifications/:id/read

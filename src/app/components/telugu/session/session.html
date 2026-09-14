@@ -1,12 +1,12 @@
 <div
-  class="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 w-full font-sans text-gray-800"
+  class="min-h-screen bg-[#f3fab5] p-4 sm:p-6 lg:p-8 w-full font-sans text-gray-800"
   (click)="activeDropdownId = null"
 >
   <div class="max-w-4xl mx-auto space-y-6">
     <!-- ADMIN SCHEDULING & EDIT FORM -->
     <div
       *ngIf="userRole === 'admin'"
-      class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4"
+      class="bg-[#f3fab5] p-5 rounded-xl border border-gray-200 shadow-sm space-y-4"
     >
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-gray-900">
@@ -32,7 +32,7 @@
             (ngModelChange)="onCourseTypeChange($event)"
             name="courseType"
             required
-            class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer"
+            class="w-full px-3 py-2 border rounded-lg text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer"
           >
             <option *ngFor="let type of courseTypes" [value]="type">
               {{ type }}
@@ -48,7 +48,7 @@
             name="meetingUrl"
             placeholder="https://zoom.us/j/123456789"
             required
-            class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            class="w-full px-3 py-2 border rounded-lg text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
         </div>
 
@@ -60,7 +60,7 @@
             [(ngModel)]="sessionForm.rawDate"
             name="rawDate"
             required
-            class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer"
+            class="w-full px-3 py-2 border rounded-lg text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer"
           />
         </div>
 
@@ -73,7 +73,7 @@
               name="startTime"
               placeholder="7:00 AM"
               required
-              class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              class="w-full px-3 py-2 border rounded-lg text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
           <div class="w-1/2">
@@ -84,7 +84,7 @@
               name="endTime"
               placeholder="8:20 AM"
               required
-              class="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              class="w-full px-3 py-2 border rounded-lg text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
         </div>
@@ -94,13 +94,13 @@
             *ngIf="isEditing"
             type="button"
             (click)="resetForm()"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-lg transition-all"
+            class="px-4 py-2 bg-[#f3fab5] hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-lg transition-all"
           >
             Cancel
           </button>
           <button
             type="submit"
-            class="px-5 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-lg transition-all"
+            class="px-5 py-2 bg-[#960000] hover:bg-gray-800 text-white font-bold text-xs rounded-lg transition-all"
           >
             {{ isEditing ? 'Update Session' : 'Add Session' }}
           </button>
@@ -120,7 +120,7 @@
         <!-- Session Items -->
         <div
           *ngFor="let session of group.items"
-          class="bg-white p-4 sm:p-5 rounded-xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          class="bg-[#f3fab5] p-4 sm:p-5 rounded-xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         >
           <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
             <div class="flex items-center gap-1">
@@ -172,7 +172,7 @@
             <!-- Dropdown Options Menu -->
             <div
               *ngIf="activeDropdownId === session._id"
-              class="absolute right-0 top-11 bg-white border border-gray-100 shadow-xl rounded-xl py-1 w-44 z-20"
+              class="absolute right-0 top-11 bg-[#f3fab5] border border-gray-100 shadow-xl rounded-xl py-1 w-44 z-20"
             >
               <!-- Copy Link -->
               <button

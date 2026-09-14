@@ -1,5 +1,5 @@
 <header
-  class="relative bg-white border-b border-gray-200 sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between shadow-sm"
+  class="relative bg-[#f3fab5] border-b border-gray-200 sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between shadow-sm"
 >
   <!-- Left Section: Mobile Menu + Logo -->
   <div class="flex items-center space-x-3 h-20">
@@ -152,11 +152,11 @@
       <!-- Notification Dropdown Menu -->
       <div
         *ngIf="isNotificationOpen"
-        class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-fadeIn"
+        class="absolute right-0 mt-2 w-80 sm:w-96 bg-[#f3fab5] rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-fadeIn"
       >
         <!-- Header -->
         <div
-          class="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50"
+          class="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-[#f3fab5] ustom-scrollbar"
         >
           <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700">Notifications</h3>
           <span class="text-[11px] font-semibold text-gray-500">{{ unreadCount }} Unread</span>
@@ -167,7 +167,10 @@
           <div
             *ngFor="let notification of notifications"
             (click)="onNotificationClick(notification)"
-            [ngClass]="{ 'bg-blue-50/60': !notification.isRead, 'bg-white': notification.isRead }"
+            [ngClass]="{
+              'bg-blue-50/60': !notification.isRead,
+              'bg-[#f3fab5]': notification.isRead,
+            }"
             class="p-3.5 hover:bg-gray-100 transition cursor-pointer flex items-start space-x-3"
           >
             <!-- Unread Indicator Dot -->
@@ -212,12 +215,16 @@
         class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400 overflow-hidden cursor-pointer"
         (click)="toggleProfileDropdown()"
       >
-        <img [src]="profileImage" alt="User" class="w-full h-full object-cover" />
+        <img
+          [src]="profileImage ? profileImage : 'user.png'"
+          alt="User"
+          class="w-full h-full object-cover"
+        />
       </div>
       <!-- Profile Dropdown Popup -->
       <div
         *ngIf="isProfileOpen"
-        class="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-3 z-50 animate-fadeIn"
+        class="absolute right-0 mt-2 w-64 bg-[#f3fab5] rounded-2xl shadow-xl border border-gray-100 p-3 z-50 animate-fadeIn"
       >
         <!-- User Information Header -->
         <div class="flex items-center space-x-3 p-2 mb-2">

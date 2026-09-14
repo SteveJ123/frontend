@@ -1,4 +1,4 @@
-<div class="p-4 md:p-8 max-w-7xl mx-auto font-sans">
+<div class="bg-[#f3fab5] p-4 md:p-8 max-w-7xl mx-auto font-sans">
   <h1 class="text-2xl font-bold mb-6 text-gray-800">Habits</h1>
   @if (dailyTrackerUsername) {
     <hr />
@@ -7,7 +7,7 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Left side: Calendar Section -->
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+    <div class="lg:col-span-2 bg-[#f3fab5] rounded-xl shadow-sm border border-gray-100 p-4">
       <!-- Navigation Controls -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 class="text-xl font-semibold text-gray-700">
@@ -26,7 +26,7 @@
             <div class="mt-12 space-y-1">
               <div
                 *ngFor="let event of day.events"
-                class="flex items-center gap-1.5 p-1.5 rounded-r border-l-4 bg-gray-600 text-white shadow-2xs hover:bg-gray-200/60 transition cursor-pointer"
+                class="flex items-center gap-1.5 p-1.5 rounded-r border-l-4 bg-[#f3fab5] text-white shadow-2xs hover:bg-gray-200/60 transition cursor-pointer"
                 [style.border-left-color]="event.color?.primary || '#7e22ce'"
               >
                 <!-- Checkmark Icon -->
@@ -49,7 +49,7 @@
           <button
             mwlCalendarToday
             [(viewDate)]="viewDate"
-            class="px-4 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition"
+            class="px-4 py-1.5 bg-[#f3fab5] text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition"
           >
             Today
           </button>
@@ -88,7 +88,7 @@
 
     <!-- Right side: Habits Action Widget -->
     <div class="lg:col-span-1">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="bg-[#f3fab5] rounded-xl shadow-sm border border-gray-100 p-5">
         <h3 class="text-base font-semibold text-gray-800 mb-4" *ngIf="!id">
           Complete today's Habits (1)
         </h3>
@@ -123,7 +123,7 @@
         <!-- Today's Habit Item -->
         <div
           *ngIf="!isLoadingTracker"
-          class="flex items-center justify-between p-3.5 border rounded-lg bg-gray-50 border-gray-200"
+          class="flex items-center justify-between p-3.5 border rounded-lg bg-[#f3fab5] border-gray-200"
         >
           <div class="flex items-center space-x-3">
             <!-- Clickable Only if Today is NOT completed -->

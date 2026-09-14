@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans text-gray-800">
+<div class="min-h-screen bg-[#f3fab5] py-8 px-4 sm:px-6 lg:px-8 font-sans text-gray-800">
   <div class="max-w-7xl mx-auto space-y-8">
     <!-- HEADER -->
     <div
@@ -14,7 +14,7 @@
       </div>
       <div class="flex items-center gap-2">
         <span
-          class="text-xs font-semibold px-3 py-1 bg-gray-200 text-gray-700 rounded-full capitalize"
+          class="text-xs font-semibold px-3 py-1 bg-[#f3fab5] text-gray-700 rounded-full capitalize"
         >
           Role: {{ userRole }}
         </span>
@@ -24,7 +24,7 @@
     <!-- ADMIN CREATE / EDIT FORM -->
     <div
       *ngIf="userRole === 'admin'"
-      class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4"
+      class="bg-[#f3fab5] p-5 sm:p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4"
     >
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-gray-900">
@@ -49,7 +49,7 @@
             name="title"
             placeholder="e.g. Ergonomic Wireless Mouse"
             required
-            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-black"
           />
         </div>
 
@@ -64,7 +64,7 @@
             name="productUrl"
             placeholder="https://amazon.com/dp/..."
             required
-            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-black"
           />
         </div>
 
@@ -77,7 +77,7 @@
             name="imageUrl"
             placeholder="https://m.media-amazon.com/images/..."
             required
-            class="w-full px-3 py-2 border rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+            class="w-full px-3 py-2 border rounded-xl text-sm bg-[#f3fab5] focus:outline-none focus:ring-2 focus:ring-black"
           />
         </div>
 
@@ -115,13 +115,13 @@
             *ngIf="isEditing"
             type="button"
             (click)="resetForm()"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-xl transition-all"
+            class="px-4 py-2 bg-[#f3fab5] hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-xl transition-all"
           >
             Cancel
           </button>
           <button
             type="submit"
-            class="w-full sm:w-auto px-6 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl transition-all shadow-sm"
+            class="w-full sm:w-auto px-6 py-2 bg-[#960000] hover:bg-gray-800 text-white font-bold text-xs rounded-xl transition-all shadow-sm"
           >
             {{ isEditing ? 'Update Listing' : 'Publish Product' }}
           </button>
@@ -136,11 +136,11 @@
     >
       <div
         *ngFor="let product of products"
-        class="bg-white rounded-2xl border border-gray-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden group"
+        class="bg-[#f3fab5] rounded-2xl border border-gray-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden group"
       >
         <!-- Product Image Banner -->
         <div
-          class="relative w-full h-48 sm:h-52 bg-gray-100 flex items-center justify-center overflow-hidden p-4"
+          class="relative w-full h-48 sm:h-52 bg-[#f3fab5] flex items-center justify-center overflow-hidden p-4"
         >
           <img
             [src]="product.imageUrl"
@@ -188,7 +188,7 @@
             <div *ngIf="userRole === 'admin'" class="flex items-center gap-2 pt-1">
               <button
                 (click)="startEditing(product)"
-                class="w-1/2 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+                class="w-1/2 py-1.5 bg-[#f3fab5] hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
               >
                 Edit
               </button>
@@ -205,7 +205,7 @@
     </div>
     <!-- EMPTY STATE -->
     <ng-template #emptyState>
-      <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+      <div class="text-center py-16 bg-[#f3fab5] rounded-2xl border border-dashed border-gray-300">
         <svg
           class="mx-auto h-12 w-12 text-gray-400"
           fill="none"
@@ -230,7 +230,7 @@
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
   >
     <div
-      class="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
+      class="bg-[#f3fab5] rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
     >
       <!-- Modal Header & Icon -->
       <div class="flex items-center justify-center gap-3">
@@ -262,7 +262,7 @@
         <button
           type="button"
           (click)="cancelDelete()"
-          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
+          class="px-4 py-2 bg-[#f3fab5] hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
         >
           Cancel
         </button>

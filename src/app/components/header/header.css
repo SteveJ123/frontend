@@ -1,0 +1,27 @@
+/* Width of the scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Background track color (matches your container or preferred background) */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #f3fab5;
+  border-radius: 8px;
+}
+
+/* Scrollbar thumb (draggable handle) */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d88a; /* Slightly darker shade for contrast */
+  border-radius: 8px;
+}
+
+/* Hover state for thumb */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #b3ba6c;
+}
+
+/* Firefox support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d88a #f3fab5; /* [Thumb Color] [Track/Background Color] */
+}

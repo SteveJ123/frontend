@@ -1,14 +1,15 @@
 <div class="pt-4">
   <button
     type="submit"
-    class="w-full py-3 px-6 bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
+    class="w-full py-3 px-6 bg-[#960000] hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
     (click)="toggleCreateCourse()"
     *ngIf="userRole === 'admin'"
   >
     Create Course
   </button>
 </div>
-<div *ngIf="showCreateCourse" class="min-h-screen bg-gray-50/50 p-4 sm:p-6 lg:p-8 w-full">
+<!-- bg-gray-50/50 -->
+<div *ngIf="showCreateCourse" class="min-h-screen bg-[#f3fab5] p-4 sm:p-6 lg:p-8 w-full">
   <div class="w-full mx-auto space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -41,7 +42,7 @@
       <!-- Course Form -->
       <form
         (ngSubmit)="onSubmit()"
-        class="lg:col-span-7 bg-white p-5 sm:p-8 rounded-2xl border border-gray-100 shadow-sm space-y-5"
+        class="lg:col-span-7 bg-[#f3fab5] p-5 sm:p-8 rounded-2xl border border-gray-100 shadow-sm space-y-5"
       >
         <!-- Course Title -->
         <div>
@@ -60,7 +61,7 @@
             [(ngModel)]="course.title"
             name="title"
             required
-            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all cursor-pointer"
+            class="w-full px-4 py-2.5 bg-[#f3fab5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all cursor-pointer"
           >
             <option value="" disabled selected>Select Course Title</option>
             <option value="Face Yoga">ఫేస్ యోగా</option>
@@ -78,7 +79,7 @@
             [(ngModel)]="course.instructor"
             name="instructor"
             placeholder="e.g. Pooja Agarwala"
-            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all"
+            class="w-full px-4 py-2.5 bg-[#f3fab5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all"
           />
         </div>
 
@@ -92,7 +93,7 @@
             accept="image/*"
             (change)="onFileSelected($event)"
             required
-            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer"
+            class="w-full px-4 py-2 bg-[#f3fab5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer"
           />
         </div>
 
@@ -107,7 +108,7 @@
             rows="3"
             required
             placeholder="Brief overview of what students will learn..."
-            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all resize-none"
+            class="w-full px-4 py-2.5 bg-[#f3fab5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all resize-none"
           ></textarea>
         </div>
 
@@ -183,7 +184,7 @@
           <button
             type="submit"
             [disabled]="isSubmitting"
-            class="w-full py-3 px-6 bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
+            class="w-full py-3 px-6 bg-[#960000] hover:bg-gray-800 disabled:bg-gray-400 text-white font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98"
           >
             Create Course
           </button>
@@ -246,7 +247,7 @@
           <!-- Bottom Button -->
           <div class="p-5 pt-0">
             <button
-              class="w-full py-2.5 bg-black text-white text-xs font-bold rounded-xl pointer-events-none"
+              class="w-full py-2.5 bg-[#960000] text-white text-xs font-bold rounded-xl pointer-events-none"
             >
               Start learning
             </button>
@@ -256,7 +257,7 @@
     </div>
   </div>
 </div>
-<div class="min-h-screen bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+<div class="min-h-screen bg-[#f3fab5] p-4 sm:p-6 lg:p-8">
   <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">పాఠ్యక్రమము</h1>
@@ -269,11 +270,11 @@
     >
       <div
         *ngFor="let i of [1, 2, 3]"
-        class="bg-white rounded-2xl p-4 border border-gray-100 space-y-4"
+        class="bg-[#f3fab5] rounded-2xl p-4 border border-gray-100 space-y-4"
       >
-        <div class="aspect-video bg-gray-200 rounded-xl w-full"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div class="h-10 bg-gray-200 rounded-xl w-full"></div>
+        <div class="aspect-video bg-[#f3fab5] rounded-xl w-full"></div>
+        <div class="h-4 bg-[#f3fab5] rounded w-3/4"></div>
+        <div class="h-10 bg-[#f3fab5] rounded-xl w-full"></div>
       </div>
     </div>
 
@@ -284,7 +285,7 @@
     >
       <div
         *ngFor="let course of courses"
-        class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow relative"
+        class="bg-[#f3fab5] rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow relative"
       >
         <!-- DISPLAY MODE -->
         <div
@@ -292,7 +293,7 @@
           (click)="viewCourseDetails(course._id)"
           class="cursor-pointer"
         >
-          <div class="relative aspect-video w-full bg-gray-100 overflow-hidden">
+          <div class="relative aspect-video w-full bg-[#f3fab5] overflow-hidden">
             <img [src]="course.thumbnail" [alt]="course.title" class="w-full h-full object-cover" />
             <span
               *ngIf="course.isNewCourse"
@@ -339,7 +340,7 @@
             </div>
           </div>
 
-          <div class="p-5 space-y-2">
+          <div class="p-5 space-y-2 bg-[#f3fab5]">
             <h2 class="text-base font-bold text-gray-900 leading-snug line-clamp-2">
               {{ course.title === 'Face Yoga' ? 'ఫేస్ యోగా' : 'ఫేస్ యోగా + రాజ్ యోగా' }}
             </h2>
@@ -349,9 +350,9 @@
             </p>
           </div>
 
-          <div class="p-5 pt-0">
+          <div class="p-5 pt-0 bg-[#f3fab5]">
             <button
-              class="w-full py-2.5 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors"
+              class="w-full py-2.5 bg-[#960000] hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors"
             >
               నేర్చుకోవడం ప్రారంభించండి
             </button>
@@ -406,7 +407,7 @@
           <div class="flex items-center justify-end gap-2 pt-2">
             <button
               (click)="cancelEditing()"
-              class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition-all"
+              class="px-3 py-1.5 bg-[#f3fab5] hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition-all"
             >
               Cancel
             </button>
@@ -427,7 +428,7 @@
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
   >
     <div
-      class="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
+      class="bg-[#f3fab5] rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 transform transition-all scale-100"
     >
       <!-- Modal Header & Icon -->
       <div class="flex items-center justify-center gap-3">
@@ -459,7 +460,7 @@
         <button
           type="button"
           (click)="cancelDelete()"
-          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
+          class="px-4 py-2 bg-[#f3fab5] hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-colors"
         >
           Cancel
         </button>

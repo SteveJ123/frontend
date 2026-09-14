@@ -50,3 +50,9 @@ textarea {
     overflow-y: auto;
   }
 }
+
+/* Note: Place in global styles.css or use ViewEncapsulation.None */
+.cal-cell-top,
+.cal-cell-row {
+  background-color: #f3fab5 !important; /* Yellow tint */
+}
