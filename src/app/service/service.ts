@@ -451,6 +451,22 @@ export class Service {
     );
   }
 
+  getEvents(lang: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}events?language=${lang}`);
+  }
+
+  createEvent(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}events`, formData);
+  }
+
+  updateEvent(id: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}events/${id}`, formData);
+  }
+
+  deleteEvent(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}events/${id}`);
+  }
+
   uploadMedia(file: File, folder: string = 'media'): Observable<string> {
     // Step 1: Get presigned upload URL from backend
     return this.http

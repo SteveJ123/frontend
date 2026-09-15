@@ -6,9 +6,12 @@ import { AuthService } from '../../service/AuthService';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
+  host: {
+    class: 'w-full block px-4',
+  },
 })
 export class Register {
   formData = {

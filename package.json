@@ -24,6 +24,7 @@
     "date-fns": "^4.4.0",
     "emoji-picker-element": "^1.29.1",
     "rxjs": "~7.8.0",
+    "swiper": "^14.2.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {

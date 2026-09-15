@@ -611,21 +611,87 @@ export class CreateUserPost {
     this.selectedFile = null;
   }
 
-  onFileSelected(event: Event, type: 'image' | 'video' | 'audio'): void {
+  async onFileSelected(event: Event, type: 'image' | 'video' | 'audio'): Promise<void> {
     const input = event.target as HTMLInputElement;
+    if (!input.files || !input.files[0]) return;
+
     if (input.files && input.files[0]) {
+      const file = input.files[0];
+      // 1. File Size Limits (in bytes)
+      const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+      const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
+      const MAX_AUDIO_SIZE = 20 * 1024 * 1024; // 20 MB
+
+      // Check size limit by type
+      if (type === 'image' && file.size > MAX_IMAGE_SIZE) {
+        alert('Image size must be less than 5 MB.');
+        input.value = '';
+        return;
+      }
+      if (type === 'video' && file.size > MAX_VIDEO_SIZE) {
+        alert('Video file size must be less than 50 MB.');
+        input.value = '';
+        return;
+      }
+      if (type === 'audio' && file.size > MAX_AUDIO_SIZE) {
+        alert('Audio file size must be less than 20 MB.');
+        input.value = '';
+        return;
+      }
+
+      // 2. Media Duration Checks (Max 2 Minutes = 120 Seconds)
+      const MAX_DURATION_SECONDS = 120;
+
+      if (type === 'video' || type === 'audio') {
+        try {
+          const duration = await this.getMediaDuration(file, type);
+          if (duration > MAX_DURATION_SECONDS) {
+            alert(`${type === 'video' ? 'Video' : 'Audio'} length cannot exceed 2 minutes.`);
+            input.value = '';
+            return;
+          }
+        } catch (err) {
+          alert(`Could not load ${type} metadata. Please try another file.`);
+          input.value = '';
+          return;
+        }
+      }
       // 1. Clear previous selections to enforce single-file limit
       this.clearSelectedFiles();
 
-      const file = input.files[0];
+      // const file = input.files[0];
       const previewUrl = URL.createObjectURL(file);
 
       this.selectedFiles.push({ file, type, previewUrl });
       this.selectedFile = input.files[0];
+      this.cd.detectChanges();
 
       // Reset input value to allow selecting the same file again if needed
       input.value = '';
     }
+  }
+
+  /**
+   * Helper method to read audio/video element metadata duration dynamically
+   */
+  private getMediaDuration(file: File, type: 'video' | 'audio'): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const element = document.createElement(type);
+      element.preload = 'metadata';
+      const objectUrl = URL.createObjectURL(file);
+
+      element.onloadedmetadata = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(element.duration);
+      };
+
+      element.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject('Failed to load media duration');
+      };
+
+      element.src = objectUrl;
+    });
   }
 
   removeFile(index: number): void {
@@ -707,10 +773,10 @@ export class CreateUserPost {
     }
 
     const file: any = this.selectedFile;
-    if (!file) {
-      alert('Please select a file');
-      return;
-    }
+    // if (!file) {
+    //   alert('Please select a file');
+    //   return;
+    // }
 
     this.isUploading = true;
 
@@ -733,12 +799,7 @@ export class CreateUserPost {
       console.log('Upload time:', (endTime.getTime() - startTime.getTime()) / 1000, 'seconds');
 
       // Target Language Selection
-      const targetLanguage =
-        this.userType === 'user'
-          ? this.userLanguage
-          : this.currentRouteLanguage === 'te'
-            ? 'Telugu'
-            : 'English';
+      const targetLanguage = this.currentRouteLanguage;
 
       const tagIds = this.savedTags().map((tag) => tag.id);
       const membershipIds = this.savedMemberships().map((m) => m.id);

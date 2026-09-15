@@ -18,6 +18,8 @@ import { Session } from '.././components/english/session/session';
 import { Shop } from '.././components/english/shop/shop';
 import { DailyTracker } from '.././components/english/daily-tracker/daily-tracker';
 import { AdminTrackerList } from '../components/english/admin-tracker-list/admin-tracker-list';
+import { Register } from '../components/register/register';
+import { Events } from '../components/events/events';
 
 export const ENGLISH_ROUTES: Routes = [
   { path: '', redirectTo: 'community-post', pathMatch: 'full' },
@@ -109,6 +111,18 @@ export const ENGLISH_ROUTES: Routes = [
   {
     path: 'admin-user-tracker',
     component: AdminTrackerList,
+    canMatch: [roleGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'register',
+    component: Register,
+    canMatch: [roleGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'events',
+    component: Events,
     canMatch: [roleGuard],
     data: { roles: ['admin'] },
   },

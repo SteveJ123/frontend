@@ -1,0 +1,106 @@
+<div class="p-6 max-w-4xl mx-auto h-dvh">
+  <!-- Language Selector Header -->
+  <div class="flex justify-between items-center mb-6 ml-6">
+    <h2 class="text-2xl font-bold text-gray-800">
+      📅 {{ currentLangSelected === 'en' ? 'Events Management' : 'కార్యక్రమాల నిర్వహణ' }}
+    </h2>
+    <div class="flex gap-2">
+      <button
+        (click)="switchLanguage('en')"
+        [class.bg-[#960000]]="currentLangSelected === 'en'"
+        [class.text-white]="currentLangSelected === 'en'"
+        class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+      >
+        English
+      </button>
+      <button
+        (click)="switchLanguage('te')"
+        [class.bg-[#960000]]="currentLangSelected === 'te'"
+        [class.text-white]="currentLangSelected === 'te'"
+        class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+      >
+        తెలుగు
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Alert Banner -->
+  <div
+    *ngIf="errorMessage"
+    class="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg flex justify-between items-center"
+  >
+    <span>{{ errorMessage }}</span>
+    <button (click)="errorMessage = ''" class="font-bold">✕</button>
+  </div>
+
+  <!-- Create/Edit Form -->
+  <div class="bg-[#f3fab5] p-4 rounded-xl shadow-xs border border-gray-200 mb-8">
+    <h3 class="text-lg font-semibold mb-3">
+      {{ editingEventId ? 'Edit Event' : 'Add New Event' }}
+    </h3>
+
+    <div class="space-y-4">
+      <input
+        type="text"
+        [(ngModel)]="title"
+        placeholder="Enter event title"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+
+      <div class="flex items-center gap-4">
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          class="text-sm text-gray-600"
+        />
+        <img
+          *ngIf="imagePreviewUrl"
+          [src]="imagePreviewUrl"
+          class="w-16 h-16 object-cover rounded-lg border"
+        />
+      </div>
+
+      <div class="flex gap-2">
+        <button
+          (click)="saveEvent()"
+          class="px-4 py-2 bg-[#960000] text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+        >
+          {{ editingEventId ? 'Update Event' : 'Save Event' }}
+        </button>
+        <button
+          *ngIf="editingEventId"
+          (click)="resetForm()"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Events List -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div
+      *ngFor="let item of events"
+      class="border border-gray-200 rounded-xl p-3 bg-[#f3fab5] flex gap-3 items-center shadow-xs"
+    >
+      <img [src]="getImageUrl(item.imageUrl)" class="w-20 h-20 object-cover rounded-lg shrink-0" />
+      <div class="flex-1">
+        <h4 class="font-semibold text-gray-800 text-base mb-1">{{ item.title }}</h4>
+        <span
+          class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md uppercase font-bold"
+          >{{ item.language }}</span
+        >
+      </div>
+      <div class="flex flex-col gap-1">
+        <button (click)="editEvent(item)" class="text-xs text-blue-600 hover:underline">
+          Edit
+        </button>
+        <button (click)="deleteEvent(item._id!)" class="text-xs text-red-600 hover:underline">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

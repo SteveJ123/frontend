@@ -56,3 +56,65 @@ textarea {
 .cal-cell-row {
   background-color: #f3fab5 !important; /* Yellow tint */
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Firefox support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #f3fab5; /* [Thumb Color] [Track Color] */
+  }
+
+  /* Chrome, Edge, and Safari support */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #f3fab5;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #374151;
+  }
+}
+
+/* Change default icon size */
+swiper-container {
+  --swiper-navigation-size: 18px; /* Default is around 44px */
+  --swiper-navigation-color: #ffffff;
+}
+
+/* Optional: Shrink button target area or background */
+::swiper-navigation-button {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+}
+
+swiper-container {
+  /* Bullet dimensions */
+  --swiper-pagination-bullet-size: 5px;
+  --swiper-pagination-bullet-horizontal-gap: 3px;
+
+  /* Colors */
+  --swiper-pagination-bullet-inactive-color: #ffffff;
+  --swiper-pagination-bullet-inactive-opacity: 0.5;
+  --swiper-pagination-color: #960000; /* Active dot color matching brand */
+}
+
+/* Optional: Make active dot pill-shaped instead of a circle */
+::swiper-pagination-bullet-active {
+  width: 12px !important;
+  border-radius: 4px !important;
+}

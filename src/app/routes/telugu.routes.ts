@@ -18,6 +18,8 @@ import { Session } from '.././components/telugu/session/session';
 import { Shop } from '.././components/telugu/shop/shop';
 import { DailyTracker } from '.././components/telugu/daily-tracker/daily-tracker';
 import { AdminTrackerList } from '../components/telugu/admin-tracker-list/admin-tracker-list';
+import { Register } from '../components/register/register';
+import { Events } from '../components/events/events';
 
 export const TELUGU_ROUTES: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -109,6 +111,18 @@ export const TELUGU_ROUTES: Routes = [
   {
     path: 'admin-user-tracker',
     component: AdminTrackerList,
+    canMatch: [roleGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'register',
+    component: Register,
+    canMatch: [roleGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'events',
+    component: Events,
     canMatch: [roleGuard],
     data: { roles: ['admin'] },
   },

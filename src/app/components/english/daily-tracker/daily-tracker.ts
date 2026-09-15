@@ -141,6 +141,7 @@ export class DailyTracker implements OnInit {
         title: 'Daily Practice Tracker',
         color: { primary: '#334155', secondary: '#f8fafc' },
         allDay: true,
+        backgroundColor: 'gray',
       };
     });
   }
