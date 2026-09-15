@@ -206,6 +206,10 @@ export class CreateAdminPost {
   selectedFile: any = '';
   errorTimeout: any = '';
   events: any = [];
+
+  // 1. Get reference to swiper element
+  @ViewChild('swiperRef') swiperRef!: ElementRef;
+
   ngOnInit(): void {
     // this.getPosts();
     // 1. Capture target postId from query parameters
@@ -244,6 +248,25 @@ export class CreateAdminPost {
         this.handlePostAndCommentNavigation(this.targetPostId, this.targetCommentId);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // 2. Wait for DOM attach and initialize/restart Swiper
+    setTimeout(() => {
+      const swiperEl = this.swiperRef?.nativeElement;
+      if (swiperEl) {
+        // Initialize if not ready
+        if (!swiperEl.initialized) {
+          swiperEl.initialize();
+        }
+
+        // Re-enable autoplay & force layout update on route re-entry
+        if (swiperEl.swiper) {
+          swiperEl.swiper.update();
+          swiperEl.swiper.autoplay?.start();
+        }
+      }
+    }, 100);
   }
 
   handlePostAndCommentNavigation(postId: string, commentId: string | null): void {
