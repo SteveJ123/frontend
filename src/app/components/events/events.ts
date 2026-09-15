@@ -4,6 +4,7 @@ import { apiUrl } from '../../core/constants/api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../../service/toast.service';
 
 @Component({
   selector: 'app-events',
@@ -32,6 +33,7 @@ export class Events {
   ) {}
 
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   // get currentRouteLanguage(): string {
   //   const urlSegments = this.router.url.split('/').filter(Boolean);
@@ -39,6 +41,10 @@ export class Events {
   //   return urlSegments[0] === 'te' ? 'Telugu' : 'English';
   // }
   currentLangSelected: string = 'en';
+
+  productToDeleteId: any = '';
+  showDeleteModal: boolean = false;
+
   ngOnInit(): void {
     this.loadEvents(this.currentLang);
   }
@@ -101,16 +107,28 @@ export class Events {
         next: () => {
           this.resetForm();
           this.loadEvents(this.currentLang);
+          this.toastService.success('Product edited successfully!');
+          this.cdr.detectChanges();
         },
-        error: () => this.showError('Failed to update event.'),
+        error: () => {
+          this.showError('Failed to update event.');
+          this.toastService.error('Product Not edited successfully!');
+          this.cdr.detectChanges();
+        },
       });
     } else {
       this.service.createEvent(formData).subscribe({
         next: () => {
           this.resetForm();
           this.loadEvents(this.currentLang);
+          this.toastService.success('Product added successfully!');
+          this.cdr.detectChanges();
         },
-        error: () => this.showError('Failed to create event.'),
+        error: () => {
+          this.showError('Failed to create event.');
+          this.toastService.error('Product not added successfully!');
+          this.cdr.detectChanges();
+        },
       });
     }
   }
@@ -138,10 +156,10 @@ export class Events {
 
   deleteEvent(id: string): void {
     if (confirm('Are you sure you want to delete this event?')) {
-      this.service.deleteEvent(id).subscribe({
-        next: () => this.loadEvents(this.currentLang),
-        error: () => this.showError('Failed to delete event.'),
-      });
+      // this.service.deleteEvent(id).subscribe({
+      //   next: () => this.loadEvents(this.currentLang),
+      //   error: () => this.showError('Failed to delete event.'),
+      // });
     }
   }
 
@@ -161,5 +179,39 @@ export class Events {
       this.errorMessage = '';
       this.cdr.detectChanges();
     }, 5000);
+  }
+
+  openDeleteModal(id: any): void {
+    // this.activeMenuPostId = null;
+    this.productToDeleteId = id;
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete(): void {
+    this.showDeleteModal = false;
+    this.productToDeleteId = '';
+  }
+
+  confirmDelete(): void {
+    if (!this.productToDeleteId) return;
+    this.service.deleteEvent(this.productToDeleteId).subscribe({
+      next: (res) => {
+        console.log('res', res);
+        if (res.success) {
+          this.loadEvents(this.currentLang);
+          this.toastService.success('Product deleted successfully!');
+          this.productToDeleteId = '';
+          this.showDeleteModal = false;
+          this.cdr.detectChanges();
+        }
+      },
+      error: () => {
+        this.showError('Failed to delete event.');
+        this.toastService.error('Product not deleted successfully!');
+        this.productToDeleteId = '';
+        this.showDeleteModal = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 }
