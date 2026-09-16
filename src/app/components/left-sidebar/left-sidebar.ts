@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { Router, RouterLink, NavigationEnd, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../service/AuthService';
 import { SidebarService } from '../../service/SidebarService';
 import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-left-sidebar',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './left-sidebar.html',
   styleUrl: './left-sidebar.css',
 })
@@ -65,6 +65,22 @@ export class LeftSidebar {
     this.sidebarService.setSidebarState(false);
     this.router.navigate(['/', this.currentLang, 'courses-list']);
     // this.router.navigate(['/courses-list']);
+  }
+
+  isLangToggleActive = false;
+
+  onLangToggleClick(): void {
+    // Highlight when clicked
+    this.isLangToggleActive = true;
+
+    // Close sidebar on mobile
+    this.sidebarService.setSidebarState(false);
+  }
+
+  // Call this method whenever any OTHER sidebar item is clicked to reset the highlight
+  resetLangToggle(): void {
+    this.isLangToggleActive = false;
+    this.sidebarService.setSidebarState(false);
   }
 
   ngOnDestroy(): void {

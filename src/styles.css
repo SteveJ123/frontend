@@ -9,7 +9,7 @@
 
 /* Apply to root HTML and body */
 html,
-body {
+/* body {
   font-family:
     'Inter',
     -apple-system,
@@ -19,6 +19,11 @@ body {
     sans-serif;
   height: 100%;
   margin: 0;
+} */
+
+body {
+  /* font-family: 'Poppins', sans-serif; */
+  font-family: 'Ponnala';
 }
 
 /* Ensure form controls inherit the parent font */

@@ -360,4 +360,46 @@ export class Header {
   toggleLanguage() {
     this.language = !this.language;
   }
+
+  // Adds handler to clear the array and update counts
+  markAllAsRead(): void {
+    // Option A: If syncing with backend API service
+
+    // this.notificationService.markAllAsRead().subscribe({
+    //   next: () => {
+    //     this.notifications = [];
+    //     this.unreadCount = 0;
+    //   },
+    //   error: (err) => console.error('Failed to mark notifications read', err)
+    // });
+
+    // Option B: Client-side state clear
+    // this.notifications = [];
+    // this.unreadCount = 0;
+
+    const userId = this.userId; // Retrieve your active user ID variable
+
+    if (!userId) return;
+
+    // Optimistically clear the local view and counter
+    const previousNotifications = [...this.notifications];
+    const previousUnreadCount = this.unreadCount;
+
+    this.notifications = [];
+    this.unreadCount = 0;
+
+    // Call the backend API service
+    this.service.markAllAsRead(userId, this.currentRouteLanguage).subscribe({
+      next: (res) => {
+        console.log('All notifications marked as read:', res);
+      },
+      error: (err) => {
+        console.error('Failed to mark all notifications as read on backend:', err);
+
+        // Rollback optimistic state changes on error
+        this.notifications = previousNotifications;
+        this.unreadCount = previousUnreadCount;
+      },
+    });
+  }
 }

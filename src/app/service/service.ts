@@ -143,6 +143,30 @@ export class Service {
     });
   }
 
+  /**
+ * PATCH /api/notifications/read-all
+ * Marks all notifications for a specific user as read in the backend.
+ */
+markAllAsRead(userId: string, language?: string): Observable<any> {
+  let params = new HttpParams();
+  if (userId) {
+    params = params.set('userId', userId);
+  }
+  if (language && language.trim() !== '') {
+    params = params.set('language', language.trim());
+  }
+
+  const endpoint = `${this.apiUrl}notifications/read-all`;
+
+  return this.http.patch<any>(endpoint, {}, { params }).pipe(
+    tap(() => {
+      // Clear notifications locally once successfully updated on the server
+      this.notificationsSubject.next([]);
+      this.unreadCountSubject.next(0);
+    })
+  );
+}
+
   updatePost(postId: string, formData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}posts/${postId}`, formData);
   }
