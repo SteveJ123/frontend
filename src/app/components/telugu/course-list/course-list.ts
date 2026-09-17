@@ -29,6 +29,7 @@ export class CourseList implements OnInit {
 
   productToDeleteId: string = '';
   showDeleteModal: boolean = false;
+  showDeleteNutritionModal: boolean = false;
   private service = inject(Service);
   private cd = inject(ChangeDetectorRef);
   private router = inject(Router);
@@ -228,39 +229,59 @@ export class CourseList implements OnInit {
   }
 
   // Opens the custom popup dialog
-  openDeleteModal(event: any, id: string): void {
+  openDeleteModal(event: any, id: string, courseNutrition: any): void {
     event.stopPropagation();
     this.productToDeleteId = id;
-    this.showDeleteModal = true;
+    if (courseNutrition === 'course') {
+      this.showDeleteModal = true;
+    } else if (courseNutrition === 'nutrition') {
+      this.showDeleteNutritionModal = true;
+    }
   }
 
   // Closes the popup dialog without deleting
   cancelDelete(): void {
     this.showDeleteModal = false;
+    this.showDeleteNutritionModal = false;
     this.productToDeleteId = '';
   }
 
   // Executed when "OK" / "Delete" is pressed in the modal
   confirmDelete(): void {
     if (!this.productToDeleteId) return;
-
-    this.service.deleteCourse(this.productToDeleteId).subscribe({
-      next: (res) => {
-        console.log('res', res);
-        if (res.success) {
-          this.courses = this.courses.filter((c) => c._id !== this.productToDeleteId);
-          this.toastService.success('Course deleted successfully!');
+    if (this.showDeleteModal) {
+      this.service.deleteCourse(this.productToDeleteId).subscribe({
+        next: (res) => {
+          console.log('res', res);
+          if (res.success) {
+            this.courses = this.courses.filter((c) => c._id !== this.productToDeleteId);
+            this.toastService.success('Course deleted successfully!');
+            this.cancelDelete();
+            this.cd.detectChanges();
+          }
+        },
+        error: (err) => {
+          console.error('Delete error:', err);
           this.cancelDelete();
           this.cd.detectChanges();
-        }
-      },
-      error: (err) => {
-        console.error('Delete error:', err);
-        this.cancelDelete();
-        this.cd.detectChanges();
-        this.toastService.error('Course not deleted!');
-      },
-    });
+          this.toastService.error('Course not deleted!');
+        },
+      });
+    } else if (this.showDeleteNutritionModal) {
+      this.service.deleteNutritionItem(this.productToDeleteId).subscribe({
+        next: () => {
+          (this.fetchNutritionItems(), this.toastService.success('Product deleted successfully!'));
+          this.cancelDelete();
+          this.cd.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('Delete Error:', err);
+          this.toastService.error('Product not deleted successfully!');
+          this.cancelDelete();
+          this.cd.detectChanges();
+        },
+      });
+    }
   }
 
   selectedFile: File | null = null;
@@ -480,17 +501,17 @@ export class CourseList implements OnInit {
   deleteNutritionItem(id?: string): void {
     if (!id) return;
     if (confirm('Are you sure you want to delete this recipe item?')) {
-      this.service.deleteNutritionItem(id).subscribe({
-        next: () => {
-          (this.fetchNutritionItems(), this.toastService.success('Product deleted successfully!'));
-          this.cd.detectChanges();
-        },
-        error: (err: any) => {
-          console.error('Delete Error:', err);
-          this.toastService.error('Product not deleted successfully!');
-          this.cd.detectChanges();
-        },
-      });
+      // this.service.deleteNutritionItem(id).subscribe({
+      //   next: () => {
+      //     (this.fetchNutritionItems(), this.toastService.success('Product deleted successfully!'));
+      //     this.cd.detectChanges();
+      //   },
+      //   error: (err: any) => {
+      //     console.error('Delete Error:', err);
+      //     this.toastService.error('Product not deleted successfully!');
+      //     this.cd.detectChanges();
+      //   },
+      // });
     }
   }
 

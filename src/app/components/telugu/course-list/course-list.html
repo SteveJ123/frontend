@@ -325,7 +325,7 @@
                 </svg>
               </button>
               <button
-                (click)="openDeleteModal($event, course._id!)"
+                (click)="openDeleteModal($event, course._id!, 'course')"
                 class="p-1.5 bg-white/90 hover:bg-white text-gray-700 hover:text-red-600 rounded-lg shadow-sm backdrop-blur-md transition-all"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -550,7 +550,7 @@
     <div class="space-y-6">
       <div class="border-b border-gray-300 pb-2">
         <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900">
-          {{ currentRouteLanguage === 'te' ? 'పోషకమైన ఆహారం' : 'Nutritious Food' }}
+          {{ currentRouteLanguage === 'Telugu' ? 'పోషకమైన ఆహారం' : 'Nutritious Food' }}
         </h2>
       </div>
 
@@ -568,7 +568,7 @@
               ✏️
             </button>
             <button
-              (click)="deleteNutritionItem(item._id)"
+              (click)="openDeleteModal($event, item._id!, 'nutrition')"
               class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-red-600 shadow-sm"
             >
               🗑️
@@ -587,14 +587,14 @@
 
               <div>
                 <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
-                  {{ currentRouteLanguage === 'te' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}:
+                  {{ currentRouteLanguage === 'Telugu' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}:
                 </span>
                 <p class="text-xs text-gray-700 font-medium line-clamp-2">{{ item.ingredients }}</p>
               </div>
 
               <div>
                 <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
-                  {{ currentRouteLanguage === 'te' ? 'వివరణ' : 'Description' }}:
+                  {{ currentRouteLanguage === 'Telugu' ? 'వివరణ' : 'Description' }}:
                 </span>
                 <p class="text-xs text-gray-600 leading-relaxed line-clamp-3">
                   {{ item.description }}
@@ -606,7 +606,7 @@
                   (click)="viewNutritionDetail(item._id)"
                   class="w-full py-2 px-4 bg-[#960000] hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
                 >
-                  {{ currentRouteLanguage === 'te' ? 'వివరాలు చూడండి' : 'View Details' }}
+                  {{ currentRouteLanguage === 'Telugu' ? 'వివరాలు చూడండి' : 'View Details' }}
                 </button>
               </div>
             </div>
@@ -619,7 +619,7 @@
     <div class="space-y-6">
       <div class="border-b border-gray-300 pb-2">
         <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900">
-          {{ currentRouteLanguage === 'te' ? 'ఆరోగ్యకరమైన పానీయాలు' : 'Healthy Drinks' }}
+          {{ currentRouteLanguage === 'Telugu' ? 'ఆరోగ్యకరమైన పానీయాలు' : 'Healthy Drinks' }}
         </h2>
       </div>
 
@@ -637,7 +637,7 @@
               ✏️
             </button>
             <button
-              (click)="deleteNutritionItem(drink._id)"
+              (click)="openDeleteModal($event, drink._id!, 'nutrition')"
               class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-red-600 shadow-sm"
             >
               🗑️
@@ -656,7 +656,7 @@
 
               <div>
                 <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
-                  {{ currentRouteLanguage === 'te' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}:
+                  {{ currentRouteLanguage === 'Telugu' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}:
                 </span>
                 <p class="text-xs text-gray-700 font-medium line-clamp-2">
                   {{ drink.ingredients }}
@@ -665,7 +665,7 @@
 
               <div>
                 <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
-                  {{ currentRouteLanguage === 'te' ? 'వివరణ' : 'Description' }}:
+                  {{ currentRouteLanguage === 'Telugu' ? 'వివరణ' : 'Description' }}:
                 </span>
                 <p class="text-xs text-gray-600 leading-relaxed line-clamp-3">
                   {{ drink.description }}
@@ -677,7 +677,7 @@
                   (click)="viewNutritionDetail(drink._id)"
                   class="w-full py-2 px-4 bg-[#960000] hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
                 >
-                  {{ currentRouteLanguage === 'te' ? 'వివరాలు చూడండి' : 'View Details' }}
+                  {{ currentRouteLanguage === 'Telugu' ? 'వివరాలు చూడండి' : 'View Details' }}
                 </button>
               </div>
             </div>
@@ -688,7 +688,7 @@
   </div>
   <!-- TAILWIND POPUP CONFIRMATION MODAL -->
   <div
-    *ngIf="showDeleteModal"
+    *ngIf="showDeleteModal || showDeleteNutritionModal"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
   >
     <div

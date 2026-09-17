@@ -325,7 +325,7 @@
                 </svg>
               </button>
               <button
-                (click)="openDeleteModal($event, course._id!)"
+                (click)="openDeleteModal($event, course._id!, 'course')"
                 class="p-1.5 bg-[#f3fab5]/90 hover:bg-[#f3fab5] text-gray-700 hover:text-red-600 rounded-lg shadow-sm backdrop-blur-md transition-all"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -568,7 +568,7 @@
               ✏️
             </button>
             <button
-              (click)="deleteNutritionItem(item._id)"
+              (click)="openDeleteModal($event, item._id!, 'nutrition')"
               class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-red-600 shadow-sm"
             >
               🗑️
@@ -638,7 +638,7 @@
               ✏️
             </button>
             <button
-              (click)="deleteNutritionItem(drink._id)"
+              (click)="openDeleteModal($event, drink._id!, 'nutrition')"
               class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-red-600 shadow-sm"
             >
               🗑️
@@ -689,7 +689,7 @@
   </div>
   <!-- TAILWIND POPUP CONFIRMATION MODAL -->
   <div
-    *ngIf="showDeleteModal"
+    *ngIf="showDeleteModal || showDeleteNutritionModal"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity animate-fadeIn"
   >
     <div

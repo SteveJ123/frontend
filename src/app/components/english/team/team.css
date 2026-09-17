@@ -12,3 +12,7 @@ table.mat-table {
 .mat-mdc-paginator {
   width: 100% !important;
 }
+
+* {
+  font-family: 'Poppins', sans-serif !important;
+}
