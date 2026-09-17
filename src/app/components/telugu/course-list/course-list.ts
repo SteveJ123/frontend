@@ -52,6 +52,23 @@ export class CourseList implements OnInit {
   }
 
   showCreateCourse = false;
+
+  nutritiousFoods: any[] = [];
+  healthyDrinks: any[] = [];
+
+  // Form State
+  isEditingNutrition: boolean = false;
+  isNutritionSubmitting: boolean = false;
+  selectedNutritionFile: File | null = null;
+
+  nutritionForm: any = {
+    title: '',
+    category: 'nutritiousFood',
+    language: 'Telugu',
+    imageUrl: '',
+    ingredients: '',
+    description: '',
+  };
   constructor() {}
 
   ngOnInit(): void {
@@ -59,6 +76,7 @@ export class CourseList implements OnInit {
     this.courseType = localStorage.getItem('courseType') || '';
     if (this.courseType || this.userRole) {
       this.fetchCourses();
+      this.fetchNutritionItems();
     }
   }
 
@@ -385,5 +403,114 @@ export class CourseList implements OnInit {
 
   toggleCreateCourse() {
     this.showCreateCourse = !this.showCreateCourse;
+  }
+
+  // 1. READ: Fetch Items
+  fetchNutritionItems(): void {
+    this.service.getNutritionItems(this.currentRouteLanguage).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.nutritiousFoods = res.data.filter((item: any) => item.category === 'nutritiousFood');
+          this.healthyDrinks = res.data.filter((item: any) => item.category === 'healthyDrink');
+        }
+      },
+      error: (err: any) => console.error('Error fetching nutrition items:', err),
+    });
+  }
+
+  // 2. CREATE & UPDATE: Direct Save using Image URL
+  saveNutritionItem(): void {
+    if (
+      !this.nutritionForm.title ||
+      !this.nutritionForm.imageUrl ||
+      !this.nutritionForm.ingredients ||
+      !this.nutritionForm.description
+    ) {
+      alert('Please fill in all required fields including Image URL.');
+      return;
+    }
+
+    this.isNutritionSubmitting = true;
+
+    if (this.isEditingNutrition && this.nutritionForm._id) {
+      // UPDATE
+      this.service.updateNutritionItem(this.nutritionForm._id, this.nutritionForm).subscribe({
+        next: () => {
+          this.resetNutritionForm();
+          this.fetchNutritionItems();
+          this.toastService.success('Product edited successfully!');
+          this.isNutritionSubmitting = false;
+          this.cd.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('Update Error:', err);
+          this.isNutritionSubmitting = false;
+          this.toastService.error('Product not edited successfully!');
+          this.cd.detectChanges();
+        },
+      });
+    } else {
+      // CREATE
+      this.service.createNutritionItem(this.nutritionForm).subscribe({
+        next: () => {
+          this.resetNutritionForm();
+          this.fetchNutritionItems();
+          this.isNutritionSubmitting = false;
+          this.toastService.success('Product added successfully!');
+          this.cd.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('Create Error:', err);
+          this.isNutritionSubmitting = false;
+          this.toastService.error('Product not added successfully!');
+          this.cd.detectChanges();
+        },
+      });
+    }
+  }
+
+  // Set Item to Form for Editing
+  editNutritionItem(item: any): void {
+    this.isEditingNutrition = true;
+    this.nutritionForm = { ...item };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 3. DELETE
+  deleteNutritionItem(id?: string): void {
+    if (!id) return;
+    if (confirm('Are you sure you want to delete this recipe item?')) {
+      this.service.deleteNutritionItem(id).subscribe({
+        next: () => {
+          (this.fetchNutritionItems(), this.toastService.success('Product deleted successfully!'));
+          this.cd.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('Delete Error:', err);
+          this.toastService.error('Product not deleted successfully!');
+          this.cd.detectChanges();
+        },
+      });
+    }
+  }
+
+  // Reset Form
+  resetNutritionForm(): void {
+    this.isEditingNutrition = false;
+    this.nutritionForm = {
+      title: '',
+      category: 'nutritiousFood',
+      language: this.currentRouteLanguage === 'te' ? 'Telugu' : 'English',
+      imageUrl: '',
+      ingredients: '',
+      description: '',
+    };
+  }
+
+  // Navigation handler
+  viewNutritionDetail(id?: string): void {
+    if (id) {
+      this.router.navigate(['/te/nutrition', id]);
+    }
   }
 }

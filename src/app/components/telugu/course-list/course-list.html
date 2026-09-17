@@ -422,6 +422,270 @@
       </div>
     </div>
   </div>
+
+  <!-- ADMIN FORM SECTION -->
+  <div
+    *ngIf="userRole === 'admin'"
+    class="my-8 bg-[#f3fab5] p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4"
+  >
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold text-gray-900">
+        {{ isEditingNutrition ? 'Edit Recipe Item' : 'Add Nutritious Food or Healthy Drink' }}
+      </h2>
+      <button
+        *ngIf="isEditingNutrition"
+        (click)="resetNutritionForm()"
+        class="text-xs text-rose-600 font-bold hover:underline"
+      >
+        Cancel Editing
+      </button>
+    </div>
+
+    <form (ngSubmit)="saveNutritionItem()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Category Select -->
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Category *</label>
+        <select
+          [(ngModel)]="nutritionForm.category"
+          name="category"
+          required
+          class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold"
+        >
+          <option value="nutritiousFood">Nutritious Food / పోషకమైన ఆహారం</option>
+          <option value="healthyDrink">Healthy Drink / ఆరోగ్యకరమైన పానీయం</option>
+        </select>
+      </div>
+
+      <!-- Language Select -->
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Language *</label>
+        <select
+          [(ngModel)]="nutritionForm.language"
+          name="language"
+          required
+          class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold"
+        >
+          <option value="Telugu">Telugu (తెలుగు)</option>
+          <option value="English">English</option>
+        </select>
+      </div>
+
+      <!-- Title -->
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Title *</label>
+        <input
+          type="text"
+          [(ngModel)]="nutritionForm.title"
+          name="title"
+          required
+          placeholder="e.g. రాగి జావ / Golden Latte"
+          class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs"
+        />
+      </div>
+
+      <!-- Image Upload -->
+      <!-- <div>
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Image *</label>
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onNutritionImageSelected($event)"
+          class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-rose-50 file:text-rose-700"
+        />
+      </div> -->
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Image URL *</label>
+        <input
+          type="url"
+          [(ngModel)]="nutritionForm.imageUrl"
+          name="imageUrl"
+          required
+          placeholder="https://example.com/image.jpg"
+          class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
+        />
+      </div>
+      <!-- Ingredients -->
+      <div class="md:col-span-2">
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Ingredients *</label>
+        <input
+          type="text"
+          [(ngModel)]="nutritionForm.ingredients"
+          name="ingredients"
+          required
+          placeholder="List ingredients separated by commas..."
+          class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs"
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="md:col-span-2">
+        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Description *</label>
+        <textarea
+          [(ngModel)]="nutritionForm.description"
+          name="description"
+          rows="2"
+          required
+          placeholder="Health benefits & preparation note..."
+          class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="md:col-span-2 flex justify-end">
+        <button
+          type="submit"
+          [disabled]="isNutritionSubmitting"
+          class="px-6 py-2.5 bg-[#960000] text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+        >
+          {{ isEditingNutrition ? 'Update Item' : 'Add Recipe Item' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- DISPLAY SECTIONS -->
+  <div class="mt-8 space-y-12">
+    <!-- 1. Nutritious Food Section -->
+    <div class="space-y-6">
+      <div class="border-b border-gray-300 pb-2">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900">
+          {{ currentRouteLanguage === 'te' ? 'పోషకమైన ఆహారం' : 'Nutritious Food' }}
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div
+          *ngFor="let item of nutritiousFoods"
+          class="bg-[#f3fab5] rounded-2xl border border-gray-200 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-12 relative"
+        >
+          <!-- Admin Edit/Delete Controls -->
+          <div *ngIf="userRole === 'admin'" class="absolute top-2 right-2 flex gap-1 z-10">
+            <button
+              (click)="editNutritionItem(item)"
+              class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-blue-600 shadow-sm"
+            >
+              ✏️
+            </button>
+            <button
+              (click)="deleteNutritionItem(item._id)"
+              class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-red-600 shadow-sm"
+            >
+              🗑️
+            </button>
+          </div>
+
+          <!-- Left Image -->
+          <div class="md:col-span-6 aspect-video md:aspect-auto w-full bg-gray-100">
+            <img [src]="item.imageUrl" [alt]="item.title" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- Right Content -->
+          <div class="md:col-span-6 p-5 flex flex-col justify-between space-y-3">
+            <div class="space-y-2">
+              <h3 class="text-base font-bold text-gray-900 leading-snug">{{ item.title }}</h3>
+
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
+                  {{ currentRouteLanguage === 'te' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}:
+                </span>
+                <p class="text-xs text-gray-700 font-medium line-clamp-2">{{ item.ingredients }}</p>
+              </div>
+
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
+                  {{ currentRouteLanguage === 'te' ? 'వివరణ' : 'Description' }}:
+                </span>
+                <p class="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                  {{ item.description }}
+                </p>
+              </div>
+              <!-- View Detail Button -->
+              <div class="pt-2">
+                <button
+                  (click)="viewNutritionDetail(item._id)"
+                  class="w-full py-2 px-4 bg-[#960000] hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+                >
+                  {{ currentRouteLanguage === 'te' ? 'వివరాలు చూడండి' : 'View Details' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Healthy Drinks Section -->
+    <div class="space-y-6">
+      <div class="border-b border-gray-300 pb-2">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900">
+          {{ currentRouteLanguage === 'te' ? 'ఆరోగ్యకరమైన పానీయాలు' : 'Healthy Drinks' }}
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div
+          *ngFor="let drink of healthyDrinks"
+          class="bg-[#f3fab5] rounded-2xl border border-gray-200 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-12 relative"
+        >
+          <!-- Admin Edit/Delete Controls -->
+          <div *ngIf="userRole === 'admin'" class="absolute top-2 right-2 flex gap-1 z-10">
+            <button
+              (click)="editNutritionItem(drink)"
+              class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-blue-600 shadow-sm"
+            >
+              ✏️
+            </button>
+            <button
+              (click)="deleteNutritionItem(drink._id)"
+              class="p-1.5 bg-white/90 hover:bg-white rounded-lg text-gray-700 hover:text-red-600 shadow-sm"
+            >
+              🗑️
+            </button>
+          </div>
+
+          <!-- Left Image -->
+          <div class="md:col-span-6 aspect-video md:aspect-auto w-full bg-gray-100">
+            <img [src]="drink.imageUrl" [alt]="drink.title" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- Right Content -->
+          <div class="md:col-span-6 p-5 flex flex-col justify-between space-y-3">
+            <div class="space-y-2">
+              <h3 class="text-base font-bold text-gray-900 leading-snug">{{ drink.title }}</h3>
+
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
+                  {{ currentRouteLanguage === 'te' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}:
+                </span>
+                <p class="text-xs text-gray-700 font-medium line-clamp-2">
+                  {{ drink.ingredients }}
+                </p>
+              </div>
+
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
+                  {{ currentRouteLanguage === 'te' ? 'వివరణ' : 'Description' }}:
+                </span>
+                <p class="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                  {{ drink.description }}
+                </p>
+              </div>
+              <!-- View Detail Button -->
+              <div class="pt-2">
+                <button
+                  (click)="viewNutritionDetail(drink._id)"
+                  class="w-full py-2 px-4 bg-[#960000] hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+                >
+                  {{ currentRouteLanguage === 'te' ? 'వివరాలు చూడండి' : 'View Details' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- TAILWIND POPUP CONFIRMATION MODAL -->
   <div
     *ngIf="showDeleteModal"

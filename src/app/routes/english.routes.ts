@@ -20,6 +20,7 @@ import { DailyTracker } from '.././components/english/daily-tracker/daily-tracke
 import { AdminTrackerList } from '../components/english/admin-tracker-list/admin-tracker-list';
 import { Register } from '../components/register/register';
 import { Events } from '../components/events/events';
+import { NutritionDetails } from '../components/nutrition-details/nutrition-details';
 
 export const ENGLISH_ROUTES: Routes = [
   { path: '', redirectTo: 'community-post', pathMatch: 'full' },
@@ -126,6 +127,7 @@ export const ENGLISH_ROUTES: Routes = [
     canMatch: [roleGuard],
     data: { roles: ['admin'] },
   },
+  { path: 'nutrition/:id', component: NutritionDetails },
   // { path: 'progress', component: Progress },
   { path: '**', component: Notfound },
 ];

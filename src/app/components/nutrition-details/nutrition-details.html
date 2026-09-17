@@ -1,0 +1,76 @@
+<div class="min-h-screen bg-[#f3fab5] p-4 sm:p-6 lg:p-8">
+  <div class="max-w-5xl mx-auto space-y-6">
+    <!-- Back Button -->
+    <button
+      (click)="goBack()"
+      class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-xl text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
+    >
+      ← {{ currentLanguage === 'te' ? 'వెనుకకు విచ్ఛేదించండి' : 'Back' }}
+    </button>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="p-12 text-center text-sm font-semibold text-gray-500">
+      Loading details...
+    </div>
+
+    <!-- Details Split Layout (Image Left / Text Right) -->
+    <div
+      *ngIf="!isLoading && nutritionItem"
+      class="bg-[#f3fab5] rounded-3xl border border-gray-200 shadow-md overflow-hidden grid grid-cols-1 md:grid-cols-12"
+    >
+      <!-- Left Side: Image -->
+      <div class="md:col-span-6 aspect-square w-full bg-gray-100 overflow-hidden relative">
+        <img
+          [src]="nutritionItem.imageUrl"
+          [alt]="nutritionItem.title"
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <!-- Right Side: Details -->
+      <div class="md:col-span-6 p-6 md:p-8 flex flex-col justify-between space-y-6">
+        <div class="space-y-6">
+          <!-- Category Badge -->
+          <span
+            class="inline-block px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-[10px] font-extrabold uppercase tracking-wider"
+          >
+            {{
+              nutritionItem.category === 'nutritiousFood'
+                ? currentLanguage === 'te'
+                  ? 'పోషకమైన ఆహారం'
+                  : 'Nutritious Food'
+                : currentLanguage === 'te'
+                  ? 'ఆరోగ్యకరమైన పానీయం'
+                  : 'Healthy Drink'
+            }}
+          </span>
+
+          <!-- Title -->
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
+            {{ nutritionItem.title }}
+          </h1>
+
+          <!-- Ingredients Section -->
+          <div class="space-y-1.5 border-t border-gray-300 pt-4">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-500">
+              {{ currentLanguage === 'te' ? 'కావలసిన పదార్థాలు' : 'Ingredients' }}
+            </h4>
+            <p class="text-sm font-medium text-gray-800 leading-relaxed">
+              {{ nutritionItem.ingredients }}
+            </p>
+          </div>
+
+          <!-- Description Section -->
+          <div class="space-y-1.5 border-t border-gray-300 pt-4">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-500">
+              {{ currentLanguage === 'te' ? 'వివరణ' : 'Description' }}
+            </h4>
+            <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+              {{ nutritionItem.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

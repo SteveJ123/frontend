@@ -144,28 +144,28 @@ export class Service {
   }
 
   /**
- * PATCH /api/notifications/read-all
- * Marks all notifications for a specific user as read in the backend.
- */
-markAllAsRead(userId: string, language?: string): Observable<any> {
-  let params = new HttpParams();
-  if (userId) {
-    params = params.set('userId', userId);
-  }
-  if (language && language.trim() !== '') {
-    params = params.set('language', language.trim());
-  }
+   * PATCH /api/notifications/read-all
+   * Marks all notifications for a specific user as read in the backend.
+   */
+  markAllAsRead(userId: string, language?: string): Observable<any> {
+    let params = new HttpParams();
+    if (userId) {
+      params = params.set('userId', userId);
+    }
+    if (language && language.trim() !== '') {
+      params = params.set('language', language.trim());
+    }
 
-  const endpoint = `${this.apiUrl}notifications/read-all`;
+    const endpoint = `${this.apiUrl}notifications/read-all`;
 
-  return this.http.patch<any>(endpoint, {}, { params }).pipe(
-    tap(() => {
-      // Clear notifications locally once successfully updated on the server
-      this.notificationsSubject.next([]);
-      this.unreadCountSubject.next(0);
-    })
-  );
-}
+    return this.http.patch<any>(endpoint, {}, { params }).pipe(
+      tap(() => {
+        // Clear notifications locally once successfully updated on the server
+        this.notificationsSubject.next([]);
+        this.unreadCountSubject.next(0);
+      }),
+    );
+  }
 
   updatePost(postId: string, formData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}posts/${postId}`, formData);
@@ -511,5 +511,36 @@ markAllAsRead(userId: string, language?: string): Observable<any> {
 
   uploadAWSMedia(formData: any) {
     return this.http.post(this.apiUrl + 'upload_parallel', formData);
+  }
+
+  // Fetch all items (filtered by language)
+  getNutritionItems(language?: string): Observable<{ success: boolean; data: any }> {
+    let params = new HttpParams();
+    if (language) {
+      params = params.set('language', language);
+    }
+    return this.http.get<{ success: boolean; data: any }>(`${this.apiUrl}nutrition`, {
+      params,
+    });
+  }
+
+  // Fetch single item by ID
+  getNutritionById(id: string): Observable<{ success: boolean; data: any }> {
+    return this.http.get<{ success: boolean; data: any }>(`${this.apiUrl}nutrition/${id}`);
+  }
+
+  // Create Item
+  createNutritionItem(item: any): Observable<{ success: boolean; data: any }> {
+    return this.http.post<{ success: boolean; data: any }>(`${this.apiUrl}nutrition`, item);
+  }
+
+  // Update Item
+  updateNutritionItem(id: string, item: any): Observable<{ success: boolean; data: any }> {
+    return this.http.put<{ success: boolean; data: any }>(`${this.apiUrl}nutrition/${id}`, item);
+  }
+
+  // Delete Item
+  deleteNutritionItem(id: string): Observable<{ success: boolean; message: string }> {
+    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}nutrition/${id}`);
   }
 }

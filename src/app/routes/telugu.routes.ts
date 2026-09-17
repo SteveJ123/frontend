@@ -20,6 +20,7 @@ import { DailyTracker } from '.././components/telugu/daily-tracker/daily-tracker
 import { AdminTrackerList } from '../components/telugu/admin-tracker-list/admin-tracker-list';
 import { Register } from '../components/register/register';
 import { Events } from '../components/events/events';
+import { NutritionDetails } from '../components/nutrition-details/nutrition-details';
 
 export const TELUGU_ROUTES: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -126,6 +127,7 @@ export const TELUGU_ROUTES: Routes = [
     canMatch: [roleGuard],
     data: { roles: ['admin'] },
   },
+  { path: 'nutrition/:id', component: NutritionDetails },
   // { path: 'progress', component: Progress },
   { path: '**', component: Notfound },
 ];
